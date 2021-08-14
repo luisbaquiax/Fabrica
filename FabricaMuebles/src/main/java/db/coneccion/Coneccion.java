@@ -5,9 +5,14 @@
  */
 package db.coneccion;
 
+import com.mysql.cj.xdevapi.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,5 +27,29 @@ public class Coneccion {
     public static Connection getConnection() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
+    public static void close(PreparedStatement statement) {
+        try {
+            statement.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void close(ResultSet result) {
+        try {
+            result.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void close(Connection conn) {
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

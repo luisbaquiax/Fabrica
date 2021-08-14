@@ -13,7 +13,7 @@ public class Usuario {
 
     private String nombre;
     private String password;
-    private int tipo;
+    private String tipo;
 
     /**
      * For insert a new USER to DB
@@ -22,7 +22,7 @@ public class Usuario {
      * @param password
      * @param tipo
      */
-    public Usuario(String nombre, String password, int tipo) {
+    public Usuario(String nombre, String password, String tipo) {
         this.nombre = nombre;
         this.password = password;
         this.tipo = tipo;
@@ -59,14 +59,14 @@ public class Usuario {
     /**
      * @return the tipo
      */
-    public int getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
     /**
      * @param tipo the tipo to set
      */
-    public void setTipo(int tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

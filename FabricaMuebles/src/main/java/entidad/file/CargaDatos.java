@@ -25,6 +25,8 @@ public class CargaDatos {
     private ArrayList<Ensamblaje> ensamblajes;
     private ArrayList<RequerimientoEnsamblaje> requerimientoEnsamblajes;
     private ArrayList<Usuario> usuarios;
+    //errores
+    private ArrayList<String> errores;
     //db
     private ClienteDB clienteDB;
 
@@ -35,13 +37,14 @@ public class CargaDatos {
         this.ensamblajes = new ArrayList<>();
         this.requerimientoEnsamblajes = new ArrayList<>();
         this.usuarios = new ArrayList<>();
+        this.errores = new ArrayList<>();
         leerInformacion(this.file.informacionEntrada());
     }
 
     private void leerInformacion(String informacion) {
         String[] lineas = informacion.split("\n");
-        for (String linea : lineas) {
-            String[] pedazo = linea.split(",");
+        for (int i = 0; i < lineas.length; i++) {
+            String[] pedazo = lineas[i].split(",");
             try {
                 if (pedazo[0].equalsIgnoreCase("USUARIO")) {
                     System.out.println(pedazo[1].substring(1, pedazo[1].length() - 1));
@@ -52,7 +55,7 @@ public class CargaDatos {
                     System.out.println("");
                 } else if (pedazo[0].equalsIgnoreCase("PIEZA")) {
                     Pieza pieza = new Pieza(pedazo[1].substring(1, pedazo[1].length() - 1), Double.parseDouble(quitarEspacios(pedazo[2])));
-                    if (!yaExsitePieza(pedazo[1].substring(1, pedazo[1].length() - 1))) {
+                    if (!existePieza(pedazo[1].substring(1, pedazo[1].length() - 1))) {
                         pieza.setCantidadExistente(1);
                         this.piezas.add(pieza);
 
@@ -87,16 +90,20 @@ public class CargaDatos {
                             Integer.parseInt(quitarEspacios(pedazo[3]))));
                 } else if (pedazo[0].equalsIgnoreCase("ENSAMBLAR_MUEBLE")) {
                     System.out.println(pedazo[1].substring(1, pedazo[1].length() - 1));
-                    System.out.println(pedazo[2]);
+                    System.out.println(quitarEspacios(pedazo[2]));
                     System.out.println(pedazo[3].substring(1, pedazo[3].length() - 1));
                     System.out.println("");
-                    this.requerimientoEnsamblajes.add(new RequerimientoEnsamblaje(
-                            linea, linea, 0));
+                    this.ensamblajes.add(new Ensamblaje(
+                            pedazo[3].substring(1, pedazo[3].length() - 1),
+                            pedazo[1].substring(1, pedazo[1].length() - 1),
+                            quitarEspacios(pedazo[2])));
                 } else {
-                    System.out.println("error en " + linea);
+                    System.out.println("error en " + lineas[i]);
+                    this.errores.add("Error en: (" + lineas[i] + ")" + " línea " + (i + 1));
                 }
             } catch (Exception e) {
                 System.out.println("error ");
+                this.errores.add("Error en: (" + lineas[i] + ")" + " línea " + (i + 1));
             }
 
         }
@@ -106,13 +113,30 @@ public class CargaDatos {
             System.out.println(piezas.get(i).getCantidadExistente());
             System.out.println("");
         }
+        System.out.println("muebles");
+        for (int i = 0; i < this.muebles.size(); i++) {
+            System.out.println(muebles.get(i).getNombre());
+            System.out.println(muebles.get(i).getCantidadExistente());
+        }
+        System.out.println("ENSAMBLE_PIEZAS");
+        for (int i = 0; i < this.requerimientoEnsamblajes.size(); i++) {
+            System.out.println(requerimientoEnsamblajes.get(i).getCantidadPiezas());
+            System.out.println(requerimientoEnsamblajes.get(i).getMueble());
+            System.out.println(requerimientoEnsamblajes.get(i).getPieza());
+        }
+        System.out.println("ENSAMBLAR_MUEBLE");
+        for (int i = 0; i < this.ensamblajes.size(); i++) {
+            System.out.println(ensamblajes.get(i).getMueble());
+            System.out.println(ensamblajes.get(i).getUsuario());
+            System.out.println(ensamblajes.get(i).getFecha());
+        }
     }
 
     private void subirDatos() {
 
     }
 
-    public boolean yaExsitePieza(String tipo) {
+    public boolean existePieza(String tipo) {
 
         for (Pieza pieza : piezas) {
             if (pieza.getTipo().equalsIgnoreCase(tipo)) {

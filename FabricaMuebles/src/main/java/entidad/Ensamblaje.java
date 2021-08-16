@@ -34,6 +34,19 @@ public class Ensamblaje {
     }
 
     /**
+     * Para la entrada de datos
+     *
+     * @param fecha
+     * @param mueble
+     * @param usuario
+     */
+    public Ensamblaje(String fecha, String mueble, String usuario) {
+        this.fecha = fecha;
+        this.mueble = mueble;
+        this.usuario = usuario;
+    }
+
+    /**
      * @return the fecha
      */
     public String getFecha() {

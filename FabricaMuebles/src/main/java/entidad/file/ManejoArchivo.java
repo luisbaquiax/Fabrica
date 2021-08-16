@@ -51,6 +51,7 @@ public class ManejoArchivo {
                     }
                     todaInformacion += aux + "\n";
                 }
+                System.out.println(todaInformacion);
                 return todaInformacion;
 
             } catch (FileNotFoundException ex) {

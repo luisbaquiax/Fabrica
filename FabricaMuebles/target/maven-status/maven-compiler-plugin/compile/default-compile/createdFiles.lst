@@ -2,10 +2,13 @@ db/modelo/UsuarioDB.class
 db/modelo/FacturaDB.class
 db/modelo/VentaDB.class
 db/modelo/ClienteDB.class
+entidad/file/NewMain.class
 entidad/file/CargaDatos.class
+entidad/Ensamblaje.class
 entidad/file/ManejoArchivo.class
 entidad/Devolucion.class
 entidad/Venta.class
+db/modelo/EnsamblajeDB.class
 entidad/Mueble.class
 db/modelo/DevolucionDB.class
 entidad/Pieza.class

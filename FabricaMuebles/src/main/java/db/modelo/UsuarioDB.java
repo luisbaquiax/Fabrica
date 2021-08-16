@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class UsuarioDB {
 
     private static final String INSERT = "INSERT INTO usuario(nombre, pass, tipo) VALUES(?, ?, ?)";
-    private static final String DELETE = "DELET FROM usuario WHERE nombre = ?, AND pass = ?, AND tipo = ?";
+    private static final String DELETE = "DELET FROM usuario WHERE nombre = ?, AND pass = ?";
 
     /**
      * Insertar usuario al sistema
@@ -66,7 +66,6 @@ public class UsuarioDB {
             statement = conn.prepareStatement(DELETE);
             statement.setString(1, usuario.getNombre());
             statement.setString(2, usuario.getPassword());
-            statement.setString(3, usuario.getTipo());
 
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {

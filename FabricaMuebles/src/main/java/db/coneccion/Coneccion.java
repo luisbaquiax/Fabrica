@@ -25,7 +25,8 @@ public class Coneccion {
     private static final String PASSWORD = "luisbaquiax1234";//@luis.baquiax95 luisbaquiax1234
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        //Class.forName("com.mysql.jdbc.Driver").newInstance();
+        Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 

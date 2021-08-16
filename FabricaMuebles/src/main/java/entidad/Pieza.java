@@ -13,6 +13,7 @@ public class Pieza {
 
     private String tipo;
     private double costo;
+    private int cantidadExistente;
 
     /**
      * For add a now PIECE in the DATA_BASE
@@ -23,6 +24,34 @@ public class Pieza {
     public Pieza(String tipo, double costo) {
         this.tipo = tipo;
         this.costo = costo;
+    }
+
+    /**
+     *
+     * @param tipo
+     * @param costo
+     * @param cantidadExistente
+     */
+    public Pieza(String tipo, double costo, int cantidadExistente) {
+        this.tipo = tipo;
+        this.costo = costo;
+        this.cantidadExistente = cantidadExistente;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getCantidadExistente() {
+        return cantidadExistente;
+    }
+
+    /**
+     *
+     * @param cantidad
+     */
+    public void setCantidadExistente(int cantidad) {
+        this.cantidadExistente += cantidad;
     }
 
     /**

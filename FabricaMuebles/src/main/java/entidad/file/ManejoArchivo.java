@@ -24,7 +24,7 @@ public class ManejoArchivo {
     public ManejoArchivo() {
     }
 
-    private String leerArchivoEntrada() {
+    public String informacionEntrada() {
         FileReader leerArchivo = null;
         JFileChooser choser = new JFileChooser();
 

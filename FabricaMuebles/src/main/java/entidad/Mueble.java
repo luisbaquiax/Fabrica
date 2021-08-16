@@ -77,7 +77,7 @@ public class Mueble {
      * @param cantidadExistente the cantidadExistente to set
      */
     public void setCantidadExistente(int cantidadExistente) {
-        this.cantidadExistente = cantidadExistente;
+        this.cantidadExistente += cantidadExistente;
     }
 
 }

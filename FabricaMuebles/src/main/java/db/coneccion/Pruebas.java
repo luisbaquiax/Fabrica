@@ -5,6 +5,11 @@
  */
 package db.coneccion;
 
+import db.modelo.MuebleDB;
+import db.modelo.UsuarioDB;
+import entidad.Mueble;
+import entidad.Usuario;
+
 /**
  *
  * @author luis
@@ -16,6 +21,10 @@ public class Pruebas {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        MuebleDB muebleDB = new MuebleDB();
+        //muebleDB.insertarMueble(new Mueble("Mesa3", 200));
+        muebleDB.actualizarCantidadMuebles(40, "Mesa3");
+
     }
     
 }

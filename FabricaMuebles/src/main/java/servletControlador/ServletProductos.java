@@ -30,17 +30,42 @@ public class ServletProductos extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Mueble> muebles = (ArrayList<Mueble>) this.muebleDB.listarMuebles();
-        HttpSession sesion = request.getSession();
-        sesion.setAttribute("muebles", muebles);
-        response.sendRedirect("/FabricaMuebles/Inicio.jsp");
+
+        String tarea = request.getParameter("tarea");
+        if (tarea != null) {
+            switch (tarea) {
+                case "mostrar":
+                    mostarProductos(request, response);
+                    break;
+                default:
+                    mostarProductos(request, response);
+            }
+        } else {
+            mostarProductos(request, response);
+        }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String tarea = request.getParameter("tarea");
+        if (tarea != null) {
+            switch (tarea) {
+                case "":
+                    break;
+                default:
+                    mostarProductos(request, response);
+            }
+        } else {
+            mostarProductos(request, response);
+        }
+
+    }
+
+    private void mostarProductos(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ArrayList<Mueble> muebles = (ArrayList<Mueble>) this.muebleDB.listarMuebles();
         HttpSession sesion = request.getSession();
         sesion.setAttribute("muebles", muebles);
-        response.sendRedirect("/FabricaMuebles/Inicio.jsp");
+        response.sendRedirect("/FabricaMuebles/JSP/Administrador/Productos.jsp");
     }
 }

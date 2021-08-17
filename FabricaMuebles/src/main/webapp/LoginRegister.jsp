@@ -21,13 +21,13 @@
     </head>
     <body>
         <div class="container-md">
-            <form class="form-signin">
+            <form class="form-signin" method="POST" action="Login">
                 <img class="mb-4 imagen" src="assets/imagenes/login.png" alt="" width="72" height="72">
                 <h1 class="h3 mb-3 font-weight-normal">Por favor, regístrese</h1>
                 <label for="inputEmail" class="form-signin">Nombre de Usuario:</label>
-                <input type="text" id="inputEmail" class="form-control" placeholder="Nombre" required autofocus>
+                <input type="text" id="inputEmail" class="form-control" placeholder="Nombre"  name="nombre" required autofocus>
                 <label for="inputPassword" class="form-signin">Contraseña:</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required autofocus>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" name="pass" required autofocus>
                 <div class="checkbox mb-3">
                     <label>
                     </label>

@@ -21,6 +21,6 @@
             </li>
 
         </ul>
-        <a class="btn btn-outline-success my-2 my-sm-0" href="LoginRegister.jsp">Login</a>
+        <a class="btn btn-outline-success my-2 my-sm-0" href="/FabricaMuebles/LoginRegister.jsp">Login</a>
     </div>
 </nav>

@@ -4,6 +4,10 @@
     Author     : luis
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!-- para dar formato el texto-->
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!-- SELECCIONAMOS LA LOCALIDAD -->
+<fmt:setLocale value="es_GT"/>
 <!doctype html>
 <html lang="en">
     <head>
@@ -24,69 +28,32 @@
         <jsp:include page="../../JSP/Utiles/Navegador.jsp"></jsp:include>
 
 
-            <div class="container mt-5">
+            <div class="container-fluider mt-5">
 
-                <table class="table table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="mueble" items="${muebles}" varStatus="status" >
-                        <tr>
-                            <td>${mueble.nombre}</td>
-                            <td>${mueble.precio}</td>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${cliente.id}"
-                                   class="btn btn-secondary">
-                                    <i class="fas fa-angle-double-right"></i> Editar
-                                </a>
-                            </td>
-                        </tr>
-                    <div class="card-deck text-center card-produts mr-2">
-                        <div class="card mb-4 shadow-sm">
-                            <div class="card-header">
-                                <h4 class="my-0 font-weight-normal">${mueble.nombre}</h4>
-                            </div>
-                            <div class="card-body">
-                                <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted">/ mo</small></h1>
-                                <ul class="list-unstyled mt-3 mb-4">
-                                    <li>Precio</li>
-                                    <li>${mueble.precio}</li>
-                                    <li>Email support</li>
-                                    <li>Help center access</li>
-                                </ul>
-                                <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${mueble.nombre}"
-                                   class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
-                                    <i class="fas fa-angle-double-right"></i> Comprar
-                                </a>
-                            </div>
+            <c:forEach var="mueble" items="${muebles}" varStatus="status" >
+
+                <div class="card-deck text-center card-produts mr-2">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">${mueble.nombre}</h4>
+                        </div>
+                        <div class="card-body">
+                            <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted"><!-- puede ir alguna signa aquí --></small></h1>
+                            <img class="mb-4 imagen" src="../../assets/imagenes/calcular-medida-mesas-comedor.jpg" alt="" width="172" height="172">
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li>Precio:</li>
+                                <li><fmt:formatNumber value="${mueble.precio}" type="currency"/></li>
+                                <li>Unidades existentes:</li>
+                                <li>${mueble.cantidadExistente}</li>
+                            </ul>
+                            <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${mueble.nombre}"
+                               class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
+                                <i class="fas fa-angle-double-right"></i> Comprar
+                            </a>
                         </div>
                     </div>
-                </c:forEach>
-                </tbody>
-            </table>
-
-            <div class="card-deck text-center card-produts mr-2">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Free</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted">/ mo</small></h1>
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>10 users included</li>
-                            <li>2 GB of storage</li>
-                            <li>Email support</li>
-                            <li>Help center access</li>
-                        </ul>
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>
-                    </div>
                 </div>
-            </div>
+            </c:forEach>
 
             <footer class="pt-4 my-md-5 pt-md-5 border-top">
                 <div class="row">

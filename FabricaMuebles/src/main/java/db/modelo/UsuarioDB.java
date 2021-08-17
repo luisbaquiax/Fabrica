@@ -9,6 +9,7 @@ import db.coneccion.Coneccion;
 import entidad.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ public class UsuarioDB {
 
     private static final String INSERT = "INSERT INTO usuario(nombre, pass, tipo) VALUES(?, ?, ?)";
     private static final String DELETE = "DELET FROM usuario WHERE nombre = ?, AND pass = ?";
+    private static final String SEARCH_USER = "SELECT * FROM usuario WHERE nombre = ? AND pass = ? LIMIT 1";
 
     /**
      * Insertar usuario al sistema
@@ -75,6 +77,27 @@ public class UsuarioDB {
             Coneccion.close(conn);
         }
 
+    }
+    
+    public Usuario buscarUsuario(String nombre, String pass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Usuario usuario = null;
+        
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(SEARCH_USER);
+        result = statement.executeQuery();
+        
+        while (result.next()) {            
+            String name = result.getString("nombre");
+            String contra = result.getString("pass");
+            String tipo = result.getString("tipo");
+        }
+        
+        
+        
+        return usuario;
     }
 
 }

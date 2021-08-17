@@ -9,6 +9,8 @@ import com.mysql.cj.xdevapi.PreparableStatement;
 import db.coneccion.Coneccion;
 import entidad.Pieza;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +23,7 @@ public class PiezaDB {
     private static final String INSERT = "INSERT INTO pieza(tipo, costo, cantidad) VALUES(?,?,?)";
     private static final String UPDATE_CANTIDADES = "UPDATE pieza SET cantidad = ? WHERE tipo = ?";
     private static final String UPDATE_PIEZA = "UPDATE pieza SET cantidad = ?, costo = ? WHERE tipo = ?";
+    private static final String LIST_PIEZAS = "SELECT * FROM pieza";
 
     /**
      *
@@ -93,6 +96,31 @@ public class PiezaDB {
             System.out.println("Error al actualizar");
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public List<Pieza> getPiezas() {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Pieza pieza = null;
+        List<Pieza> piezas = new ArrayList<>();
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(LIST_PIEZAS);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                pieza = new Pieza(
+                        result.getString("tipo"),
+                        result.getDouble("costo"),
+                        result.getInt("cantidad"));
+                piezas.add(pieza);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return piezas;
     }
 
 }

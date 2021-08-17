@@ -82,4 +82,9 @@ public class Pieza {
         this.costo = costo;
     }
 
+    @Override
+    public String toString() {
+        return "Pieza{" + "tipo=" + tipo + ", costo=" + costo + ", cantidadExistente=" + cantidadExistente + '}';
+    }
+
 }

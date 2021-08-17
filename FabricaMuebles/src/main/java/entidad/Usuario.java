@@ -11,6 +11,10 @@ package entidad;
  */
 public class Usuario {
 
+    public static final String TIPO_1 = "1";
+    public static final String TIPO_2 = "2";
+    public static final String TIPO_3 = "3";
+
     private String nombre;
     private String password;
     private String tipo;
@@ -68,6 +72,11 @@ public class Usuario {
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "nombre=" + nombre + ", password=" + password + ", tipo=" + tipo + '}';
     }
 
 }

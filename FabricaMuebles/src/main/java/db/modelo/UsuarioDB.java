@@ -78,25 +78,36 @@ public class UsuarioDB {
         }
 
     }
-    
-    public Usuario buscarUsuario(String nombre, String pass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException{
+
+    /**
+     *
+     * @param nombre
+     * @param pass
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public Usuario buscarUsuario(String nombre, String pass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
         Usuario usuario = null;
-        
+
         conn = Coneccion.getConnection();
         statement = conn.prepareStatement(SEARCH_USER);
+        statement.setString(1, nombre);
+        statement.setString(2, pass);
         result = statement.executeQuery();
-        
-        while (result.next()) {            
+
+        while (result.next()) {
             String name = result.getString("nombre");
             String contra = result.getString("pass");
             String tipo = result.getString("tipo");
+            usuario = new Usuario(nombre, pass, tipo);
         }
-        
-        
-        
+
         return usuario;
     }
 

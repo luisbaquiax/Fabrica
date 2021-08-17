@@ -68,4 +68,11 @@ public class ServletProductos extends HttpServlet {
         sesion.setAttribute("muebles", muebles);
         response.sendRedirect("/FabricaMuebles/JSP/Administrador/Productos.jsp");
     }
+
+    private void verProductos(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ArrayList<Mueble> muebles = (ArrayList<Mueble>) this.muebleDB.listarMuebles();
+        HttpSession sesion = request.getSession();
+        sesion.setAttribute("muebles", muebles);
+        response.sendRedirect("/FabricaMuebles/Inicio.jsp");
+    }
 }

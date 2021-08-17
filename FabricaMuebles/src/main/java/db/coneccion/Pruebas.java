@@ -7,9 +7,11 @@ package db.coneccion;
 
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
+import db.modelo.PiezaDB;
 import db.modelo.UsuarioDB;
 import entidad.Ensamblaje;
 import entidad.Mueble;
+import entidad.Pieza;
 import entidad.Usuario;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -28,6 +30,11 @@ public class Pruebas {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        PiezaDB p = new PiezaDB();
+        for (Pieza pa : p.getPiezas()) {
+            System.out.println(pa.toString());
+        }
+        
         MuebleDB muebleDB = new MuebleDB();
         //muebleDB.insertarMueble(new Mueble("Mesa3", 200));
         //muebleDB.actualizarCantidadMuebles(40, "Mesa3");
@@ -43,10 +50,22 @@ public class Pruebas {
 //        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
 //            System.out.println(ex.getMessage());
 //        }
-
-        for (int i = 0; i < muebleDB.listarMuebles().size(); i++) {
-            System.out.println(muebleDB.listarMuebles().get(i).toString());
-        }
+//
+//        for (int i = 0; i < muebleDB.listarMuebles().size(); i++) {
+//            System.out.println(muebleDB.listarMuebles().get(i).toString());
+//        }
+//        UsuarioDB u = new UsuarioDB();
+//        try {
+//            System.out.println(u.buscarUsuario("Luis", "admin").toString());
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Pruebas.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ClassNotFoundException ex) {
+//            Logger.getLogger(Pruebas.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            Logger.getLogger(Pruebas.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            Logger.getLogger(Pruebas.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
 }

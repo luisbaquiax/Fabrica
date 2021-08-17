@@ -5,6 +5,7 @@ db/modelo/ClienteDB.class
 entidad/file/NewMain.class
 entidad/file/CargaDatos.class
 entidad/Ensamblaje.class
+servletControlador/ServletProductos.class
 entidad/file/ManejoArchivo.class
 entidad/Devolucion.class
 entidad/Venta.class

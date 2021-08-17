@@ -80,4 +80,9 @@ public class Mueble {
         this.cantidadExistente += cantidadExistente;
     }
 
+    @Override
+    public String toString() {
+        return "Mueble{" + "nombre=" + nombre + ", precio=" + precio + ", cantidadExistente=" + cantidadExistente + '}';
+    }
+
 }

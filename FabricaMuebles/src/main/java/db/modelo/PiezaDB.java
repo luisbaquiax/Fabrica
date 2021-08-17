@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class PiezaDB {
 
-    private static final String INSERT = "INSERT INTO pieza(tipo, costo) VALUES(?,?)";
+    private static final String INSERT = "INSERT INTO pieza(tipo, costo, cantidad) VALUES(?,?,?)";
     private static final String UPDATE_CANTIDADES = "UPDATE pieza SET cantidad = ? WHERE tipo = ?";
     private static final String UPDATE_PIEZA = "UPDATE pieza SET cantidad = ?, costo = ? WHERE tipo = ?";
 
@@ -37,6 +37,7 @@ public class PiezaDB {
 
             statement.setString(1, pieza.getTipo());
             statement.setDouble(2, pieza.getCosto());
+            statement.setInt(3, pieza.getCantidadExistente());
 
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {

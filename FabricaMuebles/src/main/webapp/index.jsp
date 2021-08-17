@@ -4,4 +4,4 @@
     Author     : luis
 --%>
 
-<meta http-equiv="refresh" content="0;url=Inicio.jsp">
+<meta http-equiv="refresh" content="0;url=ControladorProductos">

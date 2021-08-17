@@ -7,6 +7,7 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Ensamblaje.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/PiezaDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/ManejoArchivo.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/ServletProductos.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/EnsamblajeDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/coneccion/Pruebas.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Devolucion.java

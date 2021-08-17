@@ -7,7 +7,6 @@ package db.modelo;
 
 import db.coneccion.Coneccion;
 import entidad.Ensamblaje;
-import entidad.RequerimientoEnsamblaje;
 import java.sql.*;
 
 /**
@@ -26,7 +25,7 @@ public class EnsamblajeDB {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public void insertarMueblePieza(Ensamblaje ensamblaje) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void insertarEnsamblaje(Ensamblaje ensamblaje) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
@@ -40,6 +39,6 @@ public class EnsamblajeDB {
         statement.setString(4, ensamblaje.getMueble());
         statement.setString(5, ensamblaje.getUsuario());
 
-        registros = statement.executeUpdate(INSERT);
+        registros = statement.executeUpdate();
     }
 }

@@ -3,6 +3,7 @@
     Created on : 15 ago. 2021, 0:25:56
     Author     : luis
 --%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="en">
     <head>
@@ -14,54 +15,68 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
         <!-- CSS -->
         <link href="../../assets/css/Productos.css" rel="stylesheet" type="text/css"/>
-        <title>Hello, world!</title>
+        <link href="../../assets/css/CardProductos.css" rel="stylesheet" type="text/css"/>
+
+        <title>Productos</title>
     </head>
     <body>
-        
+
         <jsp:include page="../../JSP/Utiles/Navegador.jsp"></jsp:include>
 
-        <div class="container mt-5">
-            <div class="card-deck text-center">
+
+            <div class="container mt-5">
+
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="mueble" items="${muebles}" varStatus="status" >
+                        <tr>
+                            <td>${mueble.nombre}</td>
+                            <td>${mueble.precio}</td>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${cliente.id}"
+                                   class="btn btn-secondary">
+                                    <i class="fas fa-angle-double-right"></i> Editar
+                                </a>
+                            </td>
+                        </tr>
+                    <div class="card-deck text-center card-produts mr-2">
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">${mueble.nombre}</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted">/ mo</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>Precio</li>
+                                    <li>${mueble.precio}</li>
+                                    <li>Email support</li>
+                                    <li>Help center access</li>
+                                </ul>
+                                <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${mueble.nombre}"
+                                   class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
+                                    <i class="fas fa-angle-double-right"></i> Comprar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+                </tbody>
+            </table>
+
+            <div class="card-deck text-center card-produts mr-2">
                 <div class="card mb-4 shadow-sm">
                     <div class="card-header">
                         <h4 class="my-0 font-weight-normal">Free</h4>
                     </div>
                     <div class="card-body">
-                        <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>10 users included</li>
-                            <li>2 GB of storage</li>
-                            <li>Email support</li>
-                            <li>Help center access</li>
-                        </ul>
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-deck text-center">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Free</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>10 users included</li>
-                            <li>2 GB of storage</li>
-                            <li>Email support</li>
-                            <li>Help center access</li>
-                        </ul>
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Sign up for free</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-deck text-center">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-header">
-                        <h4 class="my-0 font-weight-normal">Free</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title pricing-card-title">$0 <small class="text-muted">/ mo</small></h1>
+                        <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted">/ mo</small></h1>
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>10 users included</li>
                             <li>2 GB of storage</li>

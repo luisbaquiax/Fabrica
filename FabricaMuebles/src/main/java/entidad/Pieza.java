@@ -55,6 +55,14 @@ public class Pieza {
     }
 
     /**
+     *
+     * @param cantidad
+     */
+    public void quitarCantidad(int cantidad) {
+        this.cantidadExistente -= cantidad;
+    }
+
+    /**
      * @return the tipo
      */
     public String getTipo() {

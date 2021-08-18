@@ -31,10 +31,11 @@ public class Pruebas {
     public static void main(String[] args) {
         // TODO code application logic here
         PiezaDB p = new PiezaDB();
-        for (Pieza pa : p.getPiezas()) {
-            System.out.println(pa.toString());
-        }
-        
+//        p.eliminarPieza("Pieza Hola");
+//        for (Pieza pa : p.getPiezas()) {
+//            System.out.println(pa.toString());
+//        }
+//        
         MuebleDB muebleDB = new MuebleDB();
         //muebleDB.insertarMueble(new Mueble("Mesa3", 200));
         //muebleDB.actualizarCantidadMuebles(40, "Mesa3");

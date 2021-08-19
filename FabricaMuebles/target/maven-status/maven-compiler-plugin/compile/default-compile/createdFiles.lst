@@ -9,6 +9,7 @@ servletControlador/FabricaControlador.class
 entidad/Venta.class
 db/modelo/EnsamblajeDB.class
 db/coneccion/Coneccion.class
+servletControlador/SalirControlador.class
 entidad/Cliente.class
 db/modelo/MuebleDB.class
 entidad/Usuario.class

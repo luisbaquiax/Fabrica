@@ -43,7 +43,10 @@ public class CargaDatos {
     private RequerimientoEnsamblajeDB requerimientoEnsamblajeDB;
     private UsuarioDB usuarioDB;
 
-    //auxiliar requerimiento
+    //auxiliares
+    private ArrayList<RequerimientoEnsamblaje> auxRequerimientosAsubir;
+    private ArrayList<Ensamblaje> auxEnsamblajes;
+
     public CargaDatos() {
         this.file = new ManejoArchivo();
         this.piezas = new ArrayList<>();
@@ -58,6 +61,9 @@ public class CargaDatos {
         this.piezaDB = new PiezaDB();
         this.requerimientoEnsamblajeDB = new RequerimientoEnsamblajeDB();
         this.usuarioDB = new UsuarioDB();
+        //
+        this.auxRequerimientosAsubir = new ArrayList<>();
+        this.auxEnsamblajes = new ArrayList<>();
 
         leerInformacion(this.file.informacionEntrada());
     }
@@ -72,11 +78,11 @@ public class CargaDatos {
                     System.out.println(pedazo[2].substring(1, pedazo[2].length() - 1));
                     System.out.println(Integer.parseInt(quitarEspacios(pedazo[3])));
                     System.out.println("");
-
-                    this.usuarios.add(new Usuario(
+                    Usuario usuario = new Usuario(
                             quitarEspacios(pedazo[1].substring(1, pedazo[1].length() - 1)),
                             quitarEspacios(pedazo[2].substring(1, pedazo[2].length() - 1)),
-                            quitarEspacios(pedazo[3])));
+                            quitarEspacios(pedazo[3]));
+                    this.usuarios.add(usuario);
                 } else if (pedazo[0].equalsIgnoreCase("PIEZA")) {
                     Pieza pieza = new Pieza(pedazo[1].substring(1, pedazo[1].length() - 1), Double.parseDouble(quitarEspacios(pedazo[2])));
 
@@ -111,12 +117,10 @@ public class CargaDatos {
                     System.out.println(Integer.parseInt(quitarEspacios(pedazo[3])));
                     System.out.println("");
 
-                    if (existePieza(pedazo[2].substring(1, pedazo[2].length() - 1)) && existeMueble(pedazo[1].substring(1, pedazo[1].length() - 1))) {
-                        this.requerimientoEnsamblajes.add(new RequerimientoEnsamblaje(
-                                pedazo[2].substring(1, pedazo[2].length() - 1),
-                                pedazo[1].substring(1, pedazo[1].length() - 1),
-                                Integer.parseInt(quitarEspacios(pedazo[3]))));
-                    }
+                    this.requerimientoEnsamblajes.add(new RequerimientoEnsamblaje(
+                            pedazo[2].substring(1, pedazo[2].length() - 1),
+                            pedazo[1].substring(1, pedazo[1].length() - 1),
+                            Integer.parseInt(quitarEspacios(pedazo[3]))));
 
                 } else if (pedazo[0].equalsIgnoreCase("ENSAMBLAR_MUEBLE")) {
 
@@ -125,28 +129,34 @@ public class CargaDatos {
                     System.out.println(pedazo[3].substring(1, pedazo[3].length() - 1));
                     System.out.println("");
 
-                    if (existeMueble(pedazo[1].substring(1, pedazo[1].length() - 1)) && existeUsuario(quitarEspacios(pedazo[2]))) {
-                        String fecha = quitarEspacios(pedazo[3].substring(1, pedazo[3].length() - 1));
-                        String mueble = pedazo[1].substring(1, pedazo[1].length() - 1);
-                        String usuario = quitarEspacios(pedazo[2]);
-                        this.ensamblajes.add(new Ensamblaje(formatoFecha(fecha), mueble, usuario));
-                    }
+                    String fecha = quitarEspacios(pedazo[3].substring(1, pedazo[3].length() - 1));
+                    String mueble = pedazo[1].substring(1, pedazo[1].length() - 1);
+                    String usuario = quitarEspacios(pedazo[2]);
+                    Ensamblaje ensamblaje = new Ensamblaje(formatoFecha(fecha), mueble, usuario);
+                    ensamblaje.setEstado(true);
+                    System.out.println(ensamblaje.toString());
+                    this.ensamblajes.add(ensamblaje);
 
+                } else if (pedazo[0].equalsIgnoreCase("CLIENTE")) {
+                    System.out.println(linea);
                 } else {
                     System.out.println("error en " + linea);
                     this.errores.add("Error en: (" + linea + ")" + " línea ");
                 }
             } catch (Exception e) {
-                System.out.println("error ");
+                System.out.println("error en " + linea);
                 this.errores.add("Error en: (" + linea + ")" + " línea ");
             }
 
         }
-
-        for (int i = 0; i < this.ensamblajes.size(); i++) {
-            this.ensamblajes.get(i).setCosto(calcularCostoEnsamblaje(this.ensamblajes.get(i).getMueble()));
-            this.ensamblajes.get(i).setEstado("0");
-        }
+        //
+        obtenerRequerimientosVerificados();
+        verificarEnsamblajes();
+        //agregamos el costo de ensamblaje
+        agregarCostoDeEnsamblaje();
+        //ingresamos mubles ensambladosf
+        ingresarMueblesEnsamblados();
+        //se suben todos los datos
         imprimirDatosParaVerificar();
     }
 
@@ -163,21 +173,65 @@ public class CargaDatos {
             this.muebleDB.insertarMueble(this.muebles.get(i));
         }
         System.out.println("ENSAMBLE_PIEZAS");
-        for (int i = 0; i < this.requerimientoEnsamblajes.size(); i++) {
-            this.requerimientoEnsamblajeDB.insertarRequierimientoEnsamblaje(this.requerimientoEnsamblajes.get(i));
+        for (int i = 0; i < this.auxRequerimientosAsubir.size(); i++) {
+            this.requerimientoEnsamblajeDB.insertarRequierimientoEnsamblaje(this.auxRequerimientosAsubir.get(i));
         }
         for (Usuario usu : usuarios) {
             usuarioDB.insertarUsuario(usu);
         }
         System.out.println("ENSAMBLAR_MUEBLE");
-        for (int i = 0; i < this.ensamblajes.size(); i++) {
+        for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
             try {
-                this.ensamblajeDB.insertarEnsamblaje(this.ensamblajes.get(i));
+                auxEnsamblajes.get(i).setEstado(true);
+                this.ensamblajeDB.insertarEnsamblaje(this.auxEnsamblajes.get(i));
             } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 Logger.getLogger(CargaDatos.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
+    }
+
+    /**
+     *
+     */
+    public void obtenerRequerimientosVerificados() {
+        for (int i = 0; i < this.requerimientoEnsamblajes.size(); i++) {
+            if ((existeMueble(requerimientoEnsamblajes.get(i).getMueble()))
+                    && (existePieza(requerimientoEnsamblajes.get(i).getPieza()))) {
+                this.auxRequerimientosAsubir.add(requerimientoEnsamblajes.get(i));
+            }
+        }
+    }
+
+    public void verificarEnsamblajes() {
+        for (int i = 0; i < this.ensamblajes.size(); i++) {
+            if (existeMueble(ensamblajes.get(i).getMueble())
+                    && (existeUsuario(ensamblajes.get(i).getUsuario()))) {
+                this.auxEnsamblajes.add(ensamblajes.get(i));
+            }
+        }
+    }
+
+    /**
+     * Modifica la cantidad de muebles de acuerdo a los ensamblados
+     */
+    private void ingresarMueblesEnsamblados() {
+        for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
+            for (int j = 0; j < this.muebles.size(); j++) {
+                if (auxEnsamblajes.get(i).getMueble().equalsIgnoreCase(muebles.get(j).getNombre())) {
+                    muebles.get(j).setCantidadExistente(1);
+                }
+            }
+        }
+    }
+
+    /**
+     * Caluclar el costo de cada ensamblaje
+     */
+    private void agregarCostoDeEnsamblaje() {
+        for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
+            this.auxEnsamblajes.get(i).setCosto(calcularCostoEnsamblaje(this.ensamblajes.get(i).getMueble()));
+        }
     }
 
     /**

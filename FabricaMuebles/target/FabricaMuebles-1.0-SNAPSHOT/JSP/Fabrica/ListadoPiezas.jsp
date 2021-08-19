@@ -29,7 +29,7 @@
             <section class="mt-5">
                 <div class="container mt-5">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-9">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="text-center">Listado de Piezas</h4>
@@ -83,6 +83,32 @@
                                     </c:forEach>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="text-center">Agotándose</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Cantidad de unidades</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="pieza" items="${agotadas}" varStatus="status" >
+                                            <tr>
+                                                <td>${pieza.tipo}</td>
+                                                <td>${pieza.cantidadExistente}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

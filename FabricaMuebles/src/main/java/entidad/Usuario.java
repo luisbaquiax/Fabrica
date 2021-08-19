@@ -18,6 +18,10 @@ public class Usuario {
     private String nombre;
     private String password;
     private String tipo;
+    /**
+     * true: eliminado del sistema, false: no eliminado del sistema
+     */
+    private boolean estado;
 
     /**
      * For insert a new USER to DB
@@ -74,9 +78,25 @@ public class Usuario {
         this.tipo = tipo;
     }
 
+    /**
+     *
+     * @return the estado
+     */
+    public boolean isEstado() {
+        return estado;
+    }
+
+    /**
+     *
+     * @param estado the tipo to set
+     */
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
-        return "Usuario{" + "nombre=" + nombre + ", password=" + password + ", tipo=" + tipo + '}';
+        return "Usuario{" + "nombre=" + nombre + ", password=" + password + ", tipo=" + tipo + ", estado=" + estado + '}';
     }
 
 }

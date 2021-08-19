@@ -15,19 +15,22 @@
                 <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Modificar Piezas <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/FabricaMuebles/Inicio.jsp">Ver Piezas <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Ver Piezas <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/FabricaMuebles/JSP/Administrador/Productos.jsp">Ensamblar <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ensamblar">Ensamblar <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/FabricaMuebles/JSP/Administrador/Productos.jsp">Registrar Muebles ensamblados <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=registrarMuebles">Registrar Muebles ensamblados <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Muebles ensamblados</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=mostrarEnsamblados">Muebles ensamblados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-user"></i> Usuario: ${usuario.nombre}</a>
             </li>
         </ul>
-        <a class="btn btn-outline-success my-2 my-sm-0" href="/FabricaMuebles/LoginRegister.jsp">Logout</a>
+        <a class="btn btn-outline-success my-2 my-sm-0" href="${pageContext.request.contextPath}/Salir?tarea=salir">Logout</a>
     </div>
 </nav>
 

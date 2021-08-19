@@ -28,6 +28,7 @@ public class PiezaDB {
     private static final String LIST_PIEZAS_CANTIDAD_DESC = "SELECT * FROM pieza ORDER BY cantidad DESC";
     private static final String PIEZA_BY_TIPO = "SELECT * FROM pieza WHERE tipo = ? LIMIT 1";
     private static final String DELETE = "DELETE FROM pieza WHERE tipo = ?";
+    private static final String PIEZAS_AGOTADAS_O_CASI_AGOTADAS = "SELECT * FROM pieza WHERE cantidad < 5";
 
     /**
      *
@@ -141,6 +142,37 @@ public class PiezaDB {
         try {
             conn = Coneccion.getConnection();
             statement = conn.prepareStatement(LIST_PIEZAS);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                pieza = new Pieza(
+                        result.getString("tipo"),
+                        result.getDouble("costo"),
+                        result.getInt("cantidad"));
+                piezas.add(pieza);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return piezas;
+    }
+
+    /**
+     * Instruccion: PIEZAS_AGOTADAS_O_CASI_AGOTADAS = "SELECT * FROM pieza WHERE
+     * cantidad < 5"
+     *
+     * @return
+     */
+    public List<Pieza> getPiezasAgotadas() {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Pieza pieza = null;
+        List<Pieza> piezas = new ArrayList<>();
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(PIEZAS_AGOTADAS_O_CASI_AGOTADAS);
             result = statement.executeQuery();
 
             while (result.next()) {

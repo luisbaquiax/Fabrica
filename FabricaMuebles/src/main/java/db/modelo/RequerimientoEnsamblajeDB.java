@@ -9,7 +9,10 @@ import db.coneccion.Coneccion;
 import entidad.RequerimientoEnsamblaje;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +23,7 @@ import java.util.logging.Logger;
 public class RequerimientoEnsamblajeDB {
 
     private static final String INSERT = "INSERT INTO mueble_pieza(pieza, mueble, cantidad_piezas) VALUES(?,?,?)";
+    private static final String SELECT_BY_MUEBLE = "SELECT * FROM mueble_pieza WHERE  mueble = ?";
 
     /**
      *
@@ -41,6 +45,39 @@ public class RequerimientoEnsamblajeDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(RequerimientoEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    /**
+     * SELECT * FROM mueble_pieza WHERE mueble = ?
+     *
+     * @param mueble
+     * @return lista requerimientos para ensamblaje
+     */
+    public List<RequerimientoEnsamblaje> listarRequerimientos(String mueble) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        RequerimientoEnsamblaje reque = null;
+        ArrayList<RequerimientoEnsamblaje> requerimientoEnsamblajes = new ArrayList<>();
+        try {
+
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SELECT_BY_MUEBLE);
+            statement.setString(1, mueble);
+
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                reque = new RequerimientoEnsamblaje(
+                        result.getString("pieza"),
+                        result.getString("mueble"),
+                        result.getInt("cantidad_piezas"));
+                requerimientoEnsamblajes.add(reque);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(RequerimientoEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return requerimientoEnsamblajes;
     }
 }

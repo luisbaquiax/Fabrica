@@ -14,7 +14,7 @@
                 <a class="nav-link" href="/FabricaMuebles/Inicio.jsp">Inicio <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/FabricaMuebles/JSP/Administrador/Productos.jsp">Productos <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/ControladorProductos?tarea=mostrar">Productos <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Sobre nosotros</a>

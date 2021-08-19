@@ -5,24 +5,19 @@
  */
 package entidad;
 
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author luis
  */
 public class Ensamblaje {
 
+    private int id;
     private String fecha;
     private double costo;
-    private String estado;
+    /**
+     * true = estado registrado, false = estado no registrado
+     */
+    private boolean estado;
     private String mueble;
     private String usuario;
 
@@ -34,7 +29,7 @@ public class Ensamblaje {
      * @param mueble
      * @param usuario
      */
-    public Ensamblaje(String fecha, double costo, String estado, String mueble, String usuario) {
+    public Ensamblaje(String fecha, double costo, boolean estado, String mueble, String usuario) {
         this.fecha = fecha;
         this.costo = costo;
         this.estado = estado;
@@ -51,6 +46,25 @@ public class Ensamblaje {
      */
     public Ensamblaje(String fecha, String mueble, String usuario) {
         this.fecha = fecha;
+        this.mueble = mueble;
+        this.usuario = usuario;
+    }
+
+    /**
+     * Obtener ensamblaje desde la base de datos
+     *
+     * @param id
+     * @param fecha
+     * @param costo
+     * @param estado
+     * @param mueble
+     * @param usuario
+     */
+    public Ensamblaje(int id, String fecha, double costo, boolean estado, String mueble, String usuario) {
+        this.id = id;
+        this.fecha = fecha;
+        this.costo = costo;
+        this.estado = estado;
         this.mueble = mueble;
         this.usuario = usuario;
     }
@@ -86,14 +100,14 @@ public class Ensamblaje {
     /**
      * @return the estado
      */
-    public String getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
     /**
      * @param estado the estado to set
      */
-    public void setEstado(String estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
 
@@ -125,4 +139,22 @@ public class Ensamblaje {
         this.usuario = usuario;
     }
 
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Ensamblaje{" + "id=" + id + "fecha=" + fecha + ", costo=" + costo + ", estado=" + estado + ", mueble=" + mueble + ", usuario=" + usuario + '}';
+    }
 }

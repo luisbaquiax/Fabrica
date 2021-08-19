@@ -70,4 +70,9 @@ public class RequerimientoEnsamblaje {
         this.cantidadPiezas = cantidadPiezas;
     }
 
+    @Override
+    public String toString() {
+        return "RequerimientoEnsamblaje{" + "pieza=" + pieza + ", mueble=" + mueble + ", cantidadPiezas=" + cantidadPiezas + '}';
+    }
+
 }

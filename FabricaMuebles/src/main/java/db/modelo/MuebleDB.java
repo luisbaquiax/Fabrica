@@ -22,6 +22,7 @@ public class MuebleDB {
     private static final String INSERT = "INSERT INTO mueble(nombre, precio, cantidad) VALUES(?,?,?)";
     private static final String UPDATE_CANTIDADES = "UPDATE mueble SET cantidad = ? WHERE nombre = ?";
     private static final String LISTAR_MUEBLES = "SELECT * FROM mueble";
+    private static final String MUEBLE_POR_NOMBRE = "SELECT * FROM mueble WHERE nombre = ?";
 
     /**
      * Insert mueble in the DB
@@ -73,9 +74,9 @@ public class MuebleDB {
     }
 
     /**
-     * LISTADO DE MUEBLES EXISTENTES
+     * LISTAR_MUEBLES = "SELECT * FROM mueble"
      *
-     * @return
+     * @return LISTADO DE MUEBLES EXISTENTES
      */
     public List<Mueble> listarMuebles() {
         Connection conn = null;
@@ -101,4 +102,36 @@ public class MuebleDB {
         }
         return muebles;
     }
+
+    /**
+     * SELECT * FROM mueble WHERE nombre = ?
+     *
+     * @param mueble
+     * @return
+     */
+    public Mueble getMueblePorNombre(String mueble) {
+
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Mueble buscado = null;
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(MUEBLE_POR_NOMBRE);
+            statement.setString(1, mueble);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                String nombre = result.getString("nombre");
+                double precio = result.getDouble("precio");
+                int cantidad = result.getInt("cantidad");
+
+                buscado = new Mueble(nombre, precio, cantidad);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return buscado;
+    }
+
 }

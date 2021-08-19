@@ -14,6 +14,10 @@ public class Pieza {
     private String tipo;
     private double costo;
     private int cantidadExistente;
+    /**
+     * true : eliminado, false: no eliminado/
+     */
+    private boolean estado;
 
     /**
      * For add a now PIECE in the DATA_BASE
@@ -36,6 +40,20 @@ public class Pieza {
         this.tipo = tipo;
         this.costo = costo;
         this.cantidadExistente = cantidadExistente;
+    }
+
+    /**
+     *
+     * @param tipo
+     * @param costo
+     * @param cantidadExistente
+     * @param estado
+     */
+    public Pieza(String tipo, double costo, int cantidadExistente, boolean estado) {
+        this.tipo = tipo;
+        this.costo = costo;
+        this.cantidadExistente = cantidadExistente;
+        this.estado = estado;
     }
 
     /**
@@ -90,9 +108,23 @@ public class Pieza {
         this.costo = costo;
     }
 
+    /**
+     * @return the estado
+     */
+    public boolean isEstado() {
+        return estado;
+    }
+
+    /**
+     * @param estado the estado to set
+     */
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
-        return "Pieza{" + "tipo=" + tipo + ", costo=" + costo + ", cantidadExistente=" + cantidadExistente + '}';
+        return "Pieza{" + "tipo=" + tipo + ", costo=" + costo + ", cantidadExistente=" + cantidadExistente + ", estado=" + estado + '}';
     }
 
 }

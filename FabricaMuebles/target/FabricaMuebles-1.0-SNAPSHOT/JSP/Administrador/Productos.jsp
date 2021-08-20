@@ -20,7 +20,6 @@
         <!-- CSS -->
         <link href="../../assets/css/Productos.css" rel="stylesheet" type="text/css"/>
         <link href="../../assets/css/CardProductos.css" rel="stylesheet" type="text/css"/>
-
         <title>Productos</title>
     </head>
     <body>
@@ -29,31 +28,60 @@
 
 
             <div class="container-fluider mt-5">
+                <div class="row">
 
-            <c:forEach var="mueble" items="${muebles}" varStatus="status" >
+                    <div class="col-md-9">
+                    <c:forEach var="mueble" items="${muebles}" varStatus="status" >
 
-                <div class="card-deck text-center card-produts mr-2">
-                    <div class="card mb-4 shadow-sm">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">${mueble.nombre}</h4>
+                        <div class="card-deck text-center card-produts mr-2 ml-2">
+                            <div class="card mb-4 shadow-sm">
+                                <div class="card-header">
+                                    <h4 class="my-0 font-weight-normal">${mueble.nombre}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted"><!-- puede ir alguna signa aquí --></small></h1>
+                                    <img class="mb-4 imagen" src="../../assets/imagenes/calcular-medida-mesas-comedor.jpg" alt="" width="172" height="172">
+                                    <ul class="list-unstyled mt-3 mb-4">
+                                        <li>Precio:</li>
+                                        <li><fmt:formatNumber value="${mueble.precio}" type="currency"/></li>
+                                        <li>Unidades existentes:</li>
+                                        <li>${mueble.cantidadExistente}</li>
+                                    </ul>
+                                    <c:if test="${mueble.cantidadExistente==0}">
+                                        <a href="#"
+                                           class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary disabled">
+                                            <i class="fas fa-angle-double-right"></i> Comprar
+                                        </a>
+                                    </c:if>
+                                    <c:if test="${mueble.cantidadExistente>=0}">
+                                        <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${mueble.nombre}"
+                                           class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
+                                            <i class="fas fa-angle-double-right"></i> Comprar
+                                        </a>
+                                    </c:if>
+
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <h1 class="card-title pricing-card-title">${mueble.nombre}<small class="text-muted"><!-- puede ir alguna signa aquí --></small></h1>
-                            <img class="mb-4 imagen" src="../../assets/imagenes/calcular-medida-mesas-comedor.jpg" alt="" width="172" height="172">
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li>Precio:</li>
-                                <li><fmt:formatNumber value="${mueble.precio}" type="currency"/></li>
-                                <li>Unidades existentes:</li>
-                                <li>${mueble.cantidadExistente}</li>
-                            </ul>
-                            <a href="${pageContext.request.contextPath}/controladorCliente?accion=editar&id=${mueble.nombre}"
-                               class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
-                                <i class="fas fa-angle-double-right"></i> Comprar
-                            </a>
-                        </div>
-                    </div>
+                    </c:forEach>
                 </div>
-            </c:forEach>
+                <div class="col-md-3">
+                    <form action="${pageContext.request.contextPath}/FabricaControlador?tarea=agregar"
+                          method="POST">
+
+                        <div class="card border-info mb-3" style="max-width: 18rem;">
+                            <div class="card-header"><h5 class="card-title text-center">Devolución</h5></div>
+                            <div class="card-body text-info">
+                                <h5 class="card-title text-center">Ingrese su NIT:</h5>
+                                <input class="form-control text-center" type="text" placeholder="Nit de cliente" required="">
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-outline-primary w-100 border-info" type="submit">Ir</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <footer class="pt-4 my-md-5 pt-md-5 border-top">
                 <div class="row">

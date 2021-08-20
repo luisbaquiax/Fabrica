@@ -7,14 +7,17 @@ servletControlador/LoginServlet.class
 servletControlador/ServletProductos.class
 servletControlador/FabricaControlador.class
 entidad/Venta.class
+servletControlador/NewClass.class
 db/modelo/EnsamblajeDB.class
 db/coneccion/Coneccion.class
 servletControlador/SalirControlador.class
 entidad/Cliente.class
 db/modelo/MuebleDB.class
 entidad/Usuario.class
+servletControlador/TiendaControlador.class
 entidad/file/NewMain.class
 entidad/Ensamblaje.class
+servletControlador/VentaControlador.class
 entidad/file/ManejoArchivo.class
 entidad/Devolucion.class
 entidad/Mueble.class

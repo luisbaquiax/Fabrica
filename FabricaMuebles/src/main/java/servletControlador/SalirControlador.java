@@ -20,14 +20,8 @@ public class SalirControlador extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tarea = request.getParameter("tarea");
-        if (tarea.equals("salir")) {
-            if (request.getSession().getAttribute("usuario") != null) {
                 request.getSession().removeAttribute("usuario");
                 request.getSession().invalidate();
-                //response.sendRedirect("index.jsp");
-            }
-        }
-        response.sendRedirect("index.jsp");
+                response.sendRedirect(request.getContextPath()+"/index.jsp");
     }
 }

@@ -28,6 +28,7 @@ public class PiezaDB {
     private static final String LIST_PIEZAS_CANTIDAD_DESC = "SELECT * FROM pieza ORDER BY cantidad DESC";
     private static final String PIEZA_BY_TIPO = "SELECT * FROM pieza WHERE tipo = ? LIMIT 1";
     private static final String DELETE = "DELETE FROM pieza WHERE tipo = ?";
+    private static final String CAMBIAR_ESTADO_PIEZA = "UPDATE pieza SET estado = ? WEHRE tipo = ?";
     private static final String PIEZAS_AGOTADAS_O_CASI_AGOTADAS = "SELECT * FROM pieza WHERE cantidad < 5";
 
     /**
@@ -75,6 +76,30 @@ public class PiezaDB {
     }
 
     /**
+     * query: CAMBIAR_ESTADO_PIEZA = "UPDATE pieza SET estado = ? WEHRE tipo =
+     * ?"
+     *
+     * @param p
+     */
+    public void cambiarEstadoPieza(Pieza p) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        int registros = 0;
+        try {
+
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(CAMBIAR_ESTADO_PIEZA);
+            statement.setBoolean(1, p.isEstado());
+            statement.setString(2, p.getTipo());
+
+            registros = statement.executeUpdate();
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            System.err.println("error al eliminar");
+            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
      * UPDATE_CANTIDADES = "UPDATE pieza SET cantidad = ? WHERE tipo = ?"
      *
      * @param tipo
@@ -107,13 +132,11 @@ public class PiezaDB {
      * @param pieza
      */
     public void editarPieza(Pieza pieza) {
-        Connection conn = null;
-        PreparedStatement statement = null;
         int registros = 0;
         try {
 
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(UPDATE_PIEZA);
+            Connection conn = Coneccion.getConnection();
+            PreparedStatement statement = conn.prepareStatement(UPDATE_PIEZA);
 
             statement.setInt(1, pieza.getCantidadExistente());
             statement.setDouble(2, pieza.getCosto());

@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -47,74 +45,84 @@ public class FabricaControlador extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tarea = request.getParameter("tarea");
-        if (tarea != null) {
-            switch (tarea) {
-                case "actualizarPieza":
-                    actualizarPieza(request, response);
-                    break;
-                case "agregar":
-                    agregarPieza(request, response);
-                    break;
-
-                default:
-            }
+        if (request.getSession().getAttribute("usuario") == null) {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         } else {
+            String tarea = request.getParameter("tarea");
+            if (tarea != null) {
+                switch (tarea) {
+                    case "actualizarPieza":
+                        actualizarPieza(request, response);
+                        break;
+                    case "agregar":
+                        agregarPieza(request, response);
+                        break;
+
+                    default:
+                }
+            } else {
+            }
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String tarea = request.getParameter("tarea");
-        if (tarea != null) {
-            switch (tarea) {
-                case "ver":
-                    verPiezas(request, response);
-                    break;
-                case "ascendente":
-                    verPiezasAscendentemente(request, response);
-                    break;
-                case "descendente":
-                    verPiezasDescendentemente(request, response);
-                    break;
-                case "editar":
-                    editarPieza(request, response);
-                    break;
-                case "eliminarPieza":
-                    eliminarPieza(request, response);
-                    break;
-                case "ensamblar":
-                    listadoMueblesAEnasamblar(request, response);
-                    break;
-                case "ensamblaje":
-                    listarRequerimientoParaEnsamblaje(request, response);
-                    break;
-                case "cancelarEnsamble":
-                    listadoMueblesAEnasamblar(request, response);
-                    break;
-                case "agregarEnsamble":
-                    agregarEnsamble(request, response);
-                    break;
-                case "registrarMuebles":
-                    listarMueblesEnsambladosNoRegistrados(request, response);
-                    break;
-                case "registrarMueble":
-                    registrarMuebleEnTienda(request, response);
-                    break;
-                case "mostrarEnsamblados":
-                    mostrarEnsamblajes(request, response);
-                    break;
-                case "fechaAscendente":
-                    mostrarEnsamblajesFechaASC(request, response);
-                    break;
-                case "fechaDescendente":
-                    mostrarEnsamblajesFechaDESC(request, response);
-                    break;
-                default:
-
-            }
+        if (request.getSession().getAttribute("usuario") == null) {
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         } else {
-            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
+            String tarea = request.getParameter("tarea");
+            if (tarea != null) {
+                switch (tarea) {
+                    case "ver":
+                        verPiezas(request, response);
+                        break;
+                    case "ascendente":
+                        verPiezasAscendentemente(request, response);
+                        break;
+                    case "descendente":
+                        verPiezasDescendentemente(request, response);
+                        break;
+                    case "editar":
+                        editarPieza(request, response);
+                        break;
+                    case "eliminarPieza":
+                        eliminarPieza(request, response);
+                        break;
+                    case "ensamblar":
+                        listadoMueblesAEnasamblar(request, response);
+                        break;
+                    case "ensamblaje":
+                        listarRequerimientoParaEnsamblaje(request, response);
+                        break;
+                    case "cancelarEnsamble":
+                        listadoMueblesAEnasamblar(request, response);
+                        break;
+                    case "agregarEnsamble":
+                        agregarEnsamble(request, response);
+                        break;
+                    case "registrarMuebles":
+                        listarMueblesEnsambladosNoRegistrados(request, response);
+                        break;
+                    case "registrarMueble":
+                        registrarMuebleEnTienda(request, response);
+                        break;
+                    case "mostrarEnsamblados":
+                        mostrarEnsamblajes(request, response);
+                        break;
+                    case "fechaAscendente":
+                        mostrarEnsamblajesFechaASC(request, response);
+                        break;
+                    case "fechaDescendente":
+                        mostrarEnsamblajesFechaDESC(request, response);
+                        break;
+                    default:
+
+                }
+            } else {
+                response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
+            }
         }
 
     }

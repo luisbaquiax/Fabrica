@@ -14,7 +14,10 @@ public class Venta {
     private int id;
     private String fecha;
     private double costo;
-    private String estado;
+    /**
+     * Venta registrado por el usuario true: registrado, false: no registrado
+     */
+    private boolean estado;
     private String nombreMueble;
     private String nitCliente;
 
@@ -28,7 +31,7 @@ public class Venta {
      * @param nombreMueble
      * @param nitCliente
      */
-    public Venta(int id, String fecha, double costo, String estado, String nombreMueble, String nitCliente) {
+    public Venta(int id, String fecha, double costo, boolean estado, String nombreMueble, String nitCliente) {
         this.id = id;
         this.fecha = fecha;
         this.costo = costo;
@@ -46,7 +49,7 @@ public class Venta {
      * @param nombreMueble
      * @param nitCliente
      */
-    public Venta(String fecha, double costo, String estado, String nombreMueble, String nitCliente) {
+    public Venta(String fecha, double costo, boolean estado, String nombreMueble, String nitCliente) {
         this.fecha = fecha;
         this.costo = costo;
         this.estado = estado;
@@ -99,14 +102,14 @@ public class Venta {
     /**
      * @return the estado
      */
-    public String getEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
     /**
      * @param estado the estado to set
      */
-    public void setEstado(String estado) {
+    public void setEstado(boolean estado) {
         this.estado = estado;
     }
 
@@ -136,6 +139,11 @@ public class Venta {
      */
     public void setNitCliente(String nitCliente) {
         this.nitCliente = nitCliente;
+    }
+
+    @Override
+    public String toString() {
+        return "Venta{" + "id=" + id + ", fecha=" + fecha + ", costo=" + costo + ", estado=" + estado + ", nombreMueble=" + nombreMueble + ", nitCliente=" + nitCliente + '}';
     }
 
 }

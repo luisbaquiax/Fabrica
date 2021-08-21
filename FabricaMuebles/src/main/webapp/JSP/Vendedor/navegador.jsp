@@ -4,6 +4,10 @@
     Author     : luis
 --%>
 <%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<!-- para dar formato el texto-->
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!-- SELECCIONAMOS LA LOCALIDAD -->
+<fmt:setLocale value="es_GT"/>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="#">MENU</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">

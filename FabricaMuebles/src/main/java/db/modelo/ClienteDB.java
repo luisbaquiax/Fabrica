@@ -9,7 +9,7 @@ import db.coneccion.Coneccion;
 import entidad.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,9 +20,12 @@ import java.util.logging.Logger;
 public class ClienteDB {
 
     private static final String INSERT = "INSERT INTO cliente(nit, nombre, direccion) VALUES(?, ?, ?)";
+    private static final String SELECT_BY_NIT = "SELECT * FROM cliente WHERE nit = ?";
 
     /**
-     * Insert a new Cliete in the DB
+     * Insert a new Cliete in the DB, query: INSERT = "INSERT INTO cliente(nit,
+     * nombre, direccion) VALUES(?, ?, ?)"
+     *
      *
      * @param cliente
      */
@@ -44,5 +47,35 @@ public class ClienteDB {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(ClienteDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * queru: SELECT * FROM cliente WHERE nit = ?
+     *
+     * @param nit
+     * @return
+     */
+    public Cliente getClientPorNit(String nit) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Cliente cliente = null;
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SELECT_BY_NIT);
+            statement.setString(1, nit);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                cliente = new Cliente(
+                        result.getString("nit"),
+                        result.getString("nombre"),
+                        result.getString("direccion"));
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return cliente;
     }
 }

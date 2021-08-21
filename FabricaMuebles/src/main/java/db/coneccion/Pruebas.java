@@ -10,11 +10,13 @@ import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
+import db.modelo.VentaDB;
 import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Pieza;
 import entidad.RequerimientoEnsamblaje;
 import entidad.Usuario;
+import entidad.Venta;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -37,9 +39,14 @@ public class Pruebas {
         RequerimientoEnsamblajeDB redb = new RequerimientoEnsamblajeDB();
         EnsamblajeDB edb = new EnsamblajeDB();
         MuebleDB muebleDB = new MuebleDB();
+        VentaDB ventaDB = new VentaDB();
+        for (Venta v : ventaDB.getVentas()) {
+            System.out.println(v.toString());
+        }
+        System.out.println("el ultimo");
+        System.out.println(ventaDB.getVentas().get(ventaDB.getVentas().size() - 1).getId() + 1);
 
-        System.out.println(edb.getEnsamblajesPorID(1));
-
+//        System.out.println(edb.getEnsamblajesPorID(1));
 //        for (Ensamblaje e : edb.getEnsamblajesPorEstadoYUsuario(false, "Luis")) {
 //            System.out.println(e.toString());
 //        }

@@ -38,7 +38,7 @@
 
                 </div>
                 <div class="card-body">
-                    <form action="${pageContext.request.contextPath}/ControladorVenta?tarea=registrarCliente"
+                    <form action="${pageContext.request.contextPath}/ControladorVenta?tarea=registrarCliente&cajero=${cajero}"
                           method="POST" class="was-validated">
                         <!--class="was-validated" (sirve para validar los campos)-->
                         <div class="form-group">

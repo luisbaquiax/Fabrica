@@ -15,6 +15,7 @@ public class Cliente {
     private String nombre;
     private String direccion;
 
+
     /**
      * Add a new cliente in the DATA_BASE
      *

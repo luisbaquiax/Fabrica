@@ -37,6 +37,20 @@ public class Usuario {
     }
 
     /**
+     *
+     * @param nombre
+     * @param password
+     * @param tipo
+     * @param estado
+     */
+    public Usuario(String nombre, String password, String tipo, boolean estado) {
+        this.nombre = nombre;
+        this.password = password;
+        this.tipo = tipo;
+        this.estado = estado;
+    }
+
+    /**
      * @return the nombre
      */
     public String getNombre() {

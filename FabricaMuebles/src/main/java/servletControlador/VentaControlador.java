@@ -7,6 +7,7 @@ package servletControlador;
 
 import db.modelo.ClienteDB;
 import db.modelo.MuebleDB;
+import db.modelo.UsuarioDB;
 import db.modelo.VentaDB;
 import entidad.Cliente;
 import entidad.Mueble;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
@@ -33,11 +35,13 @@ public class VentaControlador extends HttpServlet {
     private MuebleDB muebleDB;
     private ClienteDB clienteDB;
     private VentaDB ventaDB;
+    private UsuarioDB usuarioDB;
 
     public VentaControlador() {
         this.muebleDB = new MuebleDB();
         this.clienteDB = new ClienteDB();
         this.ventaDB = new VentaDB();
+        this.usuarioDB = new UsuarioDB();
     }
 
     @Override
@@ -75,11 +79,13 @@ public class VentaControlador extends HttpServlet {
     }
 
     private void solicitarComra(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        if (usuario != null && (usuario.getTipo().equals("2"))) {
+        LinkedList<Usuario> cajeros = this.usuarioDB.getUsurariosAreaDeVenta();
+
+        if (cajeros.size() > 0) {
             String mueble = request.getParameter("mueble");
             Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
             System.out.println(buscado.toString());
+            request.getSession().setAttribute("cajeros", cajeros);
             request.getSession().setAttribute("mueble", buscado);
             response.sendRedirect("/FabricaMuebles/JSP/Vendedor/compra.jsp");
         } else {
@@ -88,19 +94,35 @@ public class VentaControlador extends HttpServlet {
             response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
         }
 
+//        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+//        if (usuario != null && (usuario.getTipo().equals("2"))) {
+//            String mueble = request.getParameter("mueble");
+//            Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
+//            System.out.println(buscado.toString());
+//            request.getSession().setAttribute("mueble", buscado);
+//            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/compra.jsp");
+//        } else {
+//            String mensaje = "La tienda está cerrada, vuelva pronto.";
+//            request.getSession().setAttribute("mensaje", mensaje);
+//            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
+//        }
     }
 
     private void comprarMueble(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String mueble = request.getParameter("mueble");
-        String nit = request.getParameter("nit");
-        Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
-        //System.out.println(buscado.toString());
-        Cliente cliente = null;
-        cliente = this.clienteDB.getClientPorNit(nit);
-        //Validamos en caso de haya un cajero para realizar la compra
-        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-        if (usuario != null && (usuario.getTipo().equals("2"))) {
+        try {
+            String mueble = request.getParameter("mueble");
+            String nit = request.getParameter("nit");
+            String cajero = request.getParameter("cajero");
+            System.out.println(cajero);
+            Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
+            //System.out.println(buscado.toString());
+            Cliente cliente = null;
+            cliente = this.clienteDB.getClientPorNit(nit);
+
+            //buscar usuario por nombre
+            Usuario usuario = this.usuarioDB.buscarUsuarioPorNombre(cajero);
             if (cliente == null) {
+                request.getSession().setAttribute("cajero", cajero);
                 request.getSession().setAttribute("nit", nit);
                 response.sendRedirect("/FabricaMuebles/JSP/Vendedor/solicitarDatos.jsp");
             } else {
@@ -109,7 +131,9 @@ public class VentaControlador extends HttpServlet {
                     buscado.quitarExistentes(1);
                     this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
                     //registrar venta
-                    Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), false, buscado.getNombre(), nit);
+                    Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), true, buscado.getNombre(), nit);
+                    venta.setUsuario(usuario.getNombre());
+                    System.out.println(usuario.toString());
                     this.ventaDB.insertarVenta(venta);
                     ///informacion
                     ArrayList<Venta> ventas = (ArrayList<Venta>) this.ventaDB.getVentas();
@@ -124,12 +148,10 @@ public class VentaControlador extends HttpServlet {
                     response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
                 }
             }
-        } else {
-            String mensaje = "No hay un cajero disponible, vuelva pronto.";
-            request.getSession().setAttribute("mensaje", mensaje);
-            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
-        }
 
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     private void registrarClienteYcompra(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -137,27 +159,37 @@ public class VentaControlador extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String direccion = request.getParameter("direccion");
 
+        String cajero = request.getParameter("cajero");
+
         Mueble buscado = (Mueble) request.getSession().getAttribute("mueble");
         Cliente cliente = new Cliente(nit, nombre, direccion);
         this.clienteDB.insertarCliente(cliente);
-        if (buscado.getCantidadExistente() > 0) {
-            //actualizar cantidad de muebles
-            buscado.quitarExistentes(1);
-            this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
-            //registrar venta
-            Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), false, buscado.getNombre(), nit);
-            this.ventaDB.insertarVenta(venta);
-            ///informacion
-            ArrayList<Venta> ventas = (ArrayList<Venta>) this.ventaDB.getVentas();
-            request.getSession().setAttribute("mueble", buscado);
-            request.getSession().setAttribute("cliente", cliente);
-            request.getSession().setAttribute("compra", venta);
-            request.getSession().setAttribute("numero", ventas.get(ventas.size() - 1).getId());
-            enviarMensaje("Compra exitosa!!!", request, response);
-        } else {
-            String mensaje = "Se han agotado las existencias!!!";
-            request.getSession().setAttribute("mensaje", mensaje);
-            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
+
+        try {
+            //se busca al cajero
+            Usuario usuario = this.usuarioDB.buscarUsuarioPorNombre(cajero);
+            if (buscado.getCantidadExistente() > 0) {
+                //actualizar cantidad de muebles
+                buscado.quitarExistentes(1);
+                this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
+                //registrar venta
+                Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), false, buscado.getNombre(), nit);
+                venta.setUsuario(usuario.getNombre());
+                this.ventaDB.insertarVenta(venta);
+                ///informacion
+                ArrayList<Venta> ventas = (ArrayList<Venta>) this.ventaDB.getVentas();
+                request.getSession().setAttribute("mueble", buscado);
+                request.getSession().setAttribute("cliente", cliente);
+                request.getSession().setAttribute("compra", venta);
+                request.getSession().setAttribute("numero", ventas.get(ventas.size() - 1).getId());
+                enviarMensaje("Compra exitosa!!!", request, response);
+            } else {
+                String mensaje = "Se han agotado las existencias!!!";
+                request.getSession().setAttribute("mensaje", mensaje);
+                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            System.out.println("Ocurrio un error");
         }
     }
 

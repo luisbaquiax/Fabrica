@@ -26,5 +26,6 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/VentaDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/UsuarioDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/NewMain.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/manejoErrores/FabricaExcepcion.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/DevolucionDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/NewClass.java

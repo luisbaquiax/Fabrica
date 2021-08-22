@@ -8,7 +8,11 @@ and open the template in the editor.
     Author     : luis
 */
 
+/*
+para cetrar la imagen del producto en el centro
+*/
 .margin-auto{
+    display: inline-block;
     margin-right: auto;
     margin-left: auto;
 }

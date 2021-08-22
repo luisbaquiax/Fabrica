@@ -20,6 +20,10 @@ public class Venta {
     private boolean estado;
     private String nombreMueble;
     private String nitCliente;
+    /**
+     * El usuario de tipo vendedor/área de fábrica
+     */
+    private String usuario;
 
     /**
      * Para recuperar una venta de la DB
@@ -55,6 +59,27 @@ public class Venta {
         this.estado = estado;
         this.nombreMueble = nombreMueble;
         this.nitCliente = nitCliente;
+    }
+
+    /**
+     * Registro de una venta
+     *
+     * @param id
+     * @param fecha
+     * @param costo
+     * @param estado
+     * @param nombreMueble
+     * @param nitCliente
+     * @param usuario
+     */
+    public Venta(int id, String fecha, double costo, boolean estado, String nombreMueble, String nitCliente, String usuario) {
+        this.id = id;
+        this.fecha = fecha;
+        this.costo = costo;
+        this.estado = estado;
+        this.nombreMueble = nombreMueble;
+        this.nitCliente = nitCliente;
+        this.usuario = usuario;
     }
 
     /**
@@ -139,6 +164,22 @@ public class Venta {
      */
     public void setNitCliente(String nitCliente) {
         this.nitCliente = nitCliente;
+    }
+
+    /**
+     *
+     * @return the usuario
+     */
+    public String getUsuario() {
+        return usuario;
+    }
+
+    /**
+     *
+     * @param usuario the usuario to set
+     */
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     @Override

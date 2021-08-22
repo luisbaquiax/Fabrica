@@ -17,6 +17,7 @@ import entidad.Pieza;
 import entidad.RequerimientoEnsamblaje;
 import entidad.Usuario;
 import entidad.Venta;
+import entidad.manejoErrores.FabricaExcepcion;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,12 +41,23 @@ public class Pruebas {
         EnsamblajeDB edb = new EnsamblajeDB();
         MuebleDB muebleDB = new MuebleDB();
         VentaDB ventaDB = new VentaDB();
-        for (Venta v : ventaDB.getVentas()) {
-            System.out.println(v.toString());
+        UsuarioDB usuarioDB = new UsuarioDB();
+        for (Usuario u : usuarioDB.getUsurariosAreaDeVenta()) {
+            System.out.println(u.toString());
         }
-        System.out.println("el ultimo");
-        System.out.println(ventaDB.getVentas().get(ventaDB.getVentas().size() - 1).getId() + 1);
+        
+//        try {
+//            System.out.println(ventaDB.getVentasByID(100));
+//
+//        } catch (FabricaExcepcion e) {
+//            e.printStackTrace();
+//        }
 
+//        for (Venta v : ventaDB.getVentas()) {
+//            System.out.println(v.toString());
+//        }
+//        System.out.println("el ultimo");
+//        System.out.println(ventaDB.getVentas().get(ventaDB.getVentas().size() - 1).getId() + 1);
 //        System.out.println(edb.getEnsamblajesPorID(1));
 //        for (Ensamblaje e : edb.getEnsamblajesPorEstadoYUsuario(false, "Luis")) {
 //            System.out.println(e.toString());

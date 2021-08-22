@@ -8,6 +8,7 @@ package db.modelo;
 import db.coneccion.Coneccion;
 import entidad.Usuario;
 import entidad.Venta;
+import entidad.manejoErrores.FabricaExcepcion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
  */
 public class VentaDB {
 
-    private static final String INSERT = "INSERT INTO venta(fecha, costo, estado, nombre_mueble, nit_cliente) VALUES(?,?,?,?,?)";
-    private static final String GET_VENTA_BY_ID = "SELECT * FROM venta WERE id = ?";
+    private static final String INSERT = "INSERT INTO venta(fecha, costo, estado, nombre_mueble, nit_cliente, nombre_usuario) VALUES(?,?,?,?,?,?)";
+    private static final String GET_VENTA_BY_ID = "SELECT * FROM venta WHERE id = ?";
     private static final String SELECT_VENTAS = "SELECT * FROM venta WERE";
     private static final String UPDATE_USER_AND_STATUS = "UPDATE venta SET  nombre_usuario = ?, estado = ? WHERE id = ?";
 
@@ -42,6 +43,7 @@ public class VentaDB {
             statement.setBoolean(3, venta.getEstado());
             statement.setString(4, venta.getNombreMueble());
             statement.setString(5, venta.getNitCliente());
+            statement.setString(6, venta.getUsuario());
 
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
@@ -105,5 +107,44 @@ public class VentaDB {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ventas;
+    }
+
+    /**
+     * Seleccion una venta por el id
+     * <p>
+     * query: GET_VENTA_BY_ID = "SELECT * FROM venta WERE id = ?"</p>
+     *
+     * @param id
+     * @return
+     * @throws FabricaExcepcion
+     */
+    public Venta getVentasByID(int id) throws FabricaExcepcion {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Venta venta = null;
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(GET_VENTA_BY_ID);
+            statement.setInt(1, id);
+
+            result = statement.executeQuery();
+            while (result.next()) {
+                venta = new Venta(result.getInt("id"),
+                        result.getString("fecha"),
+                        result.getDouble("costo"),
+                        result.getBoolean("estado"),
+                        result.getString("nombre_mueble"),
+                        result.getString("nit_cliente"));
+
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (venta == null) {
+            throw new FabricaExcepcion("No se econtro la factura.");
+        }
+        return venta;
     }
 }

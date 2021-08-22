@@ -5,11 +5,13 @@
  */
 package entidad.file;
 
+import db.modelo.ClienteDB;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
+import entidad.Cliente;
 import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Pieza;
@@ -34,6 +36,7 @@ public class CargaDatos {
     private ArrayList<Ensamblaje> ensamblajes;
     private ArrayList<RequerimientoEnsamblaje> requerimientoEnsamblajes;
     private ArrayList<Usuario> usuarios;
+    private ArrayList<Cliente> clientes;
     //errores
     private ArrayList<String> errores;
     //db
@@ -42,6 +45,7 @@ public class CargaDatos {
     private PiezaDB piezaDB;
     private RequerimientoEnsamblajeDB requerimientoEnsamblajeDB;
     private UsuarioDB usuarioDB;
+    private ClienteDB clienteDB;
 
     //auxiliares
     private ArrayList<RequerimientoEnsamblaje> auxRequerimientosAsubir;
@@ -55,12 +59,14 @@ public class CargaDatos {
         this.requerimientoEnsamblajes = new ArrayList<>();
         this.usuarios = new ArrayList<>();
         this.errores = new ArrayList<>();
-
+        this.clientes = new ArrayList<>();
+        //db
         this.ensamblajeDB = new EnsamblajeDB();
         this.muebleDB = new MuebleDB();
         this.piezaDB = new PiezaDB();
         this.requerimientoEnsamblajeDB = new RequerimientoEnsamblajeDB();
         this.usuarioDB = new UsuarioDB();
+        this.clienteDB = new ClienteDB();
         //
         this.auxRequerimientosAsubir = new ArrayList<>();
         this.auxEnsamblajes = new ArrayList<>();
@@ -82,7 +88,11 @@ public class CargaDatos {
                             quitarEspacios(pedazo[1].substring(1, pedazo[1].length() - 1)),
                             quitarEspacios(pedazo[2].substring(1, pedazo[2].length() - 1)),
                             quitarEspacios(pedazo[3]));
-                    this.usuarios.add(usuario);
+                    if (!existeUsuario(usuario.getNombre())) {
+                        this.usuarios.add(usuario);
+                    } else {
+                        this.errores.add("Error en: (" + linea + ")" + " línea ");
+                    }
                 } else if (pedazo[0].equalsIgnoreCase("PIEZA")) {
                     Pieza pieza = new Pieza(pedazo[1].substring(1, pedazo[1].length() - 1), Double.parseDouble(quitarEspacios(pedazo[2])));
 
@@ -92,7 +102,8 @@ public class CargaDatos {
                     if (!existePieza(pedazo[1].substring(1, pedazo[1].length() - 1))) {
                         pieza.setCantidadExistente(1);
                         this.piezas.add(pieza);
-                    } else {
+                    }
+                    else {
                         modificarCantidadPiezas(pieza.getTipo());
                     }
 
@@ -138,7 +149,7 @@ public class CargaDatos {
                     this.ensamblajes.add(ensamblaje);
 
                 } else if (pedazo[0].equalsIgnoreCase("CLIENTE")) {
-                    System.out.println(linea);
+                    ingresarCliente(linea);
                 } else {
                     System.out.println("error en " + linea);
                     this.errores.add("Error en: (" + linea + ")" + " línea ");
@@ -149,7 +160,7 @@ public class CargaDatos {
             }
 
         }
-        //
+        //verificamos lo requerimiento necesarios
         obtenerRequerimientosVerificados();
         verificarEnsamblajes();
         //agregamos el costo de ensamblaje
@@ -166,6 +177,8 @@ public class CargaDatos {
     private void imprimirDatosParaVerificar() {
         System.out.println("PIEZAS");
         for (int i = 0; i < this.piezas.size(); i++) {
+            //estado de la pieza no eliminado = false
+            this.piezas.get(i).setEstado(false);
             this.piezaDB.insertarPieza(this.piezas.get(i));
         }
         System.out.println("muebles");
@@ -177,16 +190,21 @@ public class CargaDatos {
             this.requerimientoEnsamblajeDB.insertarRequierimientoEnsamblaje(this.auxRequerimientosAsubir.get(i));
         }
         for (Usuario usu : usuarios) {
+            usu.setEstado(false);
             usuarioDB.insertarUsuario(usu);
         }
         System.out.println("ENSAMBLAR_MUEBLE");
         for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
             try {
+                //ensamblaje registrado, es decir se agrega a la sala de ventas
                 auxEnsamblajes.get(i).setEstado(true);
                 this.ensamblajeDB.insertarEnsamblaje(this.auxEnsamblajes.get(i));
             } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 Logger.getLogger(CargaDatos.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        for (Cliente c : clientes) {
+            this.clienteDB.insertarCliente(c);
         }
 
     }
@@ -273,13 +291,15 @@ public class CargaDatos {
     }
 
     /**
+     * Verifica si en el archivo de entrada existe un usuario con el mismo
+     * nombre importando mayúsculas y minúsculas
      *
      * @param usuario
      * @return
      */
     private boolean existeUsuario(String usuario) {
         for (Usuario usu : usuarios) {
-            if (usu.getNombre().equals(usuario)) {
+            if (usu.getNombre().equalsIgnoreCase(usuario)) {
                 return true;
             }
         }
@@ -338,6 +358,57 @@ public class CargaDatos {
                 muebles.get(i).setCantidadExistente(1);
             }
         }
+    }
+
+    /**
+     * Analiza la linea con el comando CLIENTE al principio
+     *
+     * @param cadena
+     */
+    public void ingresarCliente(String cadena) {
+        String[] cadenas = cadena.split(",");
+        String nombre = "";
+        String nit = "";
+        String direccion = "";
+        String municipio = "";
+        String departamento = "";
+        Cliente c = null;
+        if (cadenas.length == 6) {
+            nombre = cadenas[1].substring(1, cadenas[1].length() - 1);
+            nit = cadenas[2].substring(1, cadenas[2].length() - 1);
+            direccion = cadenas[3].substring(1, cadenas[3].length() - 1);
+            municipio = cadenas[4].substring(1, cadenas[4].length() - 1);
+            departamento = cadenas[5].substring(1, cadenas[5].length() - 1);
+            c = new Cliente(nit, nombre, direccion + ", " + municipio + ", " + departamento);
+
+        } else if (cadenas.length == 4) {
+            nombre = cadenas[1].substring(1, cadenas[1].length() - 1);
+            nit = cadenas[2].substring(1, cadenas[2].length() - 1);
+            direccion = cadenas[3].substring(1, cadenas[3].length() - 1);
+            c = new Cliente(nit, nombre, direccion);
+        }
+        if (!existeCliente(nit) && !(nit.contains("-"))) {
+            this.clientes.add(c);
+        } else {
+            this.errores.add("Error en: (" + cadena + ")" + " línea ");
+        }
+
+    }
+
+    /**
+     * Verifica si el nit ya existe
+     *
+     * @param nit
+     * @return
+     */
+    public boolean existeCliente(String nit) {
+
+        for (Cliente c : clientes) {
+            if (c.getNit().equalsIgnoreCase(nit)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

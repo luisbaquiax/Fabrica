@@ -17,6 +17,14 @@ public class DevolucionDB {
 
     private static final String INSERT = "INSERT INTO devolucion(perdida, fecha, nombre_cliente, nombre_mueble) VALUES(?,?,?,?)";
 
+    /**
+     * 
+     * @param devolucion
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     public void insertarDevolucion(Devolucion devolucion) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Connection conn = null;
         PreparedStatement statement = null;

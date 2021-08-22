@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,9 +21,11 @@ import java.util.logging.Logger;
  */
 public class UsuarioDB {
 
-    private static final String INSERT = "INSERT INTO usuario(nombre, pass, tipo) VALUES(?, ?, ?)";
+    private static final String INSERT = "INSERT INTO usuario(nombre, pass, tipo, estado) VALUES(?, ?, ?, ?)";
     private static final String DELETE = "DELET FROM usuario WHERE nombre = ?, AND pass = ?";
     private static final String SEARCH_USER = "SELECT * FROM usuario WHERE nombre = ? AND pass = ? LIMIT 1";
+    private static final String SELECT_USERS_AREA_VENTAS = "SELECT * FROM usuario WHERE tipo = 2 AND estado = 0";
+    private static final String SEARCH_USER_BY_NAME = "SELECT * FROM usuario WHERE nombre = ?";
 
     /**
      * Insertar usuario al sistema
@@ -42,6 +45,7 @@ public class UsuarioDB {
             statement.setString(1, usuario.getNombre());
             statement.setString(2, usuario.getPassword());
             statement.setString(3, usuario.getTipo());
+            statement.setBoolean(4, usuario.isEstado());
 
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
@@ -80,6 +84,7 @@ public class UsuarioDB {
     }
 
     /**
+     * Servirá para el login dle sistema
      *
      * @param nombre
      * @param pass
@@ -105,10 +110,52 @@ public class UsuarioDB {
             String name = result.getString("nombre");
             String contra = result.getString("pass");
             String tipo = result.getString("tipo");
-            usuario = new Usuario(nombre, pass, tipo);
+            usuario = new Usuario(name, contra, tipo);
         }
 
         return usuario;
     }
+    
+   public Usuario buscarUsuarioPorNombre(String nombre) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Usuario usuario = null;
 
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(SEARCH_USER_BY_NAME);
+        statement.setString(1, nombre);
+        result = statement.executeQuery();
+
+        while (result.next()) {
+            String name = result.getString("nombre");
+            String contra = result.getString("pass");
+            String tipo = result.getString("tipo");
+            usuario = new Usuario(name, contra, tipo);
+        }
+        
+        return usuario;
+    }
+
+    public LinkedList<Usuario> getUsurariosAreaDeVenta() {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Usuario usuario = null;
+        LinkedList<Usuario> usuarios = new LinkedList<>();
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SELECT_USERS_AREA_VENTAS);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                usuario = new Usuario(result.getString("nombre"), result.getString("pass"), result.getString("tipo"), result.getBoolean("estado"));
+                usuarios.add(usuario);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return usuarios;
+    }
 }

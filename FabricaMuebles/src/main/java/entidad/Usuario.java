@@ -37,6 +37,7 @@ public class Usuario {
     }
 
     /**
+     * For insert a new USER to DB
      *
      * @param nombre
      * @param password

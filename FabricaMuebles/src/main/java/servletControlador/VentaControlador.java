@@ -94,18 +94,6 @@ public class VentaControlador extends HttpServlet {
             response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
         }
 
-//        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-//        if (usuario != null && (usuario.getTipo().equals("2"))) {
-//            String mueble = request.getParameter("mueble");
-//            Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
-//            System.out.println(buscado.toString());
-//            request.getSession().setAttribute("mueble", buscado);
-//            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/compra.jsp");
-//        } else {
-//            String mensaje = "La tienda está cerrada, vuelva pronto.";
-//            request.getSession().setAttribute("mensaje", mensaje);
-//            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
-//        }
     }
 
     private void comprarMueble(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -113,41 +101,13 @@ public class VentaControlador extends HttpServlet {
             String mueble = request.getParameter("mueble");
             String nit = request.getParameter("nit");
             String cajero = request.getParameter("cajero");
-            System.out.println(cajero);
+            //mueble a comprar
             Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
-            //System.out.println(buscado.toString());
             Cliente cliente = null;
             cliente = this.clienteDB.getClientPorNit(nit);
 
-            //buscar usuario por nombre
-            Usuario usuario = this.usuarioDB.buscarUsuarioPorNombre(cajero);
-            if (cliente == null) {
-                request.getSession().setAttribute("cajero", cajero);
-                request.getSession().setAttribute("nit", nit);
-                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/solicitarDatos.jsp");
-            } else {
-                if (buscado.getCantidadExistente() > 0) {
-                    //actualizar cantidad de muebles
-                    buscado.quitarExistentes(1);
-                    this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
-                    //registrar venta
-                    Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), true, buscado.getNombre(), nit);
-                    venta.setUsuario(usuario.getNombre());
-                    System.out.println(usuario.toString());
-                    this.ventaDB.insertarVenta(venta);
-                    ///informacion
-                    ArrayList<Venta> ventas = (ArrayList<Venta>) this.ventaDB.getVentas();
-                    request.getSession().setAttribute("mueble", buscado);
-                    request.getSession().setAttribute("cliente", cliente);
-                    request.getSession().setAttribute("compra", venta);
-                    request.getSession().setAttribute("numero", ventas.get(ventas.size() - 1).getId());
-                    enviarMensaje("Compra exitosa!!!", request, response);
-                } else {
-                    String mensaje = "Se han agotado las existencias!!!";
-                    request.getSession().setAttribute("mensaje", mensaje);
-                    response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
-                }
-            }
+            //se llama el método para realizar la compra y registrar la venta
+            realizarCompra(request, response, buscado, cajero, cliente, nit);
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.out.println(ex.getMessage());
@@ -166,30 +126,55 @@ public class VentaControlador extends HttpServlet {
         this.clienteDB.insertarCliente(cliente);
 
         try {
-            //se busca al cajero
-            Usuario usuario = this.usuarioDB.buscarUsuarioPorNombre(cajero);
-            if (buscado.getCantidadExistente() > 0) {
-                //actualizar cantidad de muebles
-                buscado.quitarExistentes(1);
-                this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
-                //registrar venta
-                Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), false, buscado.getNombre(), nit);
-                venta.setUsuario(usuario.getNombre());
-                this.ventaDB.insertarVenta(venta);
-                ///informacion
-                ArrayList<Venta> ventas = (ArrayList<Venta>) this.ventaDB.getVentas();
-                request.getSession().setAttribute("mueble", buscado);
-                request.getSession().setAttribute("cliente", cliente);
-                request.getSession().setAttribute("compra", venta);
-                request.getSession().setAttribute("numero", ventas.get(ventas.size() - 1).getId());
-                enviarMensaje("Compra exitosa!!!", request, response);
-            } else {
-                String mensaje = "Se han agotado las existencias!!!";
-                request.getSession().setAttribute("mensaje", mensaje);
-                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
-            }
+            //se llama el método para realizar la compra y registrar la venta
+            realizarCompra(request, response, buscado, cajero, cliente, nit);
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.out.println("Ocurrio un error");
+        }
+    }
+
+    /**
+     *
+     *
+     * @param request
+     * @param response
+     * @param buscado
+     * @param cajero
+     * @param cliente
+     * @param nit
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IOException
+     * @throws IllegalAccessException
+     */
+    private void realizarCompra(HttpServletRequest request, HttpServletResponse response, Mueble buscado, String cajero, Cliente cliente, String nit)
+            throws SQLException,
+            ClassNotFoundException,
+            InstantiationException,
+            IOException,
+            IllegalAccessException {
+        //se busca al cajero
+        Usuario usuario = this.usuarioDB.buscarUsuarioPorNombre(cajero);
+        if (buscado.getCantidadExistente() > 0) {
+            //actualizar cantidad de muebles
+            buscado.quitarExistentes(1);
+            this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
+            //registrar venta
+            Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), false, buscado.getNombre(), nit);
+            venta.setUsuario(usuario.getNombre());
+            this.ventaDB.insertarVenta(venta);
+            ///informacion
+            ArrayList<Venta> ventas = (ArrayList<Venta>) this.ventaDB.getVentas();
+            request.getSession().setAttribute("mueble", buscado);
+            request.getSession().setAttribute("cliente", cliente);
+            request.getSession().setAttribute("compra", venta);
+            request.getSession().setAttribute("numero", ventas.get(ventas.size() - 1).getId());
+            enviarMensaje("Compra exitosa!!!", request, response);
+        } else {
+            String mensaje = "Se han agotado las existencias!!!";
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeError.jsp");
         }
     }
 

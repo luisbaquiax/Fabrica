@@ -42,7 +42,7 @@ public class Pruebas {
         MuebleDB muebleDB = new MuebleDB();
         VentaDB ventaDB = new VentaDB();
         UsuarioDB usuarioDB = new UsuarioDB();
-        for (Usuario u : usuarioDB.getUsurariosAreaDeVenta()) {
+        for (Usuario u : usuarioDB.getUsurariosVentaYFabrica()) {
             System.out.println(u.toString());
         }
         

@@ -27,7 +27,7 @@
             <div class="container-fluider">
             <c:forEach var="c" items="${cajeros}" varStatus="contador">
 
-                <div class="card text-center margin-auto">
+                <div class="card text-center margin-auto ml-4 mt-4">
                     <div class="card-header">
                         <h1 class="h1">Cajero ${contador.count}</h1>
                     </div>

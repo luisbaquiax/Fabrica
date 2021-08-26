@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  */
 public class VentaDB {
 
-    private static final String INSERT = "INSERT INTO venta(fecha, costo, estado, nombre_mueble, nit_cliente, nombre_usuario) VALUES(?,?,?,?,?,?)";
+    private static final String INSERT = "INSERT INTO venta(fecha, costo, nit_cliente, nombre_usuario) VALUES(?,?,?,?)";
     private static final String GET_VENTA_BY_ID = "SELECT * FROM venta WHERE id = ?";
     private static final String SELECT_VENTAS = "SELECT * FROM venta WERE";
     private static final String UPDATE_USER_AND_STATUS = "UPDATE venta SET  nombre_usuario = ?, estado = ? WHERE id = ?";
@@ -40,10 +40,8 @@ public class VentaDB {
 
             statement.setDate(1, Date.valueOf(venta.getFecha()));
             statement.setDouble(2, venta.getCosto());
-            statement.setBoolean(3, venta.getEstado());
-            statement.setString(4, venta.getNombreMueble());
-            statement.setString(5, venta.getNitCliente());
-            statement.setString(6, venta.getUsuario());
+            statement.setString(3, venta.getNitCliente());
+            statement.setString(4, venta.getUsuario());
 
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
@@ -97,8 +95,6 @@ public class VentaDB {
                 venta = new Venta(result.getInt("id"),
                         result.getString("fecha"),
                         result.getDouble("costo"),
-                        result.getBoolean("estado"),
-                        result.getString("nombre_mueble"),
                         result.getString("nit_cliente"));
 
                 ventas.add(venta);
@@ -134,8 +130,6 @@ public class VentaDB {
                 venta = new Venta(result.getInt("id"),
                         result.getString("fecha"),
                         result.getDouble("costo"),
-                        result.getBoolean("estado"),
-                        result.getString("nombre_mueble"),
                         result.getString("nit_cliente"));
 
             }

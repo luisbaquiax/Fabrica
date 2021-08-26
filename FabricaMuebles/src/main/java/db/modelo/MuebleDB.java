@@ -19,10 +19,12 @@ import java.util.logging.Logger;
  */
 public class MuebleDB {
 
-    private static final String INSERT = "INSERT INTO mueble(nombre, precio, cantidad) VALUES(?,?,?)";
+    private static final String INSERT = "INSERT INTO mueble(nombre, precio) VALUES(?,?)";
     private static final String UPDATE_CANTIDADES = "UPDATE mueble SET cantidad = ? WHERE nombre = ?";
     private static final String LISTAR_MUEBLES = "SELECT * FROM mueble";
     private static final String MUEBLE_POR_NOMBRE = "SELECT * FROM mueble WHERE nombre = ?";
+
+    
 
     /**
      * Insert mueble in the DB
@@ -40,7 +42,6 @@ public class MuebleDB {
 
             statement.setString(1, mueble.getNombre());
             statement.setDouble(2, mueble.getPrecio());
-            statement.setInt(3, mueble.getCantidadExistente());
 
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
@@ -78,7 +79,7 @@ public class MuebleDB {
      *
      * @return LISTADO DE MUEBLES EXISTENTES
      */
-    public List<Mueble> listarMuebles() {
+    public List<Mueble> listarProductos() {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;

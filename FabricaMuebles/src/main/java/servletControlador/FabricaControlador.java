@@ -8,6 +8,7 @@ package servletControlador;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
+import db.modelo.PrecioPiezaDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import entidad.Ensamblaje;
 import entidad.Mueble;
@@ -35,12 +36,14 @@ public class FabricaControlador extends HttpServlet {
     private MuebleDB muebleDB;
     private RequerimientoEnsamblajeDB requerimientoEnsamblajeDB;
     private EnsamblajeDB ensamblajeDB;
+    private PrecioPiezaDB precioPiezaDB;
 
     public FabricaControlador() {
         this.piezaDB = new PiezaDB();
         this.muebleDB = new MuebleDB();
         this.requerimientoEnsamblajeDB = new RequerimientoEnsamblajeDB();
         this.ensamblajeDB = new EnsamblajeDB();
+        this.precioPiezaDB = new PrecioPiezaDB();
     }
 
     @Override
@@ -134,8 +137,8 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void verPiezas(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.piezaDB.getPiezas();
-        ArrayList<Pieza> agotadas = (ArrayList<Pieza>) this.piezaDB.getPiezasAgotadas();
+        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.precioPiezaDB.getPreciosPiezas();
+        ArrayList<Pieza> agotadas = (ArrayList<Pieza>) this.precioPiezaDB.getPiezasAgotadas();
         request.getSession().setAttribute("piezas", piezas);
         request.getSession().setAttribute("agotadas", agotadas);
         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ListadoPiezas.jsp");
@@ -243,7 +246,7 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void listadoMueblesAEnasamblar(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Mueble> muebles = (ArrayList<Mueble>) this.muebleDB.listarMuebles();
+        ArrayList<Mueble> muebles = (ArrayList<Mueble>) this.muebleDB.listarProductos();
         request.getSession().setAttribute("mubles", muebles);
 
         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ensamblarMueble.jsp");

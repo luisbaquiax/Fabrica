@@ -5,6 +5,8 @@
  */
 package entidad;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author luis
@@ -15,13 +17,20 @@ public class Ensamblaje {
     private String fecha;
     private double costo;
     /**
-     * true = estado registrado, false = estado no registrado
+     * true = estado registrado a la sala de ventas, false = estado no
+     * registrado a la sala de ventas
      */
     private boolean estado;
     private String mueble;
     private String usuario;
 
     /**
+     * Piezas que se utilizó
+     */
+    private ArrayList<Pieza> piezas;
+
+    /**
+     * Para insertar en la tabla ensamblaje
      *
      * @param fecha
      * @param costo
@@ -67,6 +76,26 @@ public class Ensamblaje {
         this.estado = estado;
         this.mueble = mueble;
         this.usuario = usuario;
+    }
+
+    /**
+     *
+     * @param id
+     * @param fecha
+     * @param costo
+     * @param estado
+     * @param mueble
+     * @param usuario
+     * @param piezas
+     */
+    public Ensamblaje(int id, String fecha, double costo, boolean estado, String mueble, String usuario, ArrayList<Pieza> piezas) {
+        this.id = id;
+        this.fecha = fecha;
+        this.costo = costo;
+        this.estado = estado;
+        this.mueble = mueble;
+        this.usuario = usuario;
+        this.piezas = piezas;
     }
 
     /**
@@ -151,6 +180,14 @@ public class Ensamblaje {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    public ArrayList<Pieza> getPiezas() {
+        return piezas;
+    }
+
+    public void setPiezas(ArrayList<Pieza> piezas) {
+        this.piezas = piezas;
     }
 
     @Override

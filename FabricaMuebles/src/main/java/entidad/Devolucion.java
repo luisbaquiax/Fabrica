@@ -15,7 +15,7 @@ public class Devolucion {
     private double perdida;
     private String fecha;
     private String nombreCliente;
-    private String nombreMueble;
+    private int idProducto;
 
     /**
      * Recupear una devolución
@@ -26,12 +26,12 @@ public class Devolucion {
      * @param nombreCliente
      * @param nombreMueble
      */
-    public Devolucion(int id, double perdida, String fecha, String nombreCliente, String nombreMueble) {
+    public Devolucion(int id, double perdida, String fecha, String nombreCliente, int idProducto) {
         this.id = id;
         this.perdida = perdida;
         this.fecha = fecha;
         this.nombreCliente = nombreCliente;
-        this.nombreMueble = nombreMueble;
+        this.idProducto = idProducto;
     }
 
     /**
@@ -42,11 +42,11 @@ public class Devolucion {
      * @param nombreCliente
      * @param nombreMueble
      */
-    public Devolucion(double perdida, String fecha, String nombreCliente, String nombreMueble) {
+    public Devolucion(double perdida, String fecha, String nombreCliente, int idProducto) {
         this.perdida = perdida;
         this.fecha = fecha;
         this.nombreCliente = nombreCliente;
-        this.nombreMueble = nombreMueble;
+        this.idProducto = idProducto;
     }
 
     /**
@@ -108,15 +108,16 @@ public class Devolucion {
     /**
      * @return the nombreMueble
      */
-    public String getNombreMueble() {
-        return nombreMueble;
+    public int getIdProducto() {
+        return idProducto;
     }
 
     /**
-     * @param nombreMueble the nombreMueble to set
+     *
+     * @param idProducto
      */
-    public void setNombreMueble(String nombreMueble) {
-        this.nombreMueble = nombreMueble;
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
 }

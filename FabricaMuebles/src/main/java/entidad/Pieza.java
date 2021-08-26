@@ -43,6 +43,7 @@ public class Pieza {
     }
 
     /**
+     * For to insert in the table precio_piezas
      *
      * @param tipo
      * @param costo
@@ -57,6 +58,15 @@ public class Pieza {
     }
 
     /**
+     * Para insertar en la tabla pieza
+     *
+     * @param tipo
+     */
+    public Pieza(String tipo) {
+        this.tipo = tipo;
+    }
+
+    /**
      *
      * @return
      */
@@ -66,7 +76,7 @@ public class Pieza {
 
     /**
      *
-     * @param cantidad
+     * @param cantidad this.cantidadExistente += cantidad;
      */
     public void setCantidadExistente(int cantidad) {
         this.cantidadExistente += cantidad;
@@ -111,7 +121,7 @@ public class Pieza {
     /**
      * @return the estado
      */
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 

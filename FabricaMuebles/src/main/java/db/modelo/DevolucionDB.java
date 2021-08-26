@@ -15,10 +15,10 @@ import java.sql.*;
  */
 public class DevolucionDB {
 
-    private static final String INSERT = "INSERT INTO devolucion(perdida, fecha, nombre_cliente, nombre_mueble) VALUES(?,?,?,?)";
+    private static final String INSERT = "INSERT INTO devolucion(perdida, fecha, nombre_cliente, id_producto) VALUES(?,?,?,?)";
 
     /**
-     * 
+     *
      * @param devolucion
      * @throws SQLException
      * @throws ClassNotFoundException
@@ -28,6 +28,7 @@ public class DevolucionDB {
     public void insertarDevolucion(Devolucion devolucion) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         Connection conn = null;
         PreparedStatement statement = null;
+        //registros afectados
         int registro = 0;
         conn = Coneccion.getConnection();
         statement = conn.prepareStatement(INSERT);
@@ -35,7 +36,7 @@ public class DevolucionDB {
         statement.setDouble(1, devolucion.getPerdida());
         statement.setString(2, devolucion.getFecha());
         statement.setString(3, devolucion.getNombreCliente());
-        statement.setString(4, devolucion.getNombreMueble());
+        statement.setInt(4, devolucion.getIdProducto());
         registro = statement.executeUpdate();
 
     }

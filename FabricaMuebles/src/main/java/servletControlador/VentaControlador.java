@@ -161,7 +161,7 @@ public class VentaControlador extends HttpServlet {
             buscado.quitarExistentes(1);
             this.muebleDB.actualizarCantidadMuebles(buscado.getCantidadExistente(), buscado.getNombre());
             //registrar venta
-            Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), false, buscado.getNombre(), nit);
+            Venta venta = new Venta(fechaAcutal(), buscado.getPrecio(), buscado.getNombre(), nit);
             venta.setUsuario(usuario.getNombre());
             this.ventaDB.insertarVenta(venta);
             ///informacion

@@ -16,10 +16,25 @@ public class Mueble implements Serializable {
     private String nombre;
     private double precio;
     private int cantidadExistente;
+
     /**
-     * true : eliminado, false: no eliminado/
+     * true : eliminado, false: no eliminado/<br>
+     * En caso de ser un producto true: vendido, false: no vendido
      */
     private boolean estado;
+
+    private int idEnsamblaje;
+
+    /**
+     * Para crear un producto en particular
+     *
+     * @param estado
+     * @param idEnsamblaje
+     */
+    public Mueble(boolean estado, int idEnsamblaje) {
+        this.estado = estado;
+        this.idEnsamblaje = idEnsamblaje;
+    }
 
     /**
      * For the DB
@@ -123,6 +138,14 @@ public class Mueble implements Serializable {
      */
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public int getIdEnsamblaje() {
+        return idEnsamblaje;
+    }
+
+    public void setIdEnsamblaje(int idEnsamblaje) {
+        this.idEnsamblaje = idEnsamblaje;
     }
 
     @Override

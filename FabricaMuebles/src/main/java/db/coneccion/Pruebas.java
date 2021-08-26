@@ -8,12 +8,14 @@ package db.coneccion;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
+import db.modelo.ProductoDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
 import db.modelo.VentaDB;
 import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Pieza;
+import entidad.Producto;
 import entidad.RequerimientoEnsamblaje;
 import entidad.Usuario;
 import entidad.Venta;
@@ -42,17 +44,23 @@ public class Pruebas {
         MuebleDB muebleDB = new MuebleDB();
         VentaDB ventaDB = new VentaDB();
         UsuarioDB usuarioDB = new UsuarioDB();
-        for (Usuario u : usuarioDB.getUsurariosVentaYFabrica()) {
-            System.out.println(u.toString());
+
+        ProductoDB productoDB = new ProductoDB();
+
+        for (Producto a : productoDB.getProducts()) {
+            System.out.println(a.toString());
         }
-        
+
+//        
+//        for (Usuario u : usuarioDB.getUsurariosVentaYFabrica()) {
+//            System.out.println(u.toString());
+//        }
 //        try {
 //            System.out.println(ventaDB.getVentasByID(100));
 //
 //        } catch (FabricaExcepcion e) {
 //            e.printStackTrace();
 //        }
-
 //        for (Venta v : ventaDB.getVentas()) {
 //            System.out.println(v.toString());
 //        }

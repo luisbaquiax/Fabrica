@@ -28,6 +28,9 @@
         <jsp:include page="../../JSP/Utiles/Navegador.jsp"></jsp:include>
             <div class="container-fluider">
                 <div class="row">
+                    <form>
+                        
+                    </form>
                     <div class="col-md-9 pt-5">
                     <c:forEach var="mueble" items="${muebles}" varStatus="status" >
 
@@ -42,31 +45,42 @@
                                     <ul class="list-unstyled mt-3 mb-4">
                                         <li>Precio:</li>
                                         <li><fmt:formatNumber value="${mueble.precio}" type="currency"/></li>
-                                        <li>Unidades existentes:</li>
-                                        <li>${mueble.cantidadExistente}</li>
+                                        <li>Identificador:</li>
+                                        <li>${mueble.identificador}</li>
                                     </ul>
-                                    <c:if test="${mueble.cantidadExistente==0}">
-                                        <a href="#"
-                                           class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary disabled">
-                                            <i class="fas fa-angle-double-right"></i> Agotado
-                                        </a>
-                                    </c:if>
-                                    <c:if test="${mueble.cantidadExistente>0}">
-                                        <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&mueble=${mueble.nombre}&s1_t1"
-                                           class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
-                                            <i class="fas fa-angle-double-right"></i> Comprar
-                                        </a>
-                                    </c:if>
+                                    <div class="form-group">
+                                        <input class="form-check-input" type="checkbox" value="${mueble.identificador}" id="defaultCheck1">
+                                        <label class="form-check-label w-75" for="defaultCheck1">
+                                            Selecciona para agregar al carrito
+                                        </label>
+                                    </div>
+
+                                    <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&mueble=${mueble.nombre}&s1_t1"
+                                       class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
+                                        <i class="fas fa-angle-double-right"></i> Comprar
+                                    </a>
 
                                 </div>
                             </div>
                         </div>
+
                     </c:forEach>
                 </div>
-                <div class="col-sm pt-5">
+                <div class="col-md-3 pt-5">
+                    <div class="card mb-5">
+                        <div class="card-header">
+                            <h2 class="text-center">Ir al carrito</h2>
+                        </div> 
+                        <div class="card-body">
+                            <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&mueble=${mueble.nombre}&s1_t1"
+                               class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
+                                <i class="fas fa-angle-double-right"></i> Comprar
+                            </a>
+                        </div> 
+                    </div> 
                     <form action="${pageContext.request.contextPath}/controladorTienda?tarea=devolucion"
                           method="POST">
-                        <div class="card border-info mb-3" style="max-width: 18rem;">
+                        <div class="card border-info mb-3">
                             <div class="card-header"><h5 class="card-title text-center">Devolución</h5></div>
                             <div class="card-body text-info">
                                 <label for="factura" class="form-control"><h5 class="card-title text-center">Ingrese:</h5></label>

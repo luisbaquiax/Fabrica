@@ -45,7 +45,7 @@ public class EnsamblajeDB {
 
         statement.setDate(1, Date.valueOf(ensamblaje.getFecha()));
         statement.setDouble(2, ensamblaje.getCosto());
-        statement.setBoolean(3, Boolean.valueOf(ensamblaje.getEstado()));
+        statement.setBoolean(3, ensamblaje.getEstado());
         statement.setString(4, ensamblaje.getMueble());
         statement.setString(5, ensamblaje.getUsuario());
 

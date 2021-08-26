@@ -3,6 +3,7 @@
     Created on : 16 ago. 2021, 23:47:48
     Author     : luis
 --%>
+<%@page import="entidad.Usuario"%>
 <%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a class="navbar-brand" href="#">MENU</a>
@@ -12,7 +13,7 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Modificar Piezas <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Ver o Modificar Piezas <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Ver Piezas <span class="sr-only">(current)</span></a>
@@ -35,8 +36,8 @@
 </nav>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-
-    if (session.getAttribute("usuario") == null) {
+    Usuario usu = (Usuario) session.getAttribute("usuario");
+    if (session.getAttribute("usuario") == null && (usu.getTipo().equals("1"))) {
         response.sendRedirect(request.getContextPath() + "/index.jsp");
     }
 %>

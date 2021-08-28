@@ -36,8 +36,8 @@
 </nav>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    Usuario usu = (Usuario) session.getAttribute("usuario");
-    if (session.getAttribute("usuario") == null && (usu.getTipo().equals("1"))) {
+    
+    if (session.getAttribute("usuario") == null) {
         response.sendRedirect(request.getContextPath() + "/index.jsp");
     }
 %>

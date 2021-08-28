@@ -21,6 +21,8 @@ import entidad.Mueble;
 import entidad.Pieza;
 import entidad.RequerimientoEnsamblaje;
 import entidad.Usuario;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -36,6 +38,7 @@ import java.util.logging.Logger;
 public class CargaDatos {
 
     private ManejoArchivo file;
+    //lista de cada objeto
     private ArrayList<Pieza> piezas;
     private ArrayList<Mueble> muebles;
     private ArrayList<Ensamblaje> ensamblajes;
@@ -54,14 +57,14 @@ public class CargaDatos {
     private PrecioPiezaDB precioPiezaDB;
     private DetalleEnsamblajeDB detalleEnsamblajeDB;
     private ProductoDB productoDB;
-    //
+    //lista para todas las piezas
     private ArrayList<Pieza> todasPiezas;
     private ArrayList<Pieza> piezasTipoCosto;
     //auxiliares
     private ArrayList<RequerimientoEnsamblaje> auxRequerimientosAsubir;
     private ArrayList<Ensamblaje> auxEnsamblajes;
 
-    public CargaDatos() {
+    public CargaDatos(BufferedReader bufferedReader) throws IOException {
         this.file = new ManejoArchivo();
         this.piezas = new ArrayList<>();
         this.muebles = new ArrayList<>();
@@ -149,7 +152,7 @@ public class CargaDatos {
                     Ensamblaje ensamblaje = new Ensamblaje(formatoFecha(fecha), mueble, usuario);
                     this.ensamblajes.add(ensamblaje);
                     System.out.println(ensamblaje.toString());
-                    
+
                 } else if (pedazo[0].equalsIgnoreCase("CLIENTE")) {
                     ingresarCliente(linea);
                 } else {
@@ -179,12 +182,20 @@ public class CargaDatos {
     private void imprimirDatosParaVerificar() {
         System.out.println("PIEZAS");
         for (int i = 0; i < this.piezas.size(); i++) {
-            this.piezaDB.insertarPieza(this.piezas.get(i));
+            try {
+                this.piezaDB.insertarPieza(this.piezas.get(i));
+            } catch (SQLException ex) {
+
+            }
         }
         System.out.println("precio-piezas");
         for (Pieza pieza : piezasTipoCosto) {
-            pieza.setCantidadExistente(0);
-            this.precioPiezaDB.insertarPrecioPieza(pieza);
+            try {
+                //pieza.setCantidadExistente(0);
+                this.precioPiezaDB.insertarPrecioPieza(pieza);
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
 
         System.out.println("muebles");
@@ -252,9 +263,6 @@ public class CargaDatos {
         System.out.println("Pieza - precios");
         for (Pieza pieza : piezasTipoCosto) {
             System.out.println(pieza.toString());
-        }
-        for (Pieza pieza : piezasTipoCosto) {
-            this.precioPiezaDB.insertarPrecioPieza(pieza);
         }
 
     }

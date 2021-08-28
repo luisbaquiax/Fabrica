@@ -22,13 +22,14 @@
               integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
         <!-- icons -->
         <script src="https://kit.fontawesome.com/6d0db64a1f.js" crossorigin="anonymous"></script>
-        <!-- CSS -->
+        <!-- personalizados CSS -->
+        <link href="../../assets/css/general.css" rel="stylesheet" type="text/css"/>
         <title>Ensamblajes no registrados en la sala de ventas</title>
     </head>
 
     <body>
         <jsp:include page="Navegador.jsp"></jsp:include>
-            <section class="mt-5">
+            <section class="mt-5 opacity">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">

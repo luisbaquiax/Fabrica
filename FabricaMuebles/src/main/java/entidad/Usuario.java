@@ -11,9 +11,18 @@ package entidad;
  */
 public class Usuario {
 
-    public static final String TIPO_1 = "1";
-    public static final String TIPO_2 = "2";
-    public static final String TIPO_3 = "3";
+    /**
+     * tipo 1
+     */
+    public static final String FABRICA = "1";
+    /**
+     * tipo 2
+     */
+    public static final String VENTA = "2";
+    /**
+     * tipo 3
+     */
+    public static final String FINANCIERO = "3";
 
     private String nombre;
     private String password;

@@ -8,6 +8,7 @@ package db.modelo;
 import com.mysql.cj.xdevapi.PreparableStatement;
 import db.coneccion.Coneccion;
 import entidad.Pieza;
+import entidad.manejoErrores.FabricaExcepcion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +23,19 @@ public class PiezaDB {
 
     private static final String INSERT = "INSERT INTO pieza(tipo) VALUES(?)";
     private static final String UPDATE_CANTIDADES = "UPDATE pieza SET cantidad = ? WHERE tipo = ?";
-    private static final String UPDATE_PIEZA = "UPDATE pieza SET cantidad = ?, costo = ? WHERE tipo = ?";
+    private static final String UPDATE_PIEZA = "UPDATE pieza SET tipo = ? WHERE tipo = ?";
     private static final String LIST_PIEZAS = "SELECT * FROM pieza";
-    private static final String LIST_PIEZAS_CANTIDAD_ASC = "SELECT * FROM pieza ORDER BY cantidad ASC";
-    private static final String LIST_PIEZAS_CANTIDAD_DESC = "SELECT * FROM pieza ORDER BY cantidad DESC";
     private static final String PIEZA_BY_TIPO = "SELECT * FROM pieza WHERE tipo = ? LIMIT 1";
     private static final String DELETE = "DELETE FROM pieza WHERE tipo = ?";
     private static final String CAMBIAR_ESTADO_PIEZA = "UPDATE pieza SET estado = ? WEHRE tipo = ?";
-    
 
     /**
+     * Inserta una nueva pieza a la tabla pieza
      *
      * @param pieza
+     * @throws java.sql.SQLException
      */
-    public void insertarPieza(Pieza pieza) {
+    public void insertarPieza(Pieza pieza) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
@@ -47,7 +47,7 @@ public class PiezaDB {
             statement.setString(1, pieza.getTipo());
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -124,21 +124,23 @@ public class PiezaDB {
     }
 
     /**
-     * UPDATE_PIEZA = "UPDATE pieza SET cantidad = ?, costo = ? WHERE tipo = ?
-     * \n
+     * Actuliza una pieza de la tabla pieza
+     * <br><br>
+     * query: UPDATE_PIEZA = "UPDATE pieza SET tipo = ? WHERE tipo = ?"
+     *
      *
      * @param pieza
+     * @param nuevoNombre
      */
-    public void editarPieza(Pieza pieza) {
+    public void actualizarPieza(Pieza pieza, String nuevoNombre) {
         int registros = 0;
         try {
 
             Connection conn = Coneccion.getConnection();
             PreparedStatement statement = conn.prepareStatement(UPDATE_PIEZA);
 
-            statement.setInt(1, pieza.getCantidadExistente());
-            statement.setDouble(2, pieza.getCosto());
-            statement.setString(3, pieza.getTipo());
+            statement.setString(1, nuevoNombre);
+            statement.setString(2, pieza.getTipo());
 
             registros = statement.executeUpdate();
 
@@ -146,71 +148,6 @@ public class PiezaDB {
             System.out.println("Error al actualizar");
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-   
-
-
-    /**
-     * Obtiene lista de piezas ordenados según cantidad de existentes
-     * ascendentemente
-     *
-     * @return
-     */
-    public List<Pieza> getPiezasAscedentemente() {
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet result = null;
-        Pieza pieza = null;
-        List<Pieza> piezas = new ArrayList<>();
-
-        try {
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(LIST_PIEZAS_CANTIDAD_ASC);
-            result = statement.executeQuery();
-
-            while (result.next()) {
-                pieza = new Pieza(
-                        result.getString("tipo"),
-                        result.getDouble("costo"),
-                        result.getInt("cantidad"));
-                piezas.add(pieza);
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return piezas;
-    }
-
-    /**
-     * Obtiene lista de piezas ordenados según cantidad de existentes
-     * ascendentemente
-     *
-     * @return
-     */
-    public List<Pieza> getPiezasDescedentemente() {
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet result = null;
-        Pieza pieza = null;
-        List<Pieza> piezas = new ArrayList<>();
-
-        try {
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(LIST_PIEZAS_CANTIDAD_DESC);
-            result = statement.executeQuery();
-
-            while (result.next()) {
-                pieza = new Pieza(
-                        result.getString("tipo"),
-                        result.getDouble("costo"),
-                        result.getInt("cantidad"));
-                piezas.add(pieza);
-            }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return piezas;
     }
 
     /**
@@ -231,15 +168,35 @@ public class PiezaDB {
             result = statement.executeQuery();
 
             while (result.next()) {
-                pieza = new Pieza(
-                        result.getString("tipo"),
-                        result.getDouble("costo"),
-                        result.getInt("cantidad"));
+                pieza = new Pieza(result.getString("tipo"));
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return pieza;
+    }
+
+    public List<Pieza> getPiezas() {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Pieza pieza = null;
+        List<Pieza> piezas = new ArrayList<>();
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(LIST_PIEZAS);
+            result = statement.executeQuery();
+            while (result.next()) {
+                pieza = new Pieza(result.getString("tipo"));
+                piezas.add(pieza);
+            }
+
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return piezas;
     }
 
 }

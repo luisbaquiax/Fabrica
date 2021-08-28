@@ -8,6 +8,7 @@ package db.coneccion;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
+import db.modelo.PrecioPiezaDB;
 import db.modelo.ProductoDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
@@ -38,19 +39,22 @@ public class Pruebas {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        PiezaDB p = new PiezaDB();
+        PiezaDB piezaDB = new PiezaDB();
         RequerimientoEnsamblajeDB redb = new RequerimientoEnsamblajeDB();
-        EnsamblajeDB edb = new EnsamblajeDB();
+        EnsamblajeDB ensamblajeDB = new EnsamblajeDB();
         MuebleDB muebleDB = new MuebleDB();
         VentaDB ventaDB = new VentaDB();
         UsuarioDB usuarioDB = new UsuarioDB();
-
         ProductoDB productoDB = new ProductoDB();
-
-        for (Producto a : productoDB.getProducts()) {
+        PrecioPiezaDB precioPiezaDB = new PrecioPiezaDB();
+        
+        for (Ensamblaje a : ensamblajeDB.getEnsamblajesPorUsuario("C")) {
             System.out.println(a.toString());
         }
-
+//
+//        for (Producto a : productoDB.getProducts()) {
+//            System.out.println(a.toString());
+//        }
 //        
 //        for (Usuario u : usuarioDB.getUsurariosVentaYFabrica()) {
 //            System.out.println(u.toString());

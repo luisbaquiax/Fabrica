@@ -32,6 +32,7 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/MuebleDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/VentaDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/UsuarioDB.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/file/ControladorArchivo.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/NewMain.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/manejoErrores/FabricaExcepcion.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/DetalleVentaDB.java

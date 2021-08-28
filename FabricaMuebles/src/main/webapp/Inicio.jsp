@@ -14,21 +14,19 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
         <!-- CSS -->
         <link href="assets/css/margenes.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/css/general.css" rel="stylesheet" type="text/css"/>
+        <link href="assets/css/margenes.css" rel="stylesheet" type="text/css"/>
         <title>Muebles S.A.</title>
     </head>
     <body>
         <jsp:include page="JSP/Utiles/Navegador.jsp"></jsp:include>
-            <div class="card-deck text-center card-produts mt-5">
+            <div class="card-deck text-center card-produts mt-5 opacity">
                 <div class="card mb-4 shadow-sm compra-inicio">
                     <div class="card-header">
-
+                        <h1>Descubre nuestros productos</h1>
                     </div>
-                    <h1>Descubre nuestros productos</h1>
-                    <div class="card-body">
+                    <div class="card-body opacity">
                         <img class="mb-4" src="assets/imagenes/fabrica.jpg" alt="" width="500" height="400">
-                        <ul class="list-unstyled mt-3 mb-4">
-
-                        </ul>
                         <a href="${pageContext.request.contextPath}/ControladorProductos?tarea=mostrar"
                        class="btn btn-secondarybtn btn-lg btn-block btn-outline-dark">
                         <i class="fas fa-angle-double-right"></i> Ver productos

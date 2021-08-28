@@ -15,10 +15,14 @@ import entidad.Mueble;
 import entidad.Pieza;
 import entidad.RequerimientoEnsamblaje;
 import entidad.Usuario;
+import entidad.manejoErrores.FabricaExcepcion;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -47,7 +51,7 @@ public class FabricaControlador extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (request.getSession().getAttribute("usuario") == null) {
             response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
             response.sendRedirect(request.getContextPath() + "/index.jsp");
@@ -137,7 +141,7 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void verPiezas(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.precioPiezaDB.getPreciosPiezas();
+        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.precioPiezaDB.getPreciosPiezas(false);
         ArrayList<Pieza> agotadas = (ArrayList<Pieza>) this.precioPiezaDB.getPiezasAgotadas();
         request.getSession().setAttribute("piezas", piezas);
         request.getSession().setAttribute("agotadas", agotadas);
@@ -153,7 +157,7 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void verPiezasAscendentemente(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.piezaDB.getPiezasAscedentemente();
+        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.precioPiezaDB.getPiezasAscedentemente();
         request.getSession().setAttribute("piezas", piezas);
         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ListadoPiezas.jsp");
     }
@@ -166,7 +170,7 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void verPiezasDescendentemente(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.piezaDB.getPiezasDescedentemente();
+        ArrayList<Pieza> piezas = (ArrayList<Pieza>) this.precioPiezaDB.getPiezasDescedentemente();
         request.getSession().setAttribute("piezas", piezas);
         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ListadoPiezas.jsp");
     }
@@ -178,12 +182,32 @@ public class FabricaControlador extends HttpServlet {
      * @param response
      * @throws IOException
      */
-    private void agregarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tipo = request.getParameter("tipo");
-        double costo = Double.parseDouble(request.getParameter("costo"));
-        int cantidad = Integer.parseInt(request.getParameter("cantidad"));
-        this.piezaDB.insertarPieza(new Pieza(tipo, costo, cantidad));
-        verPiezas(request, response);
+    private void agregarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        try {
+            String tipo = request.getParameter("tipo");
+            double costo = Double.parseDouble(request.getParameter("costo"));
+            int cantidad = Integer.parseInt(request.getParameter("cantidad"));
+            Pieza pieza = new Pieza(tipo);
+            Pieza aux = this.piezaDB.getPiezaPorTipo(tipo);
+            if (aux != null) {
+                String mensaje = "La pieza ya existe con ese nombre.";
+                request.getSession().setAttribute("mensaje", mensaje);
+                response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
+            } else {
+                this.piezaDB.insertarPieza(pieza);
+                this.precioPiezaDB.insertarPrecioPieza(new Pieza(tipo, costo, cantidad, false));
+                String mensaje = "";
+                request.getSession().setAttribute("mensaje", mensaje);
+                verPiezas(request, response);
+            }
+        } catch (NumberFormatException e) {
+            String mensaje = "Se esperaba un número.";
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ListadoPiezas.jsp");
+        } catch (SQLException ex) {
+            verPiezas(request, response);
+        }
+
     }
 
     /**
@@ -194,10 +218,21 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void editarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tipo = request.getParameter("tipo");
-        Pieza editado = this.piezaDB.getPiezaPorTipo(tipo);
-        request.getSession().setAttribute("pieza", editado);
-        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/EditarPieza.jsp");
+
+        try {
+            String tipo = request.getParameter("tipo");
+
+            double precio = Double.parseDouble(request.getParameter("precio"));
+
+            Pieza editado = this.precioPiezaDB.getPiezaPorPrecioYNombre(tipo, precio);
+            request.getSession().setAttribute("pieza", editado);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/EditarPieza.jsp");
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException | NumberFormatException ex) {
+            System.out.println("Error del servidor");
+        } catch (FabricaExcepcion ex) {
+            System.out.println(ex.getMessage());
+        }
+
     }
 
     /**
@@ -208,21 +243,41 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void actualizarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tipo = request.getParameter("tipo");
-        double costo = Double.parseDouble(request.getParameter("costo"));
-        int cantidadAgregada = Integer.parseInt(request.getParameter("cantidad"));
-        int cantidadQuitada = Integer.parseInt(request.getParameter("cantidad2"));
-        Pieza editado = this.piezaDB.getPiezaPorTipo(tipo);
+        try {
+            String tipo = request.getParameter("tipo");
+            double precioOriginal = Double.parseDouble(request.getParameter("precio"));
 
-        if (cantidadQuitada > editado.getCantidadExistente()) {
-            response.sendRedirect("/FabricaMuebles/JSP/Administrador/Inf.jsp");
-        } else {
-            editado.setCosto(costo);
-            editado.setCantidadExistente(cantidadAgregada);
-            editado.quitarCantidad(cantidadQuitada);
-            this.piezaDB.editarPieza(editado);
+            //datos del formulario
+            String nombreNuevo = request.getParameter("nombreNuevo");
+            double costo = Double.parseDouble(request.getParameter("costo"));
+            int cantidadAgregada = Integer.parseInt(request.getParameter("cantidad"));
+            int cantidadQuitada = Integer.parseInt(request.getParameter("cantidad2"));
 
-            verPiezas(request, response);
+            //buscamos la pieza-precio
+            Pieza editado = this.precioPiezaDB.getPiezaPorPrecioYNombre(tipo, precioOriginal);
+            //buscamos editato en la tabla pieza
+            Pieza pieza = this.piezaDB.getPiezaPorTipo(tipo);
+            System.out.println(pieza.toString());
+            if (cantidadQuitada > editado.getCantidadExistente()) {
+                response.sendRedirect("/FabricaMuebles/JSP/Administrador/Inf.jsp");
+            } else {
+
+                //actualizacion de pieza en particular
+                editado.setCosto(costo);
+                editado.setCantidadExistente(cantidadAgregada);
+                editado.quitarCantidad(cantidadQuitada);
+                this.precioPiezaDB.actualizarPrecioPieza(editado, tipo, precioOriginal);
+                //se actuliza la en la tabla pieza
+                this.piezaDB.actualizarPieza(pieza, nombreNuevo);
+                enviarMensajeEnBlanco(request);
+                verPiezas(request, response);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            System.out.println("error del servidor");
+        } catch (FabricaExcepcion ex) {
+            System.out.println(ex.getMessage());
+        } catch (NumberFormatException ex) {
+            System.out.println("se espera un numero");
         }
     }
 
@@ -234,9 +289,17 @@ public class FabricaControlador extends HttpServlet {
      * @throws IOException
      */
     private void eliminarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tipo = request.getParameter("tipo");
-        this.piezaDB.eliminarPieza(tipo);
-        verPiezas(request, response);
+        try {
+            String tipo = request.getParameter("tipo");
+            double precio = Double.parseDouble(request.getParameter("precio"));
+            Pieza obsoleta = this.precioPiezaDB.getPiezaPorPrecioYNombre(tipo, precio);
+            obsoleta.setEstado(true);
+            this.precioPiezaDB.actualizarPrecioPieza(obsoleta, tipo, precio);
+            enviarMensajeEnBlanco(request);
+            verPiezas(request, response);
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException | FabricaExcepcion ex) {
+            Logger.getLogger(FabricaControlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -272,11 +335,10 @@ public class FabricaControlador extends HttpServlet {
         boolean salir = false;
         for (RequerimientoEnsamblaje requerimiento : requerimientos) {
             Pieza temp = this.piezaDB.getPiezaPorTipo(requerimiento.getPieza());
-
             if (temp.getCantidadExistente() >= requerimiento.getCantidadPiezas()) {
                 costoEnsambleje += requerimiento.getCantidadPiezas() * temp.getCosto();
                 temp.quitarCantidad(requerimiento.getCantidadPiezas());
-                this.piezaDB.editarPieza(temp);
+                // this.piezaDB.editarPieza(temp);
             } else {
                 salir = true;
             }
@@ -332,26 +394,46 @@ public class FabricaControlador extends HttpServlet {
     }
 
     private void mostrarEnsamblajes(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Ensamblaje> ensamblajes = (ArrayList<Ensamblaje>) this.ensamblajeDB.getEnsamblajes();
-        request.getSession().setAttribute("ensamblajes", ensamblajes);
-        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mostrarEnsamblajes.jsp");
+        Usuario usu = (Usuario) request.getSession().getAttribute("usuario");
+        if (usu != null && usu.getTipo().equals(Usuario.FABRICA)) {
+            ArrayList<Ensamblaje> ensamblajes = (ArrayList<Ensamblaje>) this.ensamblajeDB.getEnsamblajesPorUsuario(usu.getNombre());
+            request.getSession().setAttribute("ensamblajes", ensamblajes);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mostrarEnsamblajes.jsp");
+        } else {
+            request.getRequestDispatcher(request.getContextPath() + "/index.jsp");
+        }
+
     }
 
     private void mostrarEnsamblajesFechaASC(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Ensamblaje> ensamblajes = (ArrayList<Ensamblaje>) this.ensamblajeDB.getEnsamblajesPorFechaASC();
-        request.getSession().setAttribute("ensamblajes", ensamblajes);
-        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mostrarEnsamblajes.jsp");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        if (usuario != null && (usuario.getTipo().equals(Usuario.FABRICA))) {
+            ArrayList<Ensamblaje> ensamblajes = (ArrayList<Ensamblaje>) this.ensamblajeDB.getEnsamblajesPorFechaASC(usuario.getNombre());
+            request.getSession().setAttribute("ensamblajes", ensamblajes);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mostrarEnsamblajes.jsp");
+        }
+
     }
 
     private void mostrarEnsamblajesFechaDESC(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ArrayList<Ensamblaje> ensamblajes = (ArrayList<Ensamblaje>) this.ensamblajeDB.getEnsamblajesPorFechaDESC();
-        request.getSession().setAttribute("ensamblajes", ensamblajes);
-        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mostrarEnsamblajes.jsp");
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        if (usuario != null && (usuario.getTipo().equals(Usuario.FABRICA))) {
+            ArrayList<Ensamblaje> ensamblajes = (ArrayList<Ensamblaje>) this.ensamblajeDB.getEnsamblajesPorFechaDESC(usuario.getNombre());
+            request.getSession().setAttribute("ensamblajes", ensamblajes);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mostrarEnsamblajes.jsp");
+        } else {
+            request.getRequestDispatcher(request.getContextPath() + "/index.jsp");
+        }
     }
 
     private void enviarMensajeDeError(String mensaje, HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.getSession().setAttribute("mensaje", mensaje);
         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
+    }
+
+    private void enviarMensajeEnBlanco(HttpServletRequest request) {
+        String mensaje = "";
+        request.getSession().setAttribute("mensaje", mensaje);
     }
 
     private String fechaAcutal() {

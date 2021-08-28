@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -22,6 +21,26 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class ManejoArchivo {
 
     public ManejoArchivo() {
+    }
+
+    public String informacionEntrada(BufferedReader bufferedReader) throws IOException {
+
+        String linea = "";
+        String todaInformacion = "";
+        while (bufferedReader.ready()) {
+            linea = bufferedReader.readLine();
+            String aux = "";
+            char[] cadena = linea.toCharArray();
+            for (int i = 0; i < cadena.length; i++) {
+                if (cadena[i] == '(' || cadena[i] == ')') {
+                    cadena[i] = ',';
+                }
+                aux += cadena[i];
+            }
+            todaInformacion += aux + "\n";
+        }
+        return todaInformacion;
+
     }
 
     public String informacionEntrada() {

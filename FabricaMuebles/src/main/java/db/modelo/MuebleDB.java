@@ -24,8 +24,6 @@ public class MuebleDB {
     private static final String LISTAR_MUEBLES = "SELECT * FROM mueble";
     private static final String MUEBLE_POR_NOMBRE = "SELECT * FROM mueble WHERE nombre = ?";
 
-    
-
     /**
      * Insert mueble in the DB
      *
@@ -93,9 +91,8 @@ public class MuebleDB {
             while (result.next()) {
                 String nombre = result.getString("nombre");
                 double precio = result.getDouble("precio");
-                int cantidad = result.getInt("cantidad");
 
-                mueble = new Mueble(nombre, precio, cantidad);
+                mueble = new Mueble(nombre, precio);
                 muebles.add(mueble);
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {

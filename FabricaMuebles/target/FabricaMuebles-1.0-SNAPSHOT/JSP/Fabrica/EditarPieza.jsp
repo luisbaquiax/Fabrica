@@ -26,7 +26,7 @@
 
     <body>
 
-        <form action="${pageContext.request.contextPath}/FabricaControlador?tarea=actualizarPieza&tipo=${pieza.tipo}"
+        <form action="${pageContext.request.contextPath}/FabricaControlador?tarea=actualizarPieza&tipo=${pieza.tipo}&precio=${pieza.costo}"
               method="POST" class="was-validated">
             <!--navegacion-->
             <section id="details">
@@ -43,8 +43,8 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="tipo">Tipo:</label>
-                                        <input type="text" class="form-control" name="tipo" required value="${pieza.tipo}">
+                                        <label for="nombreNuevo">Tipo:</label>
+                                        <input type="text" class="form-control" name="nombreNuevo" required value="${pieza.tipo}">
                                     </div>
                                     <div class="form-group">
                                         <label for="costo">Costo:</label>

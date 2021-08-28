@@ -22,10 +22,11 @@ public class EnsamblajeDB {
     private static final String INSERT = "INSERT INTO ensamblaje(fecha, costo, estado, nombre_mueble, nombre_usuario) VALUES(?, ?, ?, ?, ?)";
     private static final String UPDATE_BY_ID = "UPDATE ensamblaje SET estado = ? WHERE id = ?";
     private static final String SELECT = "SELECT * FROM ensamblaje";
+    private static final String SELECT_BY_USUARIO = "SELECT * FROM ensamblaje WHERE nombre_usuario = ?";
     private static final String ENSAMBLAJES_BY_ESTADO_USUARIO = "SELECT * FROM ensamblaje WHERE estado = ? AND nombre_usuario = ?";
     private static final String ENSAMBLAJE_BY_ID = "SELECT * FROM ensamblaje WHERE id = ?";
-    private static final String ENSABLAJES_BY_FECHA_ASC = "SELECT * FROM ensamblaje ORDER BY fecha ASC";
-    private static final String ENSABLAJES_BY_FECHA_DESC = "SELECT * FROM ensamblaje ORDER BY fecha DESC";
+    private static final String ENSABLAJES_BY_FECHA_ASC = "SELECT * FROM ensamblaje WHERE nombre_usuario = ? ORDER BY fecha ASC";
+    private static final String ENSABLAJES_BY_FECHA_DESC = "SELECT * FROM ensamblaje WHERE nombre_usuario = ? ORDER BY fecha DESC";
 
     /**
      *
@@ -108,6 +109,43 @@ public class EnsamblajeDB {
     }
 
     /**
+     * Seleciona los ensamblados por un usuario en particular<br><br>
+     * query: SELECT_BY_USUARIO = "SELECT * FROM ensamblaje WHERE nombre_usuario
+     * = ?"
+     *
+     * @param nombreUsuario
+     * @return
+     */
+    public List<Ensamblaje> getEnsamblajesPorUsuario(String nombreUsuario) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Ensamblaje ensamblaje = null;
+        List<Ensamblaje> lista = new ArrayList<>();
+        try {
+
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SELECT_BY_USUARIO);
+            statement.setString(1, nombreUsuario);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                ensamblaje = new Ensamblaje(
+                        result.getInt("id"),
+                        result.getString("fecha"),
+                        result.getDouble("costo"),
+                        result.getBoolean("estado"),
+                        result.getString("nombre_mueble"),
+                        result.getString("nombre_usuario"));
+                lista.add(ensamblaje);
+            }
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return lista;
+    }
+
+    /**
      * query: ENSAMBLEJES_BY_ESTADO_USUARIO = "SELECT * FROM ensamblaje WHERE
      * estado = ? AND nombre_usuario = ?"
      *
@@ -152,7 +190,7 @@ public class EnsamblajeDB {
      *
      * @return
      */
-    public List<Ensamblaje> getEnsamblajesPorFechaASC() {
+    public List<Ensamblaje> getEnsamblajesPorFechaASC(String usuario) {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
@@ -162,6 +200,7 @@ public class EnsamblajeDB {
 
             conn = Coneccion.getConnection();
             statement = conn.prepareStatement(ENSABLAJES_BY_FECHA_ASC);
+            statement.setString(1, usuario);
 
             result = statement.executeQuery();
 
@@ -187,7 +226,7 @@ public class EnsamblajeDB {
      *
      * @return
      */
-    public List<Ensamblaje> getEnsamblajesPorFechaDESC() {
+    public List<Ensamblaje> getEnsamblajesPorFechaDESC(String usuario) {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
@@ -197,6 +236,7 @@ public class EnsamblajeDB {
 
             conn = Coneccion.getConnection();
             statement = conn.prepareStatement(ENSABLAJES_BY_FECHA_DESC);
+            statement.setString(1, usuario);
 
             result = statement.executeQuery();
 

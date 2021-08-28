@@ -33,6 +33,7 @@ db/coneccion/Pruebas.class
 db/modelo/DetalleVentaDB.class
 db/modelo/PiezaDB.class
 db/modelo/ProductoDB.class
+servletControlador/file/ControladorArchivo.class
 entidad/manejoErrores/FabricaExcepcion.class
 entidad/RequerimientoEnsamblaje.class
 db/modelo/RequerimientoEnsamblajeDB.class

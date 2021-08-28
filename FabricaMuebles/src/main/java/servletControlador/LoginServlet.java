@@ -38,11 +38,11 @@ public class LoginServlet extends HttpServlet {
         try {
             Usuario buscado = this.usuarioDB.buscarUsuario(nombre, pass);
             if (buscado != null) {
-                if (buscado.getTipo().equals(Usuario.TIPO_1)) {
+                if (buscado.getTipo().equals(Usuario.FABRICA)) {
                     HttpSession session = request.getSession();
                     session.setAttribute("usuario", buscado);
                     response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
-                } else if (buscado.getTipo().equals(Usuario.TIPO_2)) {
+                } else if (buscado.getTipo().equals(Usuario.VENTA)) {
                     HttpSession session = request.getSession();
                     session.setAttribute("usuario", buscado);
                     response.sendRedirect("/FabricaMuebles/JSP/Vendedor/Vendedor.jsp");

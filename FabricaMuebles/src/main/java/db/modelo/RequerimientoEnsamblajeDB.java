@@ -48,7 +48,8 @@ public class RequerimientoEnsamblajeDB {
     }
 
     /**
-     * SELECT * FROM mueble_pieza WHERE mueble = ?
+     * Lista los requerimientos para un mueble en particular<br><br>
+     * query: SELECT * FROM mueble_pieza WHERE mueble = ?
      *
      * @param mueble
      * @return lista requerimientos para ensamblaje

@@ -5,6 +5,10 @@
  */
 package entidad.file;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author luis
@@ -15,8 +19,12 @@ public class NewMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        CargaDatos c = new CargaDatos();
+        try {
+            // TODO code application logic here
+            CargaDatos c = new CargaDatos(null);
+        } catch (IOException ex) {
+            Logger.getLogger(NewMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

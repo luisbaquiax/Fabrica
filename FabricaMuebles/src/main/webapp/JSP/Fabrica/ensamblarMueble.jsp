@@ -21,13 +21,14 @@
               integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
         <!-- icons -->
         <script src="https://kit.fontawesome.com/6d0db64a1f.js" crossorigin="anonymous"></script>
-        <!-- CSS -->
+        <!-- personalizados CSS -->
+        <link href="../../assets/css/general.css" rel="stylesheet" type="text/css"/>
         <title>Muebles a ensamblar</title>
     </head>
 
     <body>
         <jsp:include page="Navegador.jsp"></jsp:include>
-            <section class="mt-5">
+            <section class="mt-5 opacity">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
@@ -43,7 +44,6 @@
                                             <th>No</th>
                                             <th>Nombre del mueble</th>
                                             <th>Costo</th>
-                                            <th>Cantidad de unidades</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -54,7 +54,6 @@
                                             <td>${mueble.nombre}</td>
                                             <!-- --> 
                                             <td> <fmt:formatNumber value="${mueble.precio}" type="currency"/> </td>
-                                            <td class="text-center">${mueble.cantidadExistente}</td>
                                             <td>
                                                 <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=ensamblaje&mueble=${mueble.nombre}"
                                                    class="btn btn-warning">

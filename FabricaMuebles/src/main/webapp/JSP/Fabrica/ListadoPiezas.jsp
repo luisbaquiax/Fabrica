@@ -19,6 +19,8 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
               integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <!-- personalizados CSS -->
+        <link href="../../assets/css/general.css" rel="stylesheet" type="text/css"/>
         <!-- icons -->
         <script src="https://kit.fontawesome.com/6d0db64a1f.js" crossorigin="anonymous"></script>
         <title>Listado piezas</title>
@@ -26,20 +28,21 @@
 
     <body>
         <jsp:include page="Navegador.jsp"></jsp:include>
-            <section class="mt-5">
+            <section class="mt-5 opacity">
                 <div class="container mt-5">
                     <div class="row">
                         <div class="col-md-9">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="text-center">Listado de Piezas</h4>
-                                </div>
-                                <a href="#"
-                                   data-toggle="modal" data-target="#agregarPiezaModal"
-                                   class="btn btn-primary mb-1">
-                                    <i class="fas fa-plus"></i> Agregar Pieza Nueva
-                                </a>
-                                <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=ascendente"
+                                    <h4 class="text-center">${mensaje}</h4>
+                            </div>
+                            <a href="#"
+                               data-toggle="modal" data-target="#agregarPiezaModal"
+                               class="btn btn-primary mb-1">
+                                <i class="fas fa-plus"></i> Agregar Pieza Nueva
+                            </a>
+                            <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=ascendente"
                                class="btn btn-warning mb-1">
                                 <i class="fas fa-angle-double-up"></i> Ordenar por cantidad de unidades (ASC)
                             </a>
@@ -68,13 +71,13 @@
                                             <td> <fmt:formatNumber value="${pieza.costo}" type="currency"/> </td>
                                             <td>${pieza.cantidadExistente}</td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=editar&tipo=${pieza.tipo}"
+                                                <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=editar&tipo=${pieza.tipo}&precio=${pieza.costo}"
                                                    class="btn btn-warning">
                                                     <i class="fas fa-tools"></i> Editar
                                                 </a>
                                             </td>
                                             <td>
-                                                <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=eliminarPieza&tipo=${pieza.tipo}"
+                                                <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=eliminarPieza&tipo=${pieza.tipo}&precio=${pieza.costo}"
                                                    class="btn btn-danger">
                                                     <i class="fas fa-trash-alt"></i> Eliminar
                                                 </a>

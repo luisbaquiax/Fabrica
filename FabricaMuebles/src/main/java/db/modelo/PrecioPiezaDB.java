@@ -26,13 +26,12 @@ public class PrecioPiezaDB {
     private static final String INSERT = "INSERT INTO precio_pieza(pieza, costo, cantidad, estado) VALUES(?,?,?,?)";
     private static final String LIST_PIEZAS = "SELECT * FROM precio_pieza WHERE estado = ?";
     private static final String PIEZAS_AGOTADAS_O_CASI_AGOTADAS = "SELECT * FROM precio_pieza WHERE cantidad < 5";
-    private static final String AGOTADAS = "SELECT COUNT(precio_pieza.pieza) AS cantidad, pieza, estado\n"
-            + "FROM precio_pieza WHERE estado = 0\n"
-            + "GROUP BY pieza, estado;";
     private static final String LIST_PIEZAS_CANTIDAD_ASC = "SELECT * FROM precio_pieza WHERE estado = 0 ORDER BY cantidad ASC";
     private static final String LIST_PIEZAS_CANTIDAD_DESC = "SELECT * FROM precio_pieza WHERE estado = 0 ORDER BY cantidad DESC";
     private static final String SELECT_BY_TIPO_COSTO = "SELECT * FROM precio_pieza WHERE pieza = ? AND costo = ?";
     private static final String UPDATE_PIEZA = "UPDATE precio_pieza SET cantidad = ?, costo = ?, estado = ? WHERE pieza = ? AND costo = ?";
+
+    private static final String OBTENER_PIEZAS_POR_NOMBRE = "SELECT * FROM precio_pieza WHERE pieza = ? AND cantidad > 0 AND estado = 0";
 
     /**
      * Insert a new pieza-precio in the database specfic in the table
@@ -233,18 +232,44 @@ public class PrecioPiezaDB {
 
         result = statement.executeQuery();
 
-        while (result.next()) {
-            pieza = new Pieza(
-                    result.getString("pieza"),
-                    result.getDouble("costo"),
-                    result.getInt("cantidad"),
-                    result.getBoolean("estado"));
-        }
+        pieza = obtenerPieza(result, pieza);
+
         if (pieza == null) {
             throw new FabricaExcepcion("Pieza no encontrada. Comuníquese con el administrador de base de datos.");
         }
         return pieza;
 
+    }
+
+    /**
+     * Obtiene una lista de piezas de la tabla precio-pieza en base a su nombre
+     * y que su cantidad sea mayor que 0 y su estado sea '0' es decir que no
+     * está,esto se usarán para realizar una ensamblaje obsoleto
+     * <br><br>
+     * query: SELECT * FROM precio_pieza WHERE pieza = ? AND cantidad > 0 AND
+     * estado = 0
+     *
+     * @param tipo
+     * @return
+     */
+    public List<Pieza> getPiezaPorTipo(String tipo) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Pieza pieza = null;
+        List<Pieza> piezas = new ArrayList<>();
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(OBTENER_PIEZAS_POR_NOMBRE);
+            result = statement.executeQuery();
+
+            obtenerPiezas(result, piezas, pieza);
+
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return piezas;
     }
 
     /**

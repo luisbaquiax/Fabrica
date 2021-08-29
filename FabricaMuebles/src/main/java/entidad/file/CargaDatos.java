@@ -301,9 +301,9 @@ public class CargaDatos {
                             double costoEnsamblaje = 0;
 
                             ArrayList<Pieza> piezasRequeridas = obtenerPiezasRequeridas(requerimientoEnsamblajes.get(i));
-
+                            System.out.println(piezasRequeridas.size());
                             for (int k = 0; k < piezasRequeridas.size(); k++) {
-                                costoEnsamblaje += piezasRequeridas.get(i).getCosto();
+                                costoEnsamblaje += piezasRequeridas.get(k).getCosto();
                             }
                             //establecemos costo y estado del ensamblaje
                             this.ensamblajes.get(i).setCosto(costoEnsamblaje);

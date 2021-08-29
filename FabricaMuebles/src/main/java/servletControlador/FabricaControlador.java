@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -331,16 +332,19 @@ public class FabricaControlador extends HttpServlet {
 
         //mensaje en caso de un error
         String mensaje = "";
-
+        //se guarda los requeridos en una lista auxiliar
+        List<Pieza> auxiRequeridos = new ArrayList<>();
         boolean salir = false;
+        boolean hayRequerimiento = true;
+
+        Pieza auxPieza = null;
+        List<Pieza> temps = new ArrayList<>();
         for (RequerimientoEnsamblaje requerimiento : requerimientos) {
-            Pieza temp = this.piezaDB.getPiezaPorTipo(requerimiento.getPieza());
-            if (temp.getCantidadExistente() >= requerimiento.getCantidadPiezas()) {
-                costoEnsambleje += requerimiento.getCantidadPiezas() * temp.getCosto();
-                temp.quitarCantidad(requerimiento.getCantidadPiezas());
-                // this.piezaDB.editarPieza(temp);
-            } else {
-                salir = true;
+            temps = this.precioPiezaDB.getPiezaPorTipo(requerimiento.getPieza());
+            auxPieza = this.piezaDB.getPiezaPorTipo(requerimiento.getPieza());
+            if (temps.size() < requerimiento.getCantidadPiezas()) {
+                hayRequerimiento = false;
+                break;
             }
         }
         System.out.println("costo: " + costoEnsambleje);
@@ -348,12 +352,27 @@ public class FabricaControlador extends HttpServlet {
         if (requerimientos.isEmpty()) {
             salir = true;
         }
-        if ((salir == true)) {
-            mensaje = " No se pudo realizar el ensamblaje poque se han agotado las piezas o no existe los requerimientos necesarios.";
+        if ((hayRequerimiento == false)) {
+            mensaje = "No hay piezas suficientes del tipo: " + auxPieza.getTipo() + ".";
             request.getSession().setAttribute("mensaje", mensaje);
             response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
             //response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
         } else {
+            List<Pieza> proximosAUsar = new ArrayList<>();
+            for (Pieza auxiRequerido : auxiRequeridos) {
+                for (int i = 0; i < auxiRequerido.getCantidadExistente(); i++) {
+                    Pieza uso = auxiRequerido;
+                    proximosAUsar.add(uso);
+                }
+            }
+            double costo = 0;
+            for (int i = 0; i < requerimientos.size(); i++) {
+                for (int j = 0; j < proximosAUsar.size(); j++) {
+                    if (requerimientos.get(i).getPieza().equals(proximosAUsar.get(i).getTipo())) {
+
+                    }
+                }
+            }
             Mueble agregado = this.muebleDB.getMueblePorNombre(mueble);
             try {
                 this.ensamblajeDB.insertarEnsamblaje(new Ensamblaje(fechaAcutal(), costoEnsambleje, false, agregado.getNombre(), usu.getNombre()));

@@ -47,6 +47,7 @@ public class CargaDatos {
     private ArrayList<Pieza> piezasTipoCosto;
     //auxiliares
     private ArrayList<RequerimientoEnsamblaje> auxRequerimientosAsubir;
+    private ArrayList<RequerimientoEnsamblaje> auxRequerimientos;
     private ArrayList<Ensamblaje> auxEnsamblajes;
     //lector
     private BufferedReader bufferedReader;
@@ -76,7 +77,9 @@ public class CargaDatos {
         this.todasPiezas = new ArrayList<>();
         this.piezasTipoCosto = new ArrayList<>();
         //inicializacion de auxilieare
+
         this.auxRequerimientosAsubir = new ArrayList<>();
+        this.auxRequerimientos = new ArrayList<>();
         this.auxEnsamblajes = new ArrayList<>();
         //lector
         this.bufferedReader = bufferedReader;
@@ -130,11 +133,14 @@ public class CargaDatos {
                     String mueble = pedazo[1].substring(1, pedazo[1].length() - 1);
                     String pieza = pedazo[2].substring(1, pedazo[2].length() - 1);
                     int cantidad = Integer.parseInt(quitarEspacios(pedazo[3]));
+                    RequerimientoEnsamblaje a = new RequerimientoEnsamblaje(pieza, mueble, cantidad);
+                    System.out.println(a.toString());
+
+                    this.auxRequerimientos.add(a);
 
                     ArrayList<Pieza> piezasRequeridas = new ArrayList<>();
 
                     RequerimientoEnsamblaje reque = new RequerimientoEnsamblaje(mueble, piezasRequeridas);
-
                     if (!existeMuebleEnElRequerimiento(reque)) {
                         reque.getPiezas().add(new Pieza(pieza, cantidad));
                         this.requerimientoEnsamblajes.add(reque);
@@ -217,7 +223,6 @@ public class CargaDatos {
             try {
                 //ensamblaje registrado, es decir se agrega a la sala de ventas
                 this.auxEnsamblajes.get(i).setEstado(true);
-                System.out.println(this.auxEnsamblajes.get(i).toString());
                 this.ensamblajeDB.insertarEnsamblaje(this.auxEnsamblajes.get(i));
             } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 System.out.println("error al insertar el ensamblaje");
@@ -274,14 +279,14 @@ public class CargaDatos {
      * tipo-pieza
      */
     private void obtenerRequerimientosVerificados() {
-        for (int i = 0; i < this.requerimientoEnsamblajes.size(); i++) {
-            if ((existeMueble(requerimientoEnsamblajes.get(i).getMueble())) && (existePieza(requerimientoEnsamblajes.get(i).getPieza()))) {
-                this.auxRequerimientosAsubir.add(requerimientoEnsamblajes.get(i));
+        for (int i = 0; i < this.auxRequerimientos.size(); i++) {
+            if ((existeMueble(auxRequerimientos.get(i).getMueble())) && (existePieza(auxRequerimientos.get(i).getPieza()))) {
+                this.auxRequerimientosAsubir.add(auxRequerimientos.get(i));
             } else {
                 this.errores.add("Hace falta piezas requeridas para este tipo de ensamblaje: ("
-                        + requerimientoEnsamblajes.get(i).getMueble()
-                        + requerimientoEnsamblajes.get(i).getPieza()
-                        + requerimientoEnsamblajes.get(i).getCantidadPiezas() + ")");
+                        + auxRequerimientos.get(i).getMueble()
+                        + auxRequerimientos.get(i).getPieza()
+                        + auxRequerimientos.get(i).getCantidadPiezas() + ")");
             }
         }
     }
@@ -610,6 +615,10 @@ public class CargaDatos {
 
     public ManejoArchivo getManejadoArchivo() {
         return manejadoArchivo;
+    }
+
+    public ArrayList<RequerimientoEnsamblaje> getAuxRequerimientos() {
+        return auxRequerimientos;
     }
 
 }

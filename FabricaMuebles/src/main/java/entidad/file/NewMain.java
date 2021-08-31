@@ -22,7 +22,9 @@ public class NewMain {
         // TODO code application logic here
         try {
             CargaDatos c = new CargaDatos(null);
-
+            c.leerInformacion(c.getManejadoArchivo().informacionEntrada());
+            c.imprimirDatosParaVerificar();
+            
         } catch (IOException e) {
         }
 

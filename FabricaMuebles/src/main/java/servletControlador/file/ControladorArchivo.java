@@ -27,6 +27,15 @@ import javax.servlet.http.Part;
 @MultipartConfig
 public class ControladorArchivo extends HttpServlet {
 
+    /**
+     * Desde la carga de datos se lee el archivo de entrada y luego se muestra
+     * al usuario-administrador
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
@@ -36,7 +45,6 @@ public class ControladorArchivo extends HttpServlet {
         CargaDatos cargaDatos = new CargaDatos(buffer);
         cargaDatos.leerInformacion(cargaDatos.getManejadoArchivo().informacionEntrada(cargaDatos.getBufferedReader()));
         //cargaDatos.imprimirDatosParaVerificar();
-        request.getSession().setAttribute("ya", 1);
         request.getSession().setAttribute("carga", cargaDatos);
         response.sendRedirect("/FabricaMuebles/JSP/Administrador/cargaDatos.jsp");
 
@@ -50,6 +58,7 @@ public class ControladorArchivo extends HttpServlet {
                 case "subir":
                     CargaDatos cargaDatos = (CargaDatos) request.getSession().getAttribute("carga");
                     cargaDatos.imprimirDatosParaVerificar();
+                    request.getSession().invalidate();
                     response.sendRedirect("/FabricaMuebles/index.jsp");
                     break;
                 default:

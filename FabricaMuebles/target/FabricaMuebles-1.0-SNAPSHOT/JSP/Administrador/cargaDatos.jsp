@@ -33,410 +33,274 @@
                     <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample10">
                         <ul class="navbar-nav">
                             <li class="nav-item active">
-                                <a class="nav-link" href="#medicos">Muebles<span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="#datos">Inicio<span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#usuarios">Usuarios<span class="sr-only">(current)</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#lab">Piezas</a>
+                                <a class="nav-link" href="#muebles">Muebles</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#pacientes">Pacientes</a>
+                                <a class="nav-link" href="#piezas">Piezas y precios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#examen">Examenes</a>
+                                <a class="nav-link" href="#requerimientos">Requerimientos ENSAMBLE_PIEZA</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#reporte">Reportes</a>
+                                <a class="nav-link" href="#ensamblajes">Ensamblajes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#resultado">Resultados</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#cita">Citas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#consulta">Consultas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="">Errores</a>
+                                <a class="nav-link" href="#clientes">Clientes</a>
                             </li>
                         </ul>
                     </div>
                 </nav>
             </header>
         </div>
-        <div class="container-fluider btn-warning">
-            <div class="py-5 text-center">
-                <img class="d-block mx-auto mb-1 mt-5" src="../../assets/imagenes/taller.jpg" alt="" width="172" height="172">
-                <h2>Carga de datos.</h2>
-                <p class="lead">Por favor seleccione el archivo para subir los datos</p>
-            </div>
-            <div class="mb-3">
-                <form class="form-inline" method="POST" action="../../cargaDatos" enctype="multipart/form-data">
-                    <div class="form-group mb-2 mr-5 margin-auto">
-                        <input type="file" class="form-control-file ml-5" name="archivo">
-                    </div>
-                    <button type="submit" class="btn btn-primary mb-2 margin-auto" >Ver datos a subir</button>
-                </form>
-                <div class="form-group">
-                    <a href="${pageContext.request.contextPath}/cargaDatos?tarea=subir"
-                       class="btn btn-success mb-1">
-                        <i class="fas fa-angle-double-down"></i> SUBIR DATOS
-                    </a>
+        <section class="section" id="datos">
+            <div class="container-fluider btn-warning">
+                <div class="py-5 text-center">
+                    <img class="d-block mx-auto mb-1 mt-5" src="../../assets/imagenes/taller.jpg" alt="" width="172" height="172">
+                    <h2>Carga de datos.</h2>
+                    <p class="lead">Por favor seleccione el archivo para subir los datos</p>
                 </div>
-            </div>
-        </div>
-                    <c:if var="${ya!=null}"></c:if>
-
-        <!--precio-piezas-->
-        <section id="medicos" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Usuarios a ingresar</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Nombre</th>
-                                        <th>Numero de colegiado</th>
-                                        <th>DPI</th>
-                                        <th>Telefono</th>
-                                        <th>Correo</th>
-                                        <th>Horario de inicio</th>
-                                        <th>Horario fin</th>
-                                        <th>Fecha de inicio de trabajo</th>
-                                        <th>Contraseña</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de medicos -->
-                                    <c:forEach var="medico" items="${medicos}" varStatus="status" >
-                                        <tr>
-                                            <td>${status.count}</td>
-                                            <td>${medico.codigo}</td> 
-                                            <td>${medico.nombre}</td>
-                                            <td>${medico.colegiado}</td>
-                                            <td>${medico.dpi}</td> 
-                                            <td>${medico.telefono}</td>
-                                            <td>${medico.email}</td>
-                                            <td>${medico.horarioInicio}</td> 
-                                            <td>${medico.horarioFin}</td>
-                                            <td>${medico.fechaInicioTrabajo}</td>
-                                            <td>${medico.contraseña}</td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                <div class="mb-3">
+                    <form class="form-inline" method="POST" action="../../cargaDatos" enctype="multipart/form-data">
+                        <div class="form-group mb-2 mr-5 margin-auto">
+                            <input type="file" class="form-control-file ml-5" name="archivo">
                         </div>
+                        <button type="submit" class="btn btn-primary mb-2 margin-auto" >Ver datos a subir</button>
+                    </form>
+                    <div class="form-group">
+                        <a href="${pageContext.request.contextPath}/cargaDatos?tarea=subir"
+                           class="btn btn-success mb-1">
+                            <i class="fas fa-angle-double-down"></i> SUBIR DATOS
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
-        <!--laboratoristas-->
-        <section id="lab" class="section">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Listado de Laboratoristas</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Nombre</th>
-                                        <th>Registro</th>
-                                        <th>DPI</th>
-                                        <th>Telefono</th>
-                                        <th>Tipo de Examen</th>
-                                        <th>Email</th>
-                                        <th>Fecha de inicio de trabajo</th>
-                                        <th>Contraseña</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de laboratoristas -->
-                                    <c:forEach var="lab" items="${labs}" varStatus="status" >
+
+        <c:if test="${carga!=null}">
+            <!--usuarios-->
+            <section id="usuarios" class="section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Usuarios a ingresar</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <td>${status.count}</td>
-                                            <td>${lab.codigo}</td> 
-                                            <td>${lab.nombre}</td>
-                                            <td>${lab.registro}</td>
-                                            <td>${lab.dpi}</td>
-                                            <td>${lab.telefono}</td>
-                                            <td>${lab.tipoExamen}</td>
-                                            <td>${lab.email}</td>
-                                            <td>${lab.fechaInicioTrabajo}</td>
-                                            <td>${lab.contraseña}</td>
+                                            <th>No</th>
+                                            <th>Nombre</th>
+                                            <th>Pass</th>
+                                            <th>Tipo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Iteramos cada elemento de la lista de usuarios -->
+                                        <c:forEach var="usuario" items="${carga.usuarios}" varStatus="status" >
+                                            <tr>
+                                                <td>${status.count}</td>
+                                                <td>${usuario.nombre}</td> 
+                                                <td>${usuario.password}</td>
+                                                <td>${usuario.tipo}</td>
+                                            </tr>
                                         </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!--Pacientes-->
-        <section id="pacientes" class="section">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Listado de Pacientes</h4>
+                                    </tbody>
+                                </table>
                             </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Nombre</th>
-                                        <th>Sexo</th>
-                                        <th>Fecha de nacimiento</th>
-                                        <th>DPI</th>
-                                        <th>Telefono</th>
-                                        <th>Peso</th>
-                                        <th>Tipo Sangre</th>
-                                        <th>Email</th>
-                                        <th>Contraseña</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de pacientes -->
-                                    <c:forEach var="paciente" items="${pacientes}" varStatus="status" >
-                                        <tr>
-                                            <td>${status.count}</td> 
-                                            <td>${paciente.codigo}</td>
-                                            <td>${paciente.nombre}</td>
-                                            <td>${paciente.sexo}</td>
-                                            <td>${paciente.fechaNacimiento}</td>
-                                            <td>${paciente.dpi}</td>
-                                            <td>${paciente.telefono}</td>
-                                            <td>${paciente.peso}</td>
-                                            <td>${paciente.tipoSangre}</td>
-                                            <td>${paciente.email}</td>
-                                            <td>${paciente.contraseña}</td>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!--Examenes de laboratorio-->
-        <section id="examen" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Examenes de laboratorio</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Nombre</th>
-                                        <th>Orden</th>
-                                        <th>Descripción</th>
-                                        <th>Costo</th>
-                                        <th>Informe</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de examenes -->
-                                    <c:forEach var="examen" items="${examenes}" varStatus="status" >
+            <!--muebles-->
+            <section id="muebles" class="section mt-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Muebles a ingresar</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <td>${status.count}</td> 
-                                            <td>${examen.codigo}</td>
-                                            <td>${examen.nombre}</td>
-                                            <td>${examen.orden}</td>
-                                            <td>${examen.descripcion}</td>
-                                            <td><fmt:formatNumber value="${examen.costo}" type="currency"/></td>
-                                            <td>${examen.informe}</td>
+                                            <th>No</th>
+                                            <th>Nombre</th>
+                                            <th>Precio de venta</th>
                                         </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Iteramos cada elemento de la lista de muebles -->
+                                        <c:forEach var="mueble" items="${carga.muebles}" varStatus="status" >
+                                            <tr>
+                                                <td>${status.count}</td>
+                                                <td>${mueble.nombre}</td> 
+                                                <td>${mueble.precio}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!--Reportes-->
-        <section id="reporte" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Informes</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Paciente</th>
-                                        <th>Medico</th>
-                                        <th>Informe</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de examenes -->
-                                    <c:forEach var="reporte" items="${reportes}" varStatus="status" >
+            <!--piezas y precios-->
+            <section id="piezas" class="section mt-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Piezas y precios</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <td>${status.count}</td> 
-                                            <td>${reporte.codigo}</td>
-                                            <td>${reporte.codigoPaciente}</td>
-                                            <td>${reporte.codigoMedico}</td>
-                                            <td>${reporte.informe}</td>
-                                            <td>${reporte.fecha}</td>
-                                            <td>${reporte.hora}</td>
+                                            <th>No</th>
+                                            <th>Tipo</th>
+                                            <th>Costo</th>
+                                            <th>Cantidad de existencia</th>
                                         </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Iteramos cada elemento de la lista de muebles -->
+                                        <c:forEach var="pieza" items="${carga.piezasTipoCosto}" varStatus="status" >
+                                            <tr>
+                                                <td>${status.count}</td>
+                                                <td>${pieza.tipo}</td> 
+                                                <td>${pieza.costo}</td>
+                                                <td>${pieza.cantidadExistente}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!--Resultados-->
-        <section id="resultado" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Resultados</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Paciente</th>
-                                        <th>Medico</th>
-                                        <th>Examen</th>
-                                        <th>Laboratorista</th>
-                                        <th>Orden</th>
-                                        <th>Informe</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de resultados -->
-                                    <c:forEach var="resultado" items="${resultados}" varStatus="status" >
+            <!--ensamble piezas-->
+            <section id="requerimientos" class="section mt-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Requerimientos</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <td>${status.count}</td> 
-                                            <td>${resultado.codigo}</td>
-                                            <td>${resultado.codigoPaciente}</td>
-                                            <td>${resultado.codigoMedico}</td>
-                                            <td>${resultado.codigoExamen}</td>
-                                            <td>${resultado.codigoLaboratorista}</td>
-                                            <td>${resultado.ordenPath}</td>
-                                            <td>${resultado.informePath}</td>
-                                            <td>${resultado.fecha}</td>
-                                            <td>${resultado.hora}</td>
+                                            <th>No</th>
+                                            <th>Mueble</th>
+                                            <th>Pieza requerida</th>
+                                            <th>Cantidad</th>
                                         </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Iteramos cada elemento de la lista de muebles -->
+                                        <c:forEach var="reque" items="${carga.auxRequerimientosAsubir}" varStatus="status" >
+                                            <tr>
+                                                <td>${status.count}</td>
+                                                <td>${reque.mueble}</td>
+                                                <td>${reque.pieza}</td>
+                                                <td>${reque.cantidadPiezas}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!--Citas-->
-        <section id="cita" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Citas</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Codigo</th>
-                                        <th>Paciente</th>
-                                        <th>Medico</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de resultados -->
-                                    <c:forEach var="cita" items="${citas}" varStatus="status" >
+            <!--ensamblajes-->
+            <section id="ensamblajes" class="section mt-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Ensamblajes</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <td>${status.count}</td> 
-                                            <td>${cita.codigo}</td>
-                                            <td>${cita.codigoPaciente}</td>
-                                            <td>${cita.codigoMedico}</td>
-                                            <td>${cita.fecha}</td>
-                                            <td>${cita.hora}</td>
+                                            <th>No</th>
+                                            <th>Usuario</th>
+                                            <th>Mueble</th>
+                                            <th>Costo de ensamblaje</th>
+                                            <th>Fecha de ensamblaje</th>
                                         </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Iteramos cada elemento de la lista de ensamblajes -->
+                                        <c:forEach var="ensamblaje" items="${carga.auxEnsamblajes}" varStatus="status" >
+                                            <tr>
+                                                <td>${status.count}</td>
+                                                <td>${ensamblaje.usuario}</td> 
+                                                <td>${ensamblaje.mueble}</td>
+                                                <td>${ensamblaje.costo}</td>
+                                                <td>${ensamblaje.fecha}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!--Consulta-->
-        <section id="consulta" class="section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="">Consultas</h4>
-                            </div>
-                            <table class="table table-striped thead-dark">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Tipo</th>
-                                        <th>Costo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Iteramos cada elemento de la lista de resultados -->
-                                    <c:forEach var="consulta" items="${consultas}" varStatus="status" >
+            <!--clientes-->
+            <section id="clientes" class="section mt-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Clientes</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <td>${status.count}</td> 
-                                            <td>${consulta.tipoConsulta}</td>
-                                            <td>${consulta.costo}</td>
+                                            <th>No</th>
+                                            <th>NIT</th>
+                                            <th>Nombre</th>
+                                            <th>Dirección</th>
                                         </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Iteramos cada elemento de la lista de clientes -->
+                                        <c:forEach var="cliente" items="${carga.clientes}" varStatus="status" >
+                                            <tr>
+                                                <td>${status.count}</td>
+                                                <td>${cliente.nit}</td> 
+                                                <td>${cliente.nombre}</td>
+                                                <td>${cliente.direccion}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+
+        </c:if>
+
         <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>

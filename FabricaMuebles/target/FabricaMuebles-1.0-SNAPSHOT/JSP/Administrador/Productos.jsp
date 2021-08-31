@@ -29,10 +29,10 @@
             <div class="container-fluider">
                 <div class="row">
                     <form>
-                        
+
                     </form>
                     <div class="col-md-9 pt-5">
-                    <c:forEach var="mueble" items="${muebles}" varStatus="status" >
+                    <c:forEach var="mueble" items="${muebles}">
 
                         <div class="card-deck text-center card-produts mr-2 ml-2">
                             <div class="card mb-4 shadow-sm">

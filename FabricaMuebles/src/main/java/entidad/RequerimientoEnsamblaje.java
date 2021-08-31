@@ -5,6 +5,8 @@
  */
 package entidad;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author luis
@@ -14,6 +16,11 @@ public class RequerimientoEnsamblaje {
     private String pieza;
     private String mueble;
     private int cantidadPiezas;
+
+    /**
+     * Un requerimiento de ensamblaje tiene piezas que requiere
+     */
+    private ArrayList<Pieza> piezas;
 
     /**
      * For to get a mueble_pieza that required a new assembly
@@ -26,6 +33,17 @@ public class RequerimientoEnsamblaje {
         this.pieza = pieza;
         this.mueble = mueble;
         this.cantidadPiezas = cantidadPiezas;
+    }
+
+    /**
+     * Para un ensamblaje requier piezas
+     *
+     * @param mueble
+     * @param piezas
+     */
+    public RequerimientoEnsamblaje(String mueble, ArrayList<Pieza> piezas) {
+        this.mueble = mueble;
+        this.piezas = piezas;
     }
 
     /**
@@ -68,6 +86,14 @@ public class RequerimientoEnsamblaje {
      */
     public void setCantidadPiezas(int cantidadPiezas) {
         this.cantidadPiezas = cantidadPiezas;
+    }
+
+    public ArrayList<Pieza> getPiezas() {
+        return piezas;
+    }
+
+    public void setPiezas(ArrayList<Pieza> piezas) {
+        this.piezas = piezas;
     }
 
     @Override

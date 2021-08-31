@@ -19,12 +19,13 @@ public class NewMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // TODO code application logic here
         try {
-            // TODO code application logic here
             CargaDatos c = new CargaDatos(null);
-        } catch (IOException ex) {
-            Logger.getLogger(NewMain.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (IOException e) {
         }
+
     }
-    
+
 }

@@ -24,29 +24,10 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/ControladorProductos")
 public class ServletProductos extends HttpServlet {
 
-    private MuebleDB muebleDB;
     private ProductoDB productoDB;
 
     public ServletProductos() {
-        this.muebleDB = new MuebleDB();
         this.productoDB = new ProductoDB();
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String tarea = request.getParameter("tarea");
-        if (tarea != null) {
-            switch (tarea) {
-                case "mostrar":
-                    mostarProductos(request, response);
-                    break;
-                default:
-                    mostarProductos(request, response);
-            }
-        } else {
-            mostarProductos(request, response);
-        }
     }
 
     @Override
@@ -55,7 +36,8 @@ public class ServletProductos extends HttpServlet {
         String tarea = request.getParameter("tarea");
         if (tarea != null) {
             switch (tarea) {
-                case "":
+                case "mostrar":
+                    mostarProductos(request, response);
                     break;
                 default:
                     mostarProductos(request, response);

@@ -5,29 +5,14 @@
  */
 package entidad.file;
 
-import db.modelo.ClienteDB;
-import db.modelo.DetalleEnsamblajeDB;
-import db.modelo.EnsamblajeDB;
-import db.modelo.MuebleDB;
-import db.modelo.PiezaDB;
-import db.modelo.PrecioPiezaDB;
-import db.modelo.ProductoDB;
-import db.modelo.RequerimientoEnsamblajeDB;
-import db.modelo.UsuarioDB;
-import entidad.Cliente;
-import entidad.DetalleEnsamblaje;
-import entidad.Ensamblaje;
-import entidad.Mueble;
-import entidad.Pieza;
-import entidad.RequerimientoEnsamblaje;
-import entidad.Usuario;
+import db.modelo.*;
+import entidad.*;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class CargaDatos {
 
-    private ManejoArchivo file;
+    private ManejoArchivo manejadoArchivo;
     //lista de cada objeto
     private ArrayList<Pieza> piezas;
     private ArrayList<Mueble> muebles;
@@ -47,7 +32,7 @@ public class CargaDatos {
     private ArrayList<Cliente> clientes;
     //errores
     private ArrayList<String> errores;
-    //db
+    //instancias de las clases que usan la base de datos
     private EnsamblajeDB ensamblajeDB;
     private MuebleDB muebleDB;
     private PiezaDB piezaDB;
@@ -63,9 +48,13 @@ public class CargaDatos {
     //auxiliares
     private ArrayList<RequerimientoEnsamblaje> auxRequerimientosAsubir;
     private ArrayList<Ensamblaje> auxEnsamblajes;
+    //lector
+    private BufferedReader bufferedReader;
 
     public CargaDatos(BufferedReader bufferedReader) throws IOException {
-        this.file = new ManejoArchivo();
+        //obtiene la información desde el archivo de entrada
+        this.manejadoArchivo = new ManejoArchivo();
+        //objetos
         this.piezas = new ArrayList<>();
         this.muebles = new ArrayList<>();
         this.ensamblajes = new ArrayList<>();
@@ -89,11 +78,12 @@ public class CargaDatos {
         //inicializacion de auxilieare
         this.auxRequerimientosAsubir = new ArrayList<>();
         this.auxEnsamblajes = new ArrayList<>();
-
-        leerInformacion(this.file.informacionEntrada());
+        //lector
+        this.bufferedReader = bufferedReader;
+        //leerInformacion(this.file.informacionEntrada(this.bufferedReader));
     }
 
-    private void leerInformacion(String informacion) {
+    public void leerInformacion(String informacion) {
         String[] lineas = informacion.split("\n");
         for (String linea : lineas) {
             String[] pedazo = linea.split(",");
@@ -120,7 +110,7 @@ public class CargaDatos {
                         this.piezas.add(new Pieza(tipo));
                     }
                     if (!existePiezaTipoCosto(pieza)) {
-                        pieza.setCantidadExistente(0);
+                        //pieza.setCantidadExistente(0);
                         pieza.setEstado(false);
                         this.piezasTipoCosto.add(pieza);
                     }
@@ -141,8 +131,22 @@ public class CargaDatos {
                     String pieza = pedazo[2].substring(1, pedazo[2].length() - 1);
                     int cantidad = Integer.parseInt(quitarEspacios(pedazo[3]));
 
-                    RequerimientoEnsamblaje reque = new RequerimientoEnsamblaje(pieza, mueble, cantidad);
-                    this.requerimientoEnsamblajes.add(reque);
+                    ArrayList<Pieza> piezasRequeridas = new ArrayList<>();
+
+                    RequerimientoEnsamblaje reque = new RequerimientoEnsamblaje(mueble, piezasRequeridas);
+
+                    if (!existeMuebleEnElRequerimiento(reque)) {
+                        reque.getPiezas().add(new Pieza(pieza, cantidad));
+                        this.requerimientoEnsamblajes.add(reque);
+                    } else {
+                        //verificar si a este requerimiento ya tiene la pieza que viene
+                        RequerimientoEnsamblaje r = getRequerimiento(mueble);
+                        if (!existePiezaDelRequerimiento(r.getPiezas(), pieza)) {
+                            r.getPiezas().add(new Pieza(pieza, cantidad));
+                        } else {
+                            this.errores.add("Se esta repitiendo datos para el ENSAMBLE_PIEZAS: (" + linea + ")" + " línea ");
+                        }
+                    }
 
                 } else if (pedazo[0].equalsIgnoreCase("ENSAMBLAR_MUEBLE")) {
                     String fecha = quitarEspacios(pedazo[3].substring(1, pedazo[3].length() - 1));
@@ -172,14 +176,12 @@ public class CargaDatos {
         verificarEnsamblajes();
         //modificamos la cantidad de piezs existentes para cada tipo y precio
         modificarCantidadDePiezasSegunTipoYPrecio();
-        //se suben todos los datos
-        imprimirDatosParaVerificar();
     }
 
     /**
-     *
+     * Método que subirá tod la información en la base de datos
      */
-    private void imprimirDatosParaVerificar() {
+    public void imprimirDatosParaVerificar() {
         System.out.println("PIEZAS");
         for (int i = 0; i < this.piezas.size(); i++) {
             try {
@@ -229,9 +231,7 @@ public class CargaDatos {
         for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
             try {
                 this.productoDB.insertarProducto((i + 1), false);
-                System.out.println("producto insertado");
             } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                System.out.println("producto no insertado");
                 System.out.println(ex.getMessage());
             }
         }
@@ -241,18 +241,20 @@ public class CargaDatos {
 
             ArrayList<Pieza> detallePiezas = this.auxEnsamblajes.get(i).getPiezas();
             for (int j = 0; j < detallePiezas.size(); j++) {
-                try {
-                    DetalleEnsamblaje detalle = new DetalleEnsamblaje(
-                            (i + 1),
-                            detallePiezas.get(j).getCosto(),
-                            detallePiezas.get(j).getTipo());
-
-                    this.detalleEnsamblajeDB.insertarDetalleDelEnsamblaje(detalle);
-                    System.out.println("detalle insertado");
-                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                    System.out.println("detalle no insertado");
-                    System.out.println(ex.getMessage());
+                for (int k = 0; k < detallePiezas.get(j).getCantidadExistente(); k++) {
+                    try {
+                        DetalleEnsamblaje detalle = new DetalleEnsamblaje(
+                                (i + 1),
+                                detallePiezas.get(j).getCosto(),
+                                detallePiezas.get(j).getTipo());
+                        this.detalleEnsamblajeDB.insertarDetalleDelEnsamblaje(detalle);
+                        System.out.println("detalle insertado");
+                    } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                        System.out.println("detalle no insertado");
+                        System.out.println(ex.getMessage());
+                    }
                 }
+
             }
         }
         System.out.println("");
@@ -295,22 +297,33 @@ public class CargaDatos {
                 for (int j = 0; j < this.requerimientoEnsamblajes.size(); j++) {
                     //
                     if (ensamblajes.get(i).getMueble().equals(requerimientoEnsamblajes.get(j).getMueble())) {
+                        //recorriendo piezas de ese requerimiento
+                        RequerimientoEnsamblaje auxi = this.requerimientoEnsamblajes.get(j);
                         //verificamos si hay piezas todavía
-                        if (aunHayPiezasSuficientes(this.requerimientoEnsamblajes.get(j))) {
+                        if (aunHayPiezasSuficientes(auxi.getPiezas())) {
 
                             double costoEnsamblaje = 0;
 
-                            ArrayList<Pieza> piezasRequeridas = obtenerPiezasRequeridas(requerimientoEnsamblajes.get(i));
-                            System.out.println(piezasRequeridas.size());
-                            for (int k = 0; k < piezasRequeridas.size(); k++) {
-                                costoEnsamblaje += piezasRequeridas.get(k).getCosto();
+                            for (int k = 0; k < auxi.getPiezas().size(); k++) {
+
+                                Pieza piezaAuxi = auxi.getPiezas().get(k);
+
+                                ArrayList<Pieza> piezasRequeridasParaEstaPieza = obtenerPiezasRequeridas(piezaAuxi);
+
+                                System.out.println(piezasRequeridasParaEstaPieza.size());
+                                for (int l = 0; l < piezasRequeridasParaEstaPieza.size(); l++) {
+
+                                    costoEnsamblaje += piezasRequeridasParaEstaPieza.get(l).getCosto();
+                                }
+
                             }
                             //establecemos costo y estado del ensamblaje
                             this.ensamblajes.get(i).setCosto(costoEnsamblaje);
                             this.ensamblajes.get(i).setEstado(true);
-                            this.ensamblajes.get(i).setPiezas(piezasRequeridas);
+                            this.ensamblajes.get(i).setPiezas(this.requerimientoEnsamblajes.get(j).getPiezas());
                             //
                             this.auxEnsamblajes.add(this.ensamblajes.get(i));
+
                         } else {
                             System.out.println("piezas ya no alcanzan");
                             this.errores.add("Ya no hay piezas suficientes para el ensamblaje : "
@@ -318,10 +331,13 @@ public class CargaDatos {
                                     + ensamblajes.get(i).getUsuario() + ","
                                     + ensamblajes.get(i).getFecha() + ")");
                         }
+
                     }
+
                 }
+
             } else {
-                this.errores.add("No existe la pieza o mueble para este requerimiento-ensamblaje : "
+                this.errores.add("No existe el o mueble para este requerimiento-ensamblaje : "
                         + "(" + ensamblajes.get(i).getMueble() + ","
                         + ensamblajes.get(i).getUsuario() + ","
                         + ensamblajes.get(i).getFecha() + ")");
@@ -329,12 +345,14 @@ public class CargaDatos {
         }
     }
 
-    private ArrayList<Pieza> obtenerPiezasRequeridas(RequerimientoEnsamblaje requerimiento) {
+    private ArrayList<Pieza> obtenerPiezasRequeridas(Pieza pieza) {
         ArrayList<Pieza> requeridos = new ArrayList<>();
-        for (int i = 0; i < requerimiento.getCantidadPiezas(); i++) {
+        for (int i = 0; i < pieza.getCantidadExistente(); i++) {
             for (int k = 0; k < this.todasPiezas.size(); k++) {
-                if (requerimiento.getPieza().equalsIgnoreCase(todasPiezas.get(k).getTipo())) {
+                if (pieza.getTipo().equalsIgnoreCase(todasPiezas.get(k).getTipo())) {
+                    pieza.setCosto(todasPiezas.get(k).getCosto());
                     requeridos.add(todasPiezas.get(k));
+                    System.out.println(todasPiezas.get(k).toString());
                     this.todasPiezas.remove(k);
                     break;
                 }
@@ -343,14 +361,22 @@ public class CargaDatos {
         return requeridos;
     }
 
-    private boolean aunHayPiezasSuficientes(RequerimientoEnsamblaje requerimiento) {
+    private boolean aunHayPiezasSuficientes(ArrayList<Pieza> piezas) {
         int contador = 0;
+        int piezasNecesarias = 0;
+        for (Pieza pieza : piezas) {
+            piezasNecesarias += pieza.getCantidadExistente();
+        }
         for (int i = 0; i < this.todasPiezas.size(); i++) {
-            if (requerimiento.getPieza().equalsIgnoreCase(todasPiezas.get(i).getTipo())) {
-                contador++;
+            for (int j = 0; j < piezas.size(); j++) {
+                for (int k = 0; k < piezas.get(j).getCantidadExistente(); k++) {
+                    if (this.todasPiezas.get(i).getTipo().equalsIgnoreCase(piezas.get(j).getTipo())) {
+                        contador++;
+                    }
+                }
             }
         }
-        return contador >= requerimiento.getCantidadPiezas();
+        return contador >= piezasNecesarias;
     }
 
     private void modificarCantidadDePiezasSegunTipoYPrecio() {
@@ -365,66 +391,7 @@ public class CargaDatos {
             }
             this.piezasTipoCosto.get(i).setCantidadExistente(contador);
         }
-    }
 
-    /**
-     * Modifica la cantidad de muebles de acuerdo a los ensamblados
-     */
-    private void ingresarMueblesEnsamblados() {
-        for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
-            for (int j = 0; j < this.muebles.size(); j++) {
-                if (auxEnsamblajes.get(i).getMueble().equalsIgnoreCase(muebles.get(j).getNombre())) {
-                    muebles.get(j).setCantidadExistente(1);
-                }
-            }
-        }
-    }
-
-    /**
-     * Caluclar el costo de cada ensamblaje
-     */
-    private void agregarCostoDeEnsamblaje() {
-        for (int i = 0; i < this.auxEnsamblajes.size(); i++) {
-            this.auxEnsamblajes.get(i).setCosto(calcularCostoEnsamblaje(this.ensamblajes.get(i).getMueble()));
-        }
-    }
-
-    /**
-     * *
-     *
-     * @param muebleNombre
-     * @return
-     */
-    private double calcularCostoEnsamblaje(String muebleNombre) {
-        ArrayList<RequerimientoEnsamblaje> auxRequerimientos = new ArrayList<>();
-
-        for (int i = 0; i < this.requerimientoEnsamblajes.size(); i++) {
-            if (this.requerimientoEnsamblajes.get(i).getMueble().equals(muebleNombre)) {
-                auxRequerimientos.add(this.requerimientoEnsamblajes.get(i));
-            }
-        }
-        double costo = 0;
-        for (int i = 0; i < auxRequerimientos.size(); i++) {
-            Pieza aux = recuperarPieza(auxRequerimientos.get(i).getPieza());
-            if (aux != null) {
-                costo += aux.getCosto() * auxRequerimientos.get(i).getCantidadPiezas();
-            }
-        }
-        return costo;
-    }
-
-    /**
-     *
-     * @param tipo
-     * @return
-     */
-    private Pieza recuperarPieza(String tipo) {
-        for (int i = 0; i < this.piezas.size(); i++) {
-            if (this.piezas.get(i).getTipo().equals(tipo)) {
-                return this.piezas.get(i);
-            }
-        }
-        return null;
     }
 
     /**
@@ -485,30 +452,6 @@ public class CargaDatos {
     }
 
     /**
-     *
-     * @param tipo
-     */
-    private void modificarCantidadPiezas(String tipo) {
-        for (int i = 0; i < this.piezas.size(); i++) {
-            if (piezas.get(i).getTipo().equalsIgnoreCase(tipo)) {
-                piezas.get(i).setCantidadExistente(1);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param nombre
-     */
-    private void modificarCantidadMuebles(String nombre) {
-        for (int i = 0; i < this.muebles.size(); i++) {
-            if (muebles.get(i).getNombre().equalsIgnoreCase(nombre)) {
-                muebles.get(i).setCantidadExistente(1);
-            }
-        }
-    }
-
-    /**
      * Analiza la linea con el comando CLIENTE al principio
      *
      * @param cadena
@@ -552,7 +495,7 @@ public class CargaDatos {
      * @param nit
      * @return
      */
-    public boolean existeCliente(String nit) {
+    private boolean existeCliente(String nit) {
 
         for (Cliente c : clientes) {
             if (c.getNit().equalsIgnoreCase(nit)) {
@@ -560,6 +503,41 @@ public class CargaDatos {
             }
         }
         return false;
+    }
+
+    /**
+     *
+     * En caso de ya existe este requerimiento solo que hay que agregarle las
+     * piezas requeridas
+     *
+     * @param requerimientoEnsamblaje
+     * @return
+     */
+    private boolean existeMuebleEnElRequerimiento(RequerimientoEnsamblaje requerimientoEnsamblaje) {
+        for (RequerimientoEnsamblaje reque : this.requerimientoEnsamblajes) {
+            if (reque.getMueble().equalsIgnoreCase(requerimientoEnsamblaje.getMueble())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean existePiezaDelRequerimiento(ArrayList<Pieza> piezas, String piez) {
+        for (Pieza pieza : piezas) {
+            if (pieza.getTipo().equalsIgnoreCase(piez)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private RequerimientoEnsamblaje getRequerimiento(String mueble) {
+        for (RequerimientoEnsamblaje re : this.requerimientoEnsamblajes) {
+            if (re.getMueble().equalsIgnoreCase(mueble)) {
+                return re;
+            }
+        }
+        return null;
     }
 
     /**
@@ -589,4 +567,49 @@ public class CargaDatos {
         LocalDate fechaDate = LocalDate.parse(fecha, formato);
         return String.valueOf(fechaDate);
     }
+
+    public ArrayList<Pieza> getPiezas() {
+        return piezas;
+    }
+
+    public ArrayList<Mueble> getMuebles() {
+        return muebles;
+    }
+
+    public ArrayList<RequerimientoEnsamblaje> getRequerimientoEnsamblajes() {
+        return requerimientoEnsamblajes;
+    }
+
+    public ArrayList<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public ArrayList<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public ArrayList<String> getErrores() {
+        return errores;
+    }
+
+    public ArrayList<Pieza> getPiezasTipoCosto() {
+        return piezasTipoCosto;
+    }
+
+    public ArrayList<RequerimientoEnsamblaje> getAuxRequerimientosAsubir() {
+        return auxRequerimientosAsubir;
+    }
+
+    public ArrayList<Ensamblaje> getAuxEnsamblajes() {
+        return auxEnsamblajes;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public ManejoArchivo getManejadoArchivo() {
+        return manejadoArchivo;
+    }
+
 }

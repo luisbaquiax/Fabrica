@@ -67,6 +67,17 @@ public class Pieza {
     }
 
     /**
+     * Servirá de auxiliar para manipular los requerimientos-ensamblaje
+     *
+     * @param tipo
+     * @param cantidadExistente
+     */
+    public Pieza(String tipo, int cantidadExistente) {
+        this.tipo = tipo;
+        this.cantidadExistente = cantidadExistente;
+    }
+
+    /**
      *
      * @return
      */

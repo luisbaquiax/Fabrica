@@ -24,7 +24,7 @@ public class RequerimientoEnsamblajeDB {
 
     private static final String INSERT = "INSERT INTO mueble_pieza(pieza, mueble, cantidad_piezas) VALUES(?,?,?)";
     private static final String SELECT_BY_MUEBLE = "SELECT * FROM mueble_pieza WHERE  mueble = ?";
-
+    
     /**
      *
      * @param requerimiento

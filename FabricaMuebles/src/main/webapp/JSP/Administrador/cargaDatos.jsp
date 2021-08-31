@@ -66,34 +66,35 @@
         </div>
         <div class="container-fluider btn-warning">
             <div class="py-5 text-center">
-                <img class="d-block mx-auto mb-1 mt-5" src="../../assets/imagenes/taller.jpg" alt="" width="72" height="72">
+                <img class="d-block mx-auto mb-1 mt-5" src="../../assets/imagenes/taller.jpg" alt="" width="172" height="172">
                 <h2>Carga de datos.</h2>
                 <p class="lead">Por favor seleccione el archivo para subir los datos</p>
             </div>
             <div class="mb-3">
                 <form class="form-inline" method="POST" action="../../cargaDatos" enctype="multipart/form-data">
-                    <div class="form-group mb-2 mr-5">
-                        <input type="file" class="form-control-file ml-5" id="staticEmail2" name="archivo">
+                    <div class="form-group mb-2 mr-5 margin-auto">
+                        <input type="file" class="form-control-file ml-5" name="archivo">
                     </div>
                     <button type="submit" class="btn btn-primary mb-2 margin-auto" >Ver datos a subir</button>
-                    <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=descendente"
-                       class="btn btn-success mb-1 margin-auto">
+                </form>
+                <div class="form-group">
+                    <a href="${pageContext.request.contextPath}/cargaDatos?tarea=subir"
+                       class="btn btn-success mb-1">
                         <i class="fas fa-angle-double-down"></i> SUBIR DATOS
                     </a>
-                </form>
-
+                </div>
             </div>
         </div>
+                    <c:if var="${ya!=null}"></c:if>
 
-
-        <!--medicos-->
+        <!--precio-piezas-->
         <section id="medicos" class="section">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="">Listado de Medicos</h4>
+                                <h4 class="">Usuarios a ingresar</h4>
                             </div>
                             <table class="table table-striped thead-dark">
                                 <thead class="thead-dark">

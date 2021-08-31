@@ -5,6 +5,8 @@
  */
 package servletControlador.file;
 
+import db.modelo.UsuarioDB;
+import entidad.file.CargaDatos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,29 +29,40 @@ public class ControladorArchivo extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
         Part partes = request.getPart("archivo");
         InputStream inputStream = partes.getInputStream();
         BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
-        String linea = "";
-        String todaInformacion = "";
-        while (buffer.ready()) {
-            linea = buffer.readLine();
-            String aux = "";
-            char[] cadena = linea.toCharArray();
-            for (int i = 0; i < cadena.length; i++) {
-                if (cadena[i] == '(' || cadena[i] == ')') {
-                    cadena[i] = ',';
-                }
-                aux += cadena[i];
-            }
-            todaInformacion += aux + "\n";
-        }
-        System.out.println(todaInformacion);
+        CargaDatos cargaDatos = new CargaDatos(buffer);
+        cargaDatos.leerInformacion(cargaDatos.getManejadoArchivo().informacionEntrada(cargaDatos.getBufferedReader()));
+        //cargaDatos.imprimirDatosParaVerificar();
+        request.getSession().setAttribute("ya", 1);
+        request.getSession().setAttribute("carga", cargaDatos);
+        response.sendRedirect("/FabricaMuebles/JSP/Administrador/cargaDatos.jsp");
+
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("/FabricaMuebles/JSP/Administrador/cargaDatos.jsp");
-    }
+        String tarea = request.getParameter("tarea");
+        if (tarea != null) {
+            switch (tarea) {
+                case "subir":
+                    CargaDatos cargaDatos = (CargaDatos) request.getSession().getAttribute("carga");
+                    cargaDatos.imprimirDatosParaVerificar();
+                    response.sendRedirect("/FabricaMuebles/index.jsp");
+                    break;
+                default:
+                    response.sendRedirect("/FabricaMuebles/index.jsp");
+            }
+        } else {
+            UsuarioDB usuarioDB = new UsuarioDB();
+            if (usuarioDB.getTodosUsuarios().isEmpty()) {
+                response.sendRedirect("/FabricaMuebles/JSP/Administrador/cargaDatos.jsp");
+            } else {
+                response.sendRedirect("/FabricaMuebles/Inicio.jsp");
+            }
+        }
 
+    }
 }

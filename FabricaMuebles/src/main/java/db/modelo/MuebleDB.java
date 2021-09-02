@@ -132,20 +132,20 @@ public class MuebleDB {
             conn = Coneccion.getConnection();
             statement = conn.prepareStatement(MUEBLE_POR_NOMBRE);
             statement.setString(1, mueble);
+
             result = statement.executeQuery();
 
             while (result.next()) {
                 String nombre = result.getString("nombre");
                 double precio = result.getDouble("precio");
-                int cantidad = result.getInt("cantidad");
 
-                buscado = new Mueble(nombre, precio, cantidad);
+                buscado = new Mueble(nombre, precio);
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (conn != null) {
-                Coneccion.close(result, statement, conn);
+                Coneccion.close(conn);
 
             }
         }

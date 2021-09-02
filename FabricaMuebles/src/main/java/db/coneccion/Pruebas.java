@@ -52,7 +52,12 @@ public class Pruebas {
         PrecioPiezaDB precioPiezaDB = new PrecioPiezaDB();
         ClienteDB clienteDB = new ClienteDB();
         DetalleEnsamblajeDB detalleEnsamblajeDB = new DetalleEnsamblajeDB();
-//        for (Usuario a : usuarioDB.getTodosUsuarios()) {
+        try {
+            System.out.println(precioPiezaDB.getPiezaPorTipo("Pata cuadrada").toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+//        for (Usuario a : usuarioDB.getTodosUsuarios()) {A
 //            System.out.println(a.toString());
 //        }
 //        System.out.println(detalleEnsamblajeDB.getCostoEnsamblaje(1));

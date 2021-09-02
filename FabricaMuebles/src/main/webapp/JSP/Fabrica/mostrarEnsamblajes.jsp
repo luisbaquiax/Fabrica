@@ -55,6 +55,7 @@
                                         <th>Estado</th>
                                         <th>Mueble</th>
                                         <th>Ensamblado por</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,6 +72,10 @@
                                             </c:if>
                                             <td>${ensamblaje.mueble}</td>
                                             <td>${ensamblaje.usuario}</td>
+                                            <td><a href="${pageContext.request.contextPath}/FabricaControlador?tarea=verDetalle&id=${ensamblaje.id}"
+                                                   class="btn btn-primary mb-1">
+                                                    <i class="fas fa-arrow-alt-circle-down"></i> Ver detalle
+                                                </a></td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

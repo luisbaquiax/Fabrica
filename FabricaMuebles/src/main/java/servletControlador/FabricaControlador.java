@@ -10,6 +10,7 @@ import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
 import db.modelo.PrecioPiezaDB;
+import db.modelo.ProductoDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import entidad.DetalleEnsamblaje;
 import entidad.Ensamblaje;
@@ -45,6 +46,7 @@ public class FabricaControlador extends HttpServlet {
     private EnsamblajeDB ensamblajeDB;
     private PrecioPiezaDB precioPiezaDB;
     private DetalleEnsamblajeDB detalleEnsamblajeDB;
+    private ProductoDB productoDB;
 
     public FabricaControlador() {
         this.piezaDB = new PiezaDB();
@@ -53,6 +55,7 @@ public class FabricaControlador extends HttpServlet {
         this.ensamblajeDB = new EnsamblajeDB();
         this.precioPiezaDB = new PrecioPiezaDB();
         this.detalleEnsamblajeDB = new DetalleEnsamblajeDB();
+        this.productoDB = new ProductoDB();
     }
 
     @Override
@@ -138,6 +141,9 @@ public class FabricaControlador extends HttpServlet {
                         break;
                     case "fechaDescendente":
                         mostrarEnsamblajesFechaDESC(request, response);
+                        break;
+                    case "verDetalle":
+                        verDetalleEnsamblaje(request, response);
                         break;
                     default:
                         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
@@ -383,11 +389,11 @@ public class FabricaControlador extends HttpServlet {
         //mensaje en caso de un error
         String mensaje = "";
         //se guarda los requeridos en una lista auxiliar
-        List<Pieza> auxiRequeridos = new ArrayList<>();
         boolean salir = false;
         boolean hayRequerimiento = true;
         boolean errorDelServidor = false;
         Pieza auxPieza = null;
+       
         //verificamos si existe piezas todavía del tipo que requiere el ensamblaje
         try {
             for (RequerimientoEnsamblaje requerimiento : requerimientos) {
@@ -402,6 +408,8 @@ public class FabricaControlador extends HttpServlet {
         } catch (FabricaExcepcion e) {
             mensaje = e.getMessage();
             errorDelServidor = true;
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
         }
 
         if ((hayRequerimiento == false)) {
@@ -414,44 +422,53 @@ public class FabricaControlador extends HttpServlet {
             double costoNuevoEnsamblaje = 0;
             //lista auxiliar de piezas para el detalle
             ArrayList<Pieza> piezaDetalle = new ArrayList<>();
-            try {
-                for (RequerimientoEnsamblaje re : requerimientos) {
-                    for (int i = 0; i < re.getCantidadPiezas(); i++) {
-                        Pieza pi = this.precioPiezaDB.getPiezaPorTipo(re.getPieza());
-
-                        costoNuevoEnsamblaje += pi.getCosto();
-                        pi.quitarCantidad(1);
-                        this.precioPiezaDB.actualizarPrecioPieza(pi, pi.getTipo(), pi.getCosto());
-                        piezaDetalle.add(pi);
+            for (RequerimientoEnsamblaje re : this.requerimientoEnsamblajeDB.listarRequerimientos(mueble)) {
+                for (int i = 0; i < re.getCantidadPiezas(); i++) {
+                    Pieza pi = this.precioPiezaDB.getPiezaPorTipo(re.getPieza());
+                    System.out.println(pi.getCosto());
+                    costoNuevoEnsamblaje += pi.getCosto();
+                    pi.quitarCantidad(1);
+                    try {
+                        this.precioPiezaDB.actualizarCantidadExistentePrecioPieza(pi);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(FabricaControlador.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    System.out.println(pi.toString());
+                    piezaDetalle.add(pi);
                 }
-                Mueble muebleAgregado = this.muebleDB.getMueblePorNombre(mueble);
-                this.ensamblajeDB.insertarEnsamblaje(new Ensamblaje(fechaAcutal(), costoNuevoEnsamblaje, false, muebleAgregado.getNombre(), usu.getNombre()));
-                //agregamos el detalle del ensamblaje
-                List<Ensamblaje> ensamblajes = this.ensamblajeDB.getEnsamblajes();
-                //recogemos el último ensamblado que se supone que es este
-                Ensamblaje ensamblajeInsertado = this.ensamblajeDB.getEnsamblajesPorID(ensamblajes.get(ensamblajes.size() - 1).getId());
-                for (Pieza detallePieza : piezaDetalle) {
+            }
+            Mueble muebleAgregado = this.muebleDB.getMueblePorNombre(mueble);
+            System.out.println(muebleAgregado.toString());
+            try {
+                Ensamblaje nuevo = new Ensamblaje(fechaAcutal(), costoNuevoEnsamblaje, false, mueble, usu.getNombre());
+                this.ensamblajeDB.insertarEnsamblaje(nuevo);
+            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(FabricaControlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //agregamos el detalle del ensamblaje
+            List<Ensamblaje> ensamblajes = this.ensamblajeDB.getEnsamblajes();
+            //recogemos el último ensamblado que se supone que es este
+            Ensamblaje ensamblajeInsertado = this.ensamblajeDB.getEnsamblajesPorID(ensamblajes.get(ensamblajes.size() - 1).getId());
+            for (Pieza detallePieza : piezaDetalle) {
+                try {
                     this.detalleEnsamblajeDB.insertarDetalleDelEnsamblaje(
                             new DetalleEnsamblaje(
                                     ensamblajeInsertado.getId(),
-                                    costoNuevoEnsamblaje,
+                                    detallePieza.getCosto(),
                                     detallePieza.getTipo()));
+                } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                    System.out.println(ex.getMessage());
                 }
-                System.out.println("ensamblado con exito");
-                //en caso que todo sale bien se lista las piezas
-                verPiezas(request, response);
+            }
+            try {
+                this.productoDB.insertarProducto(ensamblajeInsertado.getId(), false);
             } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                mensaje = "NO se pudo hacer el ensamblaje.";
-                errorDelServidor = true;
-            } catch (FabricaExcepcion e) {
-                mensaje = e.getMessage();
-                errorDelServidor = true;
+
             }
-            if (!errorDelServidor) {
-                request.getSession().setAttribute("mensaje", mensaje);
-                response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
-            }
+            System.out.println("ensamblado con exito");
+            //en caso que todo sale bien se lista las piezas
+            verPiezas(request, response);
+
         }
 
     }
@@ -472,9 +489,6 @@ public class FabricaControlador extends HttpServlet {
             busEnsamblaje.setEstado(true);
             //actulizar ensamblaje
             this.ensamblajeDB.actualizaEnsamblajePorId(busEnsamblaje);
-            Mueble muebleBuscado = this.muebleDB.getMueblePorNombre(busEnsamblaje.getMueble());
-            muebleBuscado.setCantidadExistente(1);
-            this.muebleDB.actualizarCantidadMuebles(muebleBuscado.getCantidadExistente(), muebleBuscado.getNombre());
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             enviarMensajeDeError("NO SE PUDO ACTUALIZAR EL REGISTRO, LO SENTIMOS. COMUNÍQUESE CON EL ADMINISTRADOS DE BASE DE DATOS", request, response);
             response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
@@ -513,6 +527,15 @@ public class FabricaControlador extends HttpServlet {
         } else {
             request.getRequestDispatcher(request.getContextPath() + "/index.jsp");
         }
+    }
+    /**
+     * Muestra el detalle del ensamblaje
+     */
+    private void verDetalleEnsamblaje(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        int id = Integer.parseInt(request.getParameter("id"));
+        List<DetalleEnsamblaje> detalle = this.detalleEnsamblajeDB.getTodosDetallesById(id);
+        request.getSession().setAttribute("detalle", detalle);
+        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/detalleEnsamblaje.jsp");
     }
 
     private void enviarMensajeDeError(String mensaje, HttpServletRequest request, HttpServletResponse response) throws IOException {

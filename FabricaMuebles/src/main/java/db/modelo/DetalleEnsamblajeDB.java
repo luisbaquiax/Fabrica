@@ -22,6 +22,7 @@ public class DetalleEnsamblajeDB {
     private static final String INSERT = "INSERT INTO detalle_ensamblaje(id_ensamblaje, costo_pieza, tipo_pieza) VALUES(?,?,?)";
     private static final String ACTUALIZAR_DETALLE_ENSAMBLAJE = "UPDATE detalle_ensamblaje SET costo_pieza = ?, tipo_pieza = ? WHERE costo_pieza = ? AND tipo_pieza = ? AND id = ?";
     private static final String SELECT = "SELECT * FROM detalle_ensamblaje";
+    private static final String SELECT_BY_ID_ENSAMBLAJE = "SELECT * FROM detalle_ensamblaje WHERE id_ensamblaje = ?";
     private static final String COSTO_ENSAMBLAJE = ""
             + "SELECT SUM(costo_pieza) AS costo\n"
             + "FROM detalle_ensamblaje\n"
@@ -106,13 +107,42 @@ public class DetalleEnsamblajeDB {
             statement = conn.prepareStatement(SELECT);
             result = statement.executeQuery();
 
-            while (result.next()) {
-                detalle = new DetalleEnsamblaje(
-                        result.getInt("id"), result.getInt("id_ensamblaje"),
-                        result.getDouble("costo_pieza"),
-                        result.getString("tipo_pieza"));
-                lista.add(detalle);
+            getDetalle(result, detalle, (ArrayList) lista);
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(DetalleEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
             }
+        }
+        return lista;
+
+    }
+
+    /**
+     * Lista el detalle de un ensamblaje mediante el id-ensamblaje
+     * <br><br>
+     * query: SELECT * FROM detalle_ensamblaje WHERE id_ensamblaje = ?
+     *
+     * @param id
+     * @return
+     */
+    public List<DetalleEnsamblaje> getTodosDetallesById(int id) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        DetalleEnsamblaje detalle = null;
+        List<DetalleEnsamblaje> lista = new ArrayList<>();
+        try {
+
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SELECT_BY_ID_ENSAMBLAJE);
+            statement.setInt(1, id);
+
+            result = statement.executeQuery();
+
+            getDetalle(result, detalle, (ArrayList) lista);
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(DetalleEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -129,13 +159,13 @@ public class DetalleEnsamblajeDB {
      * query: COSTO_ENSAMBLAJE = "" + "SELECT SUM(costo_pieza) AS costo\n" +
      * "FROM detalle_ensamblaje\n" + "WHERE id_ensamblaje = ?"
      *
+     * @param id
      * @return El costo de ensamblaje según el id del ensamblaje
      */
     public double getCostoEnsamblaje(int id) {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
-        DetalleEnsamblaje detalle = null;
         double costoEnsamblaje = 0;
         try {
 
@@ -159,5 +189,23 @@ public class DetalleEnsamblajeDB {
             }
         }
         return costoEnsamblaje;
+    }
+
+    /**
+     * Metodo del resutlset
+     *
+     * @param result
+     * @param detalle
+     * @param lista
+     * @throws SQLException
+     */
+    private void getDetalle(ResultSet result, DetalleEnsamblaje detalle, ArrayList lista) throws SQLException {
+        while (result.next()) {
+            detalle = new DetalleEnsamblaje(
+                    result.getInt("id"), result.getInt("id_ensamblaje"),
+                    result.getDouble("costo_pieza"),
+                    result.getString("tipo_pieza"));
+            lista.add(detalle);
+        }
     }
 }

@@ -27,6 +27,7 @@ public class EnsamblajeDB {
     private static final String ENSAMBLAJE_BY_ID = "SELECT * FROM ensamblaje WHERE id = ?";
     private static final String ENSABLAJES_BY_FECHA_ASC = "SELECT * FROM ensamblaje WHERE nombre_usuario = ? ORDER BY fecha ASC";
     private static final String ENSABLAJES_BY_FECHA_DESC = "SELECT * FROM ensamblaje WHERE nombre_usuario = ? ORDER BY fecha DESC";
+    private static final String UPDATE_COSTO_ENSAMBLAJE = "UPDATE ensamblaje SET costo = ? WHERE id = ?";
 
     /**
      *
@@ -51,6 +52,8 @@ public class EnsamblajeDB {
         statement.setString(5, ensamblaje.getUsuario());
 
         registros = statement.executeUpdate();
+
+        Coneccion.close(statement, conn);
     }
 
     /**
@@ -73,6 +76,41 @@ public class EnsamblajeDB {
         statement.setInt(2, ensamblaje.getId());
 
         registros = statement.executeUpdate();
+
+        if (conn != null) {
+            Coneccion.close(statement, conn);
+
+        }
+    }
+
+    /**
+     * Actualiza el costo del ensamblaje por id
+     * <br><br>
+     * query:UPDATE_COSTO_ENSAMBLAJE = "UPDATE ensamblaje SET costo = ? WHERE id
+     * = ?
+     *
+     * @param ensamblaje
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public void actualizaCostoDeEnsamblaje(Ensamblaje ensamblaje) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        int registros = 0;
+
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(UPDATE_COSTO_ENSAMBLAJE);
+        statement.setDouble(1, ensamblaje.getCosto());
+        statement.setInt(2, ensamblaje.getId());
+
+        registros = statement.executeUpdate();
+
+        if (conn != null) {
+            Coneccion.close(statement, conn);
+
+        }
     }
 
     /**
@@ -104,6 +142,11 @@ public class EnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return lista;
     }
@@ -141,6 +184,11 @@ public class EnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return lista;
     }
@@ -180,6 +228,11 @@ public class EnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return lista;
     }
@@ -216,6 +269,11 @@ public class EnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return lista;
     }
@@ -252,6 +310,11 @@ public class EnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return lista;
     }
@@ -286,6 +349,11 @@ public class EnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return ensamblaje;
     }

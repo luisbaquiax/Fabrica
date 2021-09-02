@@ -44,6 +44,11 @@ public class MuebleDB {
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(statement, conn);
+
+            }
         }
     }
 
@@ -69,6 +74,11 @@ public class MuebleDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.out.println("Error al actualizar");
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(statement, conn);
+
+            }
         }
     }
 
@@ -97,6 +107,11 @@ public class MuebleDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return muebles;
     }
@@ -128,6 +143,11 @@ public class MuebleDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return buscado;
     }

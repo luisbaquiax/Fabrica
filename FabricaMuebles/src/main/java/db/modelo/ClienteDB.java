@@ -46,6 +46,11 @@ public class ClienteDB {
             ex.printStackTrace(System.out);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(ClienteDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
     }
 
@@ -75,6 +80,11 @@ public class ClienteDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
         return cliente;
     }

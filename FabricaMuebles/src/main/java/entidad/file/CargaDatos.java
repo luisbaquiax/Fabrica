@@ -199,7 +199,6 @@ public class CargaDatos {
         System.out.println("precio-piezas");
         for (Pieza pieza : piezasTipoCosto) {
             try {
-                //pieza.setCantidadExistente(0);
                 this.precioPiezaDB.insertarPrecioPieza(pieza);
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());

@@ -46,6 +46,8 @@ public class VentaDB {
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(statement, conn);
         }
 
     }
@@ -71,6 +73,8 @@ public class VentaDB {
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(statement, conn);
         }
     }
 
@@ -101,6 +105,8 @@ public class VentaDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(result, statement, conn);
         }
         return ventas;
     }
@@ -135,6 +141,8 @@ public class VentaDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(result, statement, conn);
         }
         if (venta == null) {
             throw new FabricaExcepcion("No se econtro la factura.");

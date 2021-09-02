@@ -53,8 +53,10 @@ public class UsuarioDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            Coneccion.close(statement);
-            Coneccion.close(conn);
+            if (conn != null) {
+                Coneccion.close(statement, conn);
+
+            }
         }
     }
 
@@ -79,8 +81,10 @@ public class UsuarioDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            Coneccion.close(statement);
-            Coneccion.close(conn);
+            if (conn != null) {
+                Coneccion.close(statement, conn);
+
+            }
         }
 
     }
@@ -96,23 +100,32 @@ public class UsuarioDB {
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    public Usuario buscarUsuario(String nombre, String pass) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public Usuario buscarUsuario(String nombre, String pass) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
         Usuario usuario = null;
 
-        conn = Coneccion.getConnection();
-        statement = conn.prepareStatement(SEARCH_USER);
-        statement.setString(1, nombre);
-        statement.setString(2, pass);
-        result = statement.executeQuery();
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SEARCH_USER);
+            statement.setString(1, nombre);
+            statement.setString(2, pass);
+            result = statement.executeQuery();
 
-        while (result.next()) {
-            String name = result.getString("nombre");
-            String contra = result.getString("pass");
-            String tipo = result.getString("tipo");
-            usuario = new Usuario(name, contra, tipo);
+            while (result.next()) {
+                String name = result.getString("nombre");
+                String contra = result.getString("pass");
+                String tipo = result.getString("tipo");
+                usuario = new Usuario(name, contra, tipo);
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
 
         return usuario;
@@ -146,7 +159,10 @@ public class UsuarioDB {
             String tipo = result.getString("tipo");
             usuario = new Usuario(name, contra, tipo);
         }
+        if (conn != null) {
+            Coneccion.close(result, statement, conn);
 
+        }
         return usuario;
     }
 
@@ -175,6 +191,11 @@ public class UsuarioDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return usuarios;
     }
@@ -209,6 +230,11 @@ public class UsuarioDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return usuarios;
     }
@@ -243,6 +269,11 @@ public class UsuarioDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return usuarios;
     }

@@ -9,8 +9,6 @@ import db.modelo.UsuarioDB;
 import entidad.Usuario;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,10 +30,12 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String nombre = request.getParameter("nombre");
-        String pass = request.getParameter("pass");
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
         try {
+            String nombre = request.getParameter("nombre");
+            String pass = request.getParameter("pass");
+
             Usuario buscado = this.usuarioDB.buscarUsuario(nombre, pass);
             if (buscado != null) {
                 if (buscado.getTipo().equals(Usuario.FABRICA)) {
@@ -51,16 +51,15 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("usuario", buscado);
                     response.sendRedirect("/FabricaMuebles/JSP/Administrador/Financiero.jsp");
                 }
+            } else {
+                request.getRequestDispatcher("/LoginRegister.jsp").forward(request, response);
             }
 
         } catch (SQLException ex) {
-            System.out.println("hola");
-            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+            request.getRequestDispatcher("/LoginRegister.jsp").forward(request, response);
         }
     }
-    
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

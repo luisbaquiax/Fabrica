@@ -52,6 +52,11 @@ public class ProductoDB {
         statement.setBoolean(2, estado);
 
         registros = statement.executeUpdate();
+
+        if (conn != null) {
+            Coneccion.close(statement, conn);
+
+        }
     }
 
     /**
@@ -79,6 +84,11 @@ public class ProductoDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
         return productos;
     }

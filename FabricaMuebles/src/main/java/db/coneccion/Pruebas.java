@@ -5,6 +5,8 @@
  */
 package db.coneccion;
 
+import db.modelo.ClienteDB;
+import db.modelo.DetalleEnsamblajeDB;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
@@ -13,6 +15,7 @@ import db.modelo.ProductoDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
 import db.modelo.VentaDB;
+import entidad.Cliente;
 import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Pieza;
@@ -47,10 +50,17 @@ public class Pruebas {
         UsuarioDB usuarioDB = new UsuarioDB();
         ProductoDB productoDB = new ProductoDB();
         PrecioPiezaDB precioPiezaDB = new PrecioPiezaDB();
-        
-        for (Ensamblaje a : ensamblajeDB.getEnsamblajesPorUsuario("C")) {
-            System.out.println(a.toString());
-        }
+        ClienteDB clienteDB = new ClienteDB();
+        DetalleEnsamblajeDB detalleEnsamblajeDB = new DetalleEnsamblajeDB();
+//        for (Usuario a : usuarioDB.getTodosUsuarios()) {
+//            System.out.println(a.toString());
+//        }
+//        System.out.println(detalleEnsamblajeDB.getCostoEnsamblaje(1));
+
+//        System.out.println(clienteDB.getClientPorNit("nit45").toString());
+//        for (Ensamblaje a : ensamblajeDB.getEnsamblajesPorUsuario("C")) {
+//            System.out.println(a.toString());
+//        }
 //
 //        for (Producto a : productoDB.getProducts()) {
 //            System.out.println(a.toString());

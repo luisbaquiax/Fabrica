@@ -24,7 +24,7 @@ public class RequerimientoEnsamblajeDB {
 
     private static final String INSERT = "INSERT INTO mueble_pieza(pieza, mueble, cantidad_piezas) VALUES(?,?,?)";
     private static final String SELECT_BY_MUEBLE = "SELECT * FROM mueble_pieza WHERE  mueble = ?";
-    
+
     /**
      *
      * @param requerimiento
@@ -44,6 +44,11 @@ public class RequerimientoEnsamblajeDB {
             registros = statement.executeUpdate();
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(RequerimientoEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(statement, conn);
+
+            }
         }
     }
 
@@ -77,6 +82,11 @@ public class RequerimientoEnsamblajeDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(RequerimientoEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(result, statement, conn);
+
+            }
         }
 
         return requerimientoEnsamblajes;

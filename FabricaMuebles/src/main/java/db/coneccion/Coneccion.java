@@ -30,17 +30,34 @@ public class Coneccion {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public static void close(PreparedStatement statement) {
+    /**
+     *
+     * Cerramos primero el objeto PreparedStatement después el objeto Connection
+     *
+     * @param statement
+     * @param conn
+     */
+    public static void close(PreparedStatement statement, Connection conn) {
         try {
             statement.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static void close(ResultSet result) {
+    /**
+     * Cerramos el ResulSet, PreparedStatement, Connection
+     *
+     * @param result
+     * @param statement
+     * @param conn
+     */
+    public static void close(ResultSet result, PreparedStatement statement, Connection conn) {
         try {
             result.close();
+            statement.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -53,4 +70,5 @@ public class Coneccion {
             Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

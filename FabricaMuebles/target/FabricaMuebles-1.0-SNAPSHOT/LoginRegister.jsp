@@ -3,7 +3,7 @@
     Created on : 14 ago. 2021, 23:15:09
     Author     : luis
 --%>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 <html lang="en">
     <head>
@@ -30,6 +30,7 @@
                 <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" name="pass" required autofocus>
                 <div class="checkbox mb-3">
                     <label>
+                        ${no}
                     </label>
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>

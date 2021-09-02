@@ -5,11 +5,13 @@
  */
 package servletControlador;
 
+import db.modelo.DetalleEnsamblajeDB;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
 import db.modelo.PrecioPiezaDB;
 import db.modelo.RequerimientoEnsamblajeDB;
+import entidad.DetalleEnsamblaje;
 import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Pieza;
@@ -42,6 +44,7 @@ public class FabricaControlador extends HttpServlet {
     private RequerimientoEnsamblajeDB requerimientoEnsamblajeDB;
     private EnsamblajeDB ensamblajeDB;
     private PrecioPiezaDB precioPiezaDB;
+    private DetalleEnsamblajeDB detalleEnsamblajeDB;
 
     public FabricaControlador() {
         this.piezaDB = new PiezaDB();
@@ -49,14 +52,17 @@ public class FabricaControlador extends HttpServlet {
         this.requerimientoEnsamblajeDB = new RequerimientoEnsamblajeDB();
         this.ensamblajeDB = new EnsamblajeDB();
         this.precioPiezaDB = new PrecioPiezaDB();
+        this.detalleEnsamblajeDB = new DetalleEnsamblajeDB();
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Usuario usu = (Usuario) request.getSession().getAttribute("usuario");
         if (request.getSession().getAttribute("usuario") == null) {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Cacher-Control", "no-cache, no-store, must-revalidate");
             response.sendRedirect(request.getContextPath() + "/index.jsp");
-        } else {
+        } else if (usu != null && (usu.getTipo().equals(Usuario.FABRICA))) {
+
             String tarea = request.getParameter("tarea");
             if (tarea != null) {
                 switch (tarea) {
@@ -68,18 +74,26 @@ public class FabricaControlador extends HttpServlet {
                         break;
 
                     default:
+                        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
                 }
             } else {
+                response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
             }
+
+        } else {
+            response.setHeader("Cacher-Control", "no-cache, no-store, must-revalidate");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        Usuario usu = (Usuario) request.getSession().getAttribute("usuario");
         if (request.getSession().getAttribute("usuario") == null) {
-            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Cacher-Control", "no-cache, no-store, must-revalidate");
             response.sendRedirect(request.getContextPath() + "/index.jsp");
-        } else {
+        } else if (usu != null && (usu.getTipo().equals(Usuario.FABRICA))) {
             String tarea = request.getParameter("tarea");
             if (tarea != null) {
                 switch (tarea) {
@@ -126,11 +140,14 @@ public class FabricaControlador extends HttpServlet {
                         mostrarEnsamblajesFechaDESC(request, response);
                         break;
                     default:
-
+                        response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
                 }
             } else {
                 response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
             }
+        } else {
+            response.setHeader("Cacher-Control", "no-cache, no-store, must-revalidate");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         }
 
     }
@@ -232,6 +249,8 @@ public class FabricaControlador extends HttpServlet {
             System.out.println("Error del servidor");
         } catch (FabricaExcepcion ex) {
             System.out.println(ex.getMessage());
+            request.getSession().setAttribute("mensaje", ex.getMessage());
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
         }
 
     }
@@ -243,40 +262,63 @@ public class FabricaControlador extends HttpServlet {
      * @param response
      * @throws IOException
      */
-    private void actualizarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void actualizarPieza(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String mensaje = "";
+
         try {
             String tipo = request.getParameter("tipo");
             double precioOriginal = Double.parseDouble(request.getParameter("precio"));
 
             //datos del formulario
             String nombreNuevo = request.getParameter("nombreNuevo");
-            double costo = Double.parseDouble(request.getParameter("costo"));
+            double costoNuevo = Double.parseDouble(request.getParameter("costo"));
             int cantidadAgregada = Integer.parseInt(request.getParameter("cantidad"));
             int cantidadQuitada = Integer.parseInt(request.getParameter("cantidad2"));
 
             //buscamos la pieza-precio
             Pieza editado = this.precioPiezaDB.getPiezaPorPrecioYNombre(tipo, precioOriginal);
-            //buscamos editato en la tabla pieza
+            //buscamos la pieza en la tabla 'pieza'
             Pieza pieza = this.piezaDB.getPiezaPorTipo(tipo);
-            System.out.println(pieza.toString());
+
             if (cantidadQuitada > editado.getCantidadExistente()) {
-                response.sendRedirect("/FabricaMuebles/JSP/Administrador/Inf.jsp");
+                mensaje = "No puedes quitar más de lo necesario";
+                request.getSession().setAttribute("mensaje", mensaje);
+                response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
             } else {
 
                 //actualizacion de pieza en particular
-                editado.setCosto(costo);
+                editado.setCosto(costoNuevo);
                 editado.setCantidadExistente(cantidadAgregada);
                 editado.quitarCantidad(cantidadQuitada);
                 this.precioPiezaDB.actualizarPrecioPieza(editado, tipo, precioOriginal);
-                //se actuliza la en la tabla pieza
+                //se actuliza la pieza en la tabla 'pieza'
                 this.piezaDB.actualizarPieza(pieza, nombreNuevo);
+                //se actualiza el detalle de ensamblaje
+                for (DetalleEnsamblaje d : this.detalleEnsamblajeDB.getTodosDetalles()) {
+                    this.detalleEnsamblajeDB.actualizarEnsablajePrecioYTipoPieza(costoNuevo, nombreNuevo, precioOriginal, tipo, d.getId());
+                }
+                //actualizar el costo de ensamblaje
+                for (Ensamblaje e : this.ensamblajeDB.getEnsamblajes()) {
+                    e.setCosto(this.detalleEnsamblajeDB.getCostoEnsamblaje(e.getId()));
+                    this.ensamblajeDB.actualizaCostoDeEnsamblaje(e);
+                }
+
                 enviarMensajeEnBlanco(request);
                 verPiezas(request, response);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            System.out.println("error del servidor");
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            mensaje = "Error con la base de datos, comuníquese con el administrador de base de datos o con el desarrollador";
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
+        } catch (SQLException ex) {
+            mensaje = "No se permite modificar a un precio ya existente. Sugerencia disminuye la cantidad-existente de la pieza que quieres editar"
+                    + " y agréguesela al que tiene el precio que quieres guardar.";
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
         } catch (FabricaExcepcion ex) {
-            System.out.println(ex.getMessage());
+            request.getSession().setAttribute("mensaje", ex.getMessage());
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
         } catch (NumberFormatException ex) {
             System.out.println("se espera un numero");
         }
@@ -294,12 +336,13 @@ public class FabricaControlador extends HttpServlet {
             String tipo = request.getParameter("tipo");
             double precio = Double.parseDouble(request.getParameter("precio"));
             Pieza obsoleta = this.precioPiezaDB.getPiezaPorPrecioYNombre(tipo, precio);
+            //se le cambia el estado de la pieza quedando obsoleta === eliminado
             obsoleta.setEstado(true);
             this.precioPiezaDB.actualizarPrecioPieza(obsoleta, tipo, precio);
             enviarMensajeEnBlanco(request);
             verPiezas(request, response);
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException | FabricaExcepcion ex) {
-            Logger.getLogger(FabricaControlador.class.getName()).log(Level.SEVERE, null, ex);
+            response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ListadoPiezas.jsp");
         }
     }
 
@@ -316,6 +359,13 @@ public class FabricaControlador extends HttpServlet {
         response.sendRedirect("/FabricaMuebles/JSP/Fabrica/ensamblarMueble.jsp");
     }
 
+    /**
+     * Envía un lista de los requerimientos de un ensamblaje
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     private void listarRequerimientoParaEnsamblaje(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String mueble = request.getParameter("mueble");
         ArrayList<RequerimientoEnsamblaje> requerimientos = (ArrayList<RequerimientoEnsamblaje>) this.requerimientoEnsamblajeDB.listarRequerimientos(mueble);
@@ -327,8 +377,8 @@ public class FabricaControlador extends HttpServlet {
     private void agregarEnsamble(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String mueble = request.getParameter("mueble");
         Usuario usu = (Usuario) request.getSession().getAttribute("usuario");
+
         ArrayList<RequerimientoEnsamblaje> requerimientos = (ArrayList<RequerimientoEnsamblaje>) this.requerimientoEnsamblajeDB.listarRequerimientos(mueble);
-        double costoEnsambleje = 0;
 
         //mensaje en caso de un error
         String mensaje = "";
@@ -336,54 +386,74 @@ public class FabricaControlador extends HttpServlet {
         List<Pieza> auxiRequeridos = new ArrayList<>();
         boolean salir = false;
         boolean hayRequerimiento = true;
-
+        boolean errorDelServidor = false;
         Pieza auxPieza = null;
-        List<Pieza> temps = new ArrayList<>();
-        for (RequerimientoEnsamblaje requerimiento : requerimientos) {
-            temps = this.precioPiezaDB.getPiezaPorTipo(requerimiento.getPieza());
-            auxPieza = this.piezaDB.getPiezaPorTipo(requerimiento.getPieza());
-            if (temps.size() < requerimiento.getCantidadPiezas()) {
-                hayRequerimiento = false;
-                break;
+        //verificamos si existe piezas todavía del tipo que requiere el ensamblaje
+        try {
+            for (RequerimientoEnsamblaje requerimiento : requerimientos) {
+                int existentes = 0;
+                auxPieza = new Pieza(requerimiento.getPieza());
+                existentes = this.precioPiezaDB.getCantidadExistentePorTipoCantidadYEstado(requerimiento.getPieza());
+                if (existentes < requerimiento.getCantidadPiezas()) {
+                    hayRequerimiento = false;
+                    break;
+                }
             }
+        } catch (FabricaExcepcion e) {
+            mensaje = e.getMessage();
+            errorDelServidor = true;
         }
-        System.out.println("costo: " + costoEnsambleje);
-        System.out.println(usu.toString());
-        if (requerimientos.isEmpty()) {
-            salir = true;
-        }
+
         if ((hayRequerimiento == false)) {
             mensaje = "No hay piezas suficientes del tipo: " + auxPieza.getTipo() + ".";
             request.getSession().setAttribute("mensaje", mensaje);
             response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
             //response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
         } else {
-            List<Pieza> proximosAUsar = new ArrayList<>();
-            for (Pieza auxiRequerido : auxiRequeridos) {
-                for (int i = 0; i < auxiRequerido.getCantidadExistente(); i++) {
-                    Pieza uso = auxiRequerido;
-                    proximosAUsar.add(uso);
-                }
-            }
-            double costo = 0;
-            for (int i = 0; i < requerimientos.size(); i++) {
-                for (int j = 0; j < proximosAUsar.size(); j++) {
-                    if (requerimientos.get(i).getPieza().equals(proximosAUsar.get(i).getTipo())) {
+            //proceo de ensamblar
+            double costoNuevoEnsamblaje = 0;
+            //lista auxiliar de piezas para el detalle
+            ArrayList<Pieza> piezaDetalle = new ArrayList<>();
+            try {
+                for (RequerimientoEnsamblaje re : requerimientos) {
+                    for (int i = 0; i < re.getCantidadPiezas(); i++) {
+                        Pieza pi = this.precioPiezaDB.getPiezaPorTipo(re.getPieza());
 
+                        costoNuevoEnsamblaje += pi.getCosto();
+                        pi.quitarCantidad(1);
+                        this.precioPiezaDB.actualizarPrecioPieza(pi, pi.getTipo(), pi.getCosto());
+                        piezaDetalle.add(pi);
                     }
                 }
-            }
-            Mueble agregado = this.muebleDB.getMueblePorNombre(mueble);
-            try {
-                this.ensamblajeDB.insertarEnsamblaje(new Ensamblaje(fechaAcutal(), costoEnsambleje, false, agregado.getNombre(), usu.getNombre()));
+                Mueble muebleAgregado = this.muebleDB.getMueblePorNombre(mueble);
+                this.ensamblajeDB.insertarEnsamblaje(new Ensamblaje(fechaAcutal(), costoNuevoEnsamblaje, false, muebleAgregado.getNombre(), usu.getNombre()));
+                //agregamos el detalle del ensamblaje
+                List<Ensamblaje> ensamblajes = this.ensamblajeDB.getEnsamblajes();
+                //recogemos el último ensamblado que se supone que es este
+                Ensamblaje ensamblajeInsertado = this.ensamblajeDB.getEnsamblajesPorID(ensamblajes.get(ensamblajes.size() - 1).getId());
+                for (Pieza detallePieza : piezaDetalle) {
+                    this.detalleEnsamblajeDB.insertarDetalleDelEnsamblaje(
+                            new DetalleEnsamblaje(
+                                    ensamblajeInsertado.getId(),
+                                    costoNuevoEnsamblaje,
+                                    detallePieza.getTipo()));
+                }
+                System.out.println("ensamblado con exito");
+                //en caso que todo sale bien se lista las piezas
+                verPiezas(request, response);
             } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-                mensaje = "Ha ocurrido un error. Comuníquese con el administrador de la base de datos.";
+                mensaje = "NO se pudo hacer el ensamblaje.";
+                errorDelServidor = true;
+            } catch (FabricaExcepcion e) {
+                mensaje = e.getMessage();
+                errorDelServidor = true;
+            }
+            if (!errorDelServidor) {
                 request.getSession().setAttribute("mensaje", mensaje);
                 response.sendRedirect("/FabricaMuebles/JSP/Fabrica/mensaje.jsp");
-                //response.sendRedirect("/FabricaMuebles/JSP/Fabrica/Fabricador.jsp");
             }
-            response.sendRedirect(request.getContextPath() + "/FabricaControlador?tarea=ensamblar");
         }
+
     }
 
     private void listarMueblesEnsambladosNoRegistrados(HttpServletRequest request, HttpServletResponse response) throws IOException {

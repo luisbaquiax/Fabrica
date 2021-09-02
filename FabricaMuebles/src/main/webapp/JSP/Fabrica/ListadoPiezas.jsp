@@ -31,18 +31,17 @@
             <section class="mt-5 opacity">
                 <div class="container mt-5">
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="text-center">Listado de Piezas</h4>
-                                    <h4 class="text-center">${mensaje}</h4>
-                            </div>
-                            <a href="#"
-                               data-toggle="modal" data-target="#agregarPiezaModal"
-                               class="btn btn-primary mb-1">
-                                <i class="fas fa-plus"></i> Agregar Pieza Nueva
-                            </a>
-                            <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=ascendente"
+                                </div>
+                                <a href="#"
+                                   data-toggle="modal" data-target="#agregarPiezaModal"
+                                   class="btn btn-primary mb-1">
+                                    <i class="fas fa-plus"></i> Agregar Pieza Nueva
+                                </a>
+                                <a href="${pageContext.request.contextPath}/FabricaControlador?tarea=ascendente"
                                class="btn btn-warning mb-1">
                                 <i class="fas fa-angle-double-up"></i> Ordenar por cantidad de unidades (ASC)
                             </a>
@@ -88,18 +87,20 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="text-center">Agotándose</h4>
                             </div>
                             <div class="card-body">
-                                <table class="table table-striped">
+
+                                <table class="table table-striped ">
 
                                     <thead class="thead-dark">
                                         <tr>
                                             <th>Tipo</th>
-                                            <th>Cantidad de unidades</th>
+                                            <th>Unidades</th>
+                                            <th>Costo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -107,6 +108,7 @@
                                             <tr>
                                                 <td>${pieza.tipo}</td>
                                                 <td>${pieza.cantidadExistente}</td>
+                                                <td><fmt:formatNumber value="${pieza.costo}" type="currency"/></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
@@ -114,6 +116,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>

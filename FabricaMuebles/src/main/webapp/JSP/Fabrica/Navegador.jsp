@@ -16,9 +16,6 @@
                 <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Ver o Modificar Piezas <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ver">Ver Piezas <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="${pageContext.request.contextPath}/FabricaControlador?tarea=ensamblar">Ensamblar <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
@@ -36,7 +33,7 @@
 </nav>
 <%
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    
+
     if (session.getAttribute("usuario") == null) {
         response.sendRedirect(request.getContextPath() + "/index.jsp");
     }

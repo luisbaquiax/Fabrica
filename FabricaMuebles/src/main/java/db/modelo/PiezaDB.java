@@ -46,6 +46,8 @@ public class PiezaDB {
             registros = statement.executeUpdate();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(statement, conn);
         }
     }
 
@@ -67,6 +69,8 @@ public class PiezaDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.err.println("error al eliminar");
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(statement, conn);
         }
     }
 
@@ -91,6 +95,8 @@ public class PiezaDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.err.println("error al eliminar");
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(statement, conn);
         }
     }
 
@@ -105,10 +111,12 @@ public class PiezaDB {
      */
     public void actualizarPieza(Pieza pieza, String nuevoNombre) {
         int registros = 0;
+        Connection conn = null;
+        PreparedStatement statement = null;
         try {
 
-            Connection conn = Coneccion.getConnection();
-            PreparedStatement statement = conn.prepareStatement(UPDATE_PIEZA);
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(UPDATE_PIEZA);
 
             statement.setString(1, nuevoNombre);
             statement.setString(2, pieza.getTipo());
@@ -118,6 +126,8 @@ public class PiezaDB {
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             System.out.println("Error al actualizar");
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(statement, conn);
         }
     }
 
@@ -146,11 +156,18 @@ public class PiezaDB {
             }
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(result, statement, conn);
         }
 
         return pieza;
     }
 
+    /**
+     * Listado de piezas
+     *
+     * @return
+     */
     public List<Pieza> getPiezas() {
         Connection conn = null;
         PreparedStatement statement = null;
@@ -167,6 +184,8 @@ public class PiezaDB {
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Coneccion.close(result, statement, conn);
         }
         return piezas;
     }

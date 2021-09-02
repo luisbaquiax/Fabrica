@@ -32,6 +32,12 @@ public class PrecioPiezaDB {
     private static final String UPDATE_PIEZA = "UPDATE precio_pieza SET cantidad = ?, costo = ?, estado = ? WHERE pieza = ? AND costo = ?";
 
     private static final String OBTENER_PIEZAS_POR_NOMBRE = "SELECT * FROM precio_pieza WHERE pieza = ? AND cantidad > 0 AND estado = 0";
+    private static final String OBTENER_PIEZA_POR_NOMBRE = "SELECT * FROM precio_pieza WHERE pieza = ? AND cantidad > 0 AND estado = 0 LIMIT 1";
+    private static final String CANTIDAD_EXISTENTE = ""
+            + "SELECT SUM(cantidad) AS existentes, pieza\n"
+            + "FROM precio_pieza WHERE pieza = ? "
+            + "AND cantidad > 0 "
+            + "AND estado = 0";
 
     /**
      * Insert a new pieza-precio in the database specfic in the table
@@ -57,20 +63,25 @@ public class PrecioPiezaDB {
             registros = statement.executeUpdate();
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
     }
 
     /**
      * Update a precio_pieza by pieza and costo
      * <br><br>
-     * query: UPDATE_PIEZA = "UPDATE precio_pieza SET cantidad = ?, costo = ?,
-     * estado = ? WHERE pieza = ? AND costo = ?"
+     * query: UPDATE precio_pieza SET cantidad = ?, costo = ?, estado = ? WHERE
+     * pieza = ? AND costo = ?
      *
      * @param pieza
      * @param piezaBuscado
      * @param precioBuscado
      */
-    public void actualizarPrecioPieza(Pieza pieza, String piezaBuscado, double precioBuscado) {
+    public void actualizarPrecioPieza(Pieza pieza, String piezaBuscado, double precioBuscado) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
@@ -86,8 +97,13 @@ public class PrecioPiezaDB {
             statement.setDouble(5, precioBuscado);
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
     }
 
@@ -117,13 +133,17 @@ public class PrecioPiezaDB {
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
         return piezas;
     }
 
     /**
-     * Instruccion: PIEZAS_AGOTADAS_O_CASI_AGOTADAS = "SELECT * FROM pieza WHERE
-     * cantidad < 5"
+     * query: SELECT * FROM precio_pieza WHERE cantidad < 5
      *
      * @return
      */
@@ -143,6 +163,10 @@ public class PrecioPiezaDB {
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+            }
         }
         return piezas;
     }
@@ -169,7 +193,13 @@ public class PrecioPiezaDB {
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
+
         return piezas;
     }
 
@@ -195,6 +225,11 @@ public class PrecioPiezaDB {
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
         return piezas;
     }
@@ -234,6 +269,11 @@ public class PrecioPiezaDB {
 
         pieza = obtenerPieza(result, pieza);
 
+        if (conn != null) {
+            Coneccion.close(conn);
+
+        }
+
         if (pieza == null) {
             throw new FabricaExcepcion("Pieza no encontrada. Comuníquese con el administrador de base de datos.");
         }
@@ -243,8 +283,9 @@ public class PrecioPiezaDB {
 
     /**
      * Obtiene una lista de piezas de la tabla precio-pieza en base a su nombre
-     * y que su cantidad sea mayor que 0 y su estado sea '0' es decir que no
-     * está,esto se usarán para realizar una ensamblaje obsoleto
+     * y que su cantidad sea mayor que 0 y su estado sea '0' es decir que la
+     * pieza no esté eliminado,esto se usarán para realizar una ensamblaje
+     * obsoleto
      * <br><br>
      * query: SELECT * FROM precio_pieza WHERE pieza = ? AND cantidad > 0 AND
      * estado = 0
@@ -252,7 +293,7 @@ public class PrecioPiezaDB {
      * @param tipo
      * @return
      */
-    public List<Pieza> getPiezaPorTipo(String tipo) {
+    public List<Pieza> getPiezasPorTipo(String tipo) {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
@@ -268,8 +309,83 @@ public class PrecioPiezaDB {
 
         } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
         }
         return piezas;
+    }
+
+    /**
+     * <br><br>
+     * QUERY: SELECT * FROM precio_pieza WHERE pieza = ? AND cantidad > 0 AND
+     * estado = 0 LIMIT 1
+     *
+     * @param tipo
+     * @return Devuelve una pieza con cantida mayor 0 y que no esté obsoleto
+     * estado = 0, es decir que no esté eliminado
+     * @throws entidad.manejoErrores.FabricaExcepcion
+     */
+    public Pieza getPiezaPorTipo(String tipo) throws FabricaExcepcion {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Pieza pieza = null;
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(OBTENER_PIEZA_POR_NOMBRE);
+            result = statement.executeQuery();
+
+            obtenerPieza(result, pieza);
+        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            throw new FabricaExcepcion("Error en la base de datos. Consulte con el desarrollador.");
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+
+            }
+        }
+        return pieza;
+    }
+
+    /**
+     * <br><br>
+     * query: SELECT SUM(cantidad) AS existentes, pieza FROM precio_pieza WHERE
+     * pieza = ? AND cantidad > 0 AND estado = 0
+     *
+     * @param tipoPieza
+     * @return Obtiene la cantidad en existencia de acuerdo a su tipo y estado
+     * no obsoleta
+     * @throws entidad.manejoErrores.FabricaExcepcion
+     */
+    public int getCantidadExistentePorTipoCantidadYEstado(String tipoPieza) throws FabricaExcepcion {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        int existentes = 0;
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(CANTIDAD_EXISTENTE);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                existentes = result.getInt("existentes");
+            }
+        } catch (SQLException ex) {
+            throw new FabricaExcepcion(" Error en el servidor. Contántese con el desarrollador.");
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (conn != null) {
+                Coneccion.close(conn);
+            }
+        }
+        return existentes;
+
     }
 
     /**

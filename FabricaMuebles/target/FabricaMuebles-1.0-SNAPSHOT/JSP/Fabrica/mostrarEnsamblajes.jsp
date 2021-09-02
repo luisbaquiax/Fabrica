@@ -65,10 +65,10 @@
                                             <td>${ensamblaje.fecha}</td>
                                             <td> <fmt:formatNumber value="${ensamblaje.costo}" type="currency"/> </td>
                                             <c:if test="${ensamblaje.estado==false}">
-                                                <td>No registrado</td>
+                                                <td class="text-danger">No registrado</td>
                                             </c:if>
                                             <c:if test="${ensamblaje.estado==true}">
-                                                <td>Registrado</td>
+                                                <td class="text-success">Registrado</td>
                                             </c:if>
                                             <td>${ensamblaje.mueble}</td>
                                             <td>${ensamblaje.usuario}</td>

@@ -23,7 +23,7 @@
         <div class="container-md">
             <form class="form-signin" method="POST" action="Login">
                 <img class="mb-4 imagen" src="assets/imagenes/login.png" alt="" width="72" height="72">
-                <h1 class="h3 mb-3 font-weight-normal">Por favor, regístrese</h1>
+                <h1 class="h3 mb-3 font-weight-normal text-center">Iniciar sesión</h1>
                 <label for="inputEmail" class="form-signin">Nombre de Usuario:</label>
                 <input type="text" id="inputEmail" class="form-control" placeholder="Nombre"  name="nombre" required autofocus>
                 <label for="inputPassword" class="form-signin">Contraseña:</label>
@@ -35,7 +35,7 @@
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
                 <p class="mt-5 mb-3 text-muted nota">&copy; Muebles S.A. 2021</p>
-            </form>
+                </center>
         </div>
         <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

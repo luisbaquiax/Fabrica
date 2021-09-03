@@ -30,6 +30,18 @@ public class Producto {
     }
 
     /**
+     * Actualizar producto de no vendido a vendio
+     *
+     * @param precio
+     * @param identificador
+     * @param vendido
+     */
+    public Producto(int identificador, boolean vendido) {
+        this.identificador = identificador;
+        this.vendido = vendido;
+    }
+
+    /**
      * @return the nombre
      */
     public String getNombre() {

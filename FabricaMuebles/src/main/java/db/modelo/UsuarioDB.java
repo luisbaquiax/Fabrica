@@ -50,14 +50,14 @@ public class UsuarioDB {
             statement.setBoolean(4, usuario.isEstado());
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(statement, conn);
 
             }
-        }
+        }*/
     }
 
     /**
@@ -78,14 +78,14 @@ public class UsuarioDB {
             statement.setString(2, usuario.getPassword());
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(statement, conn);
 
             }
-        }
+        }*/
 
     }
 
@@ -106,27 +106,23 @@ public class UsuarioDB {
         ResultSet result = null;
         Usuario usuario = null;
 
-        try {
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(SEARCH_USER);
-            statement.setString(1, nombre);
-            statement.setString(2, pass);
-            result = statement.executeQuery();
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(SEARCH_USER);
+        statement.setString(1, nombre);
+        statement.setString(2, pass);
+        result = statement.executeQuery();
 
-            while (result.next()) {
-                String name = result.getString("nombre");
-                String contra = result.getString("pass");
-                String tipo = result.getString("tipo");
-                usuario = new Usuario(name, contra, tipo);
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
-
-            }
+        while (result.next()) {
+            String name = result.getString("nombre");
+            String contra = result.getString("pass");
+            String tipo = result.getString("tipo");
+            usuario = new Usuario(name, contra, tipo);
         }
+
+        /*if (conn != null) {
+            Coneccion.close(result, statement, conn);
+
+        }*/
 
         return usuario;
     }
@@ -138,11 +134,8 @@ public class UsuarioDB {
      * @param nombre
      * @return
      * @throws SQLException
-     * @throws ClassNotFoundException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
      */
-    public Usuario buscarUsuarioPorNombre(String nombre) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public Usuario buscarUsuarioPorNombre(String nombre) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
@@ -159,10 +152,11 @@ public class UsuarioDB {
             String tipo = result.getString("tipo");
             usuario = new Usuario(name, contra, tipo);
         }
-        if (conn != null) {
-            Coneccion.close(result, statement, conn);
 
-        }
+        /*if (conn != null) {
+            Coneccion.close(result, statement, conn);
+        }*/
+
         return usuario;
     }
 
@@ -189,14 +183,14 @@ public class UsuarioDB {
                 usuario = new Usuario(result.getString("nombre"), result.getString("pass"), result.getString("tipo"), result.getBoolean("estado"));
                 usuarios.add(usuario);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return usuarios;
     }
 
@@ -228,14 +222,14 @@ public class UsuarioDB {
                         result.getBoolean("estado"));
                 usuarios.add(usuario);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return usuarios;
     }
 
@@ -267,14 +261,14 @@ public class UsuarioDB {
                         result.getBoolean("estado"));
                 usuarios.add(usuario);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return usuarios;
     }
 }

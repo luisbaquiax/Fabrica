@@ -53,7 +53,7 @@ public class EnsamblajeDB {
 
         registros = statement.executeUpdate();
 
-        Coneccion.close(statement, conn);
+        //Coneccion.close(statement, conn);
     }
 
     /**
@@ -77,10 +77,10 @@ public class EnsamblajeDB {
 
         registros = statement.executeUpdate();
 
-        if (conn != null) {
+        /*if (conn != null) {
             Coneccion.close(statement, conn);
 
-        }
+        }*/
     }
 
     /**
@@ -107,10 +107,10 @@ public class EnsamblajeDB {
 
         registros = statement.executeUpdate();
 
-        if (conn != null) {
+        /*if (conn != null) {
             Coneccion.close(statement, conn);
 
-        }
+        }*/
     }
 
     /**
@@ -140,14 +140,14 @@ public class EnsamblajeDB {
                         result.getString("nombre_usuario"));
                 lista.add(ensamblaje);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
     }
 
@@ -182,14 +182,14 @@ public class EnsamblajeDB {
                         result.getString("nombre_usuario"));
                 lista.add(ensamblaje);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
     }
 
@@ -226,14 +226,14 @@ public class EnsamblajeDB {
                         result.getString("nombre_usuario"));
                 lista.add(ensamblaje);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
     }
 
@@ -267,14 +267,14 @@ public class EnsamblajeDB {
                         result.getString("nombre_usuario"));
                 lista.add(ensamblaje);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
     }
 
@@ -308,14 +308,14 @@ public class EnsamblajeDB {
                         result.getString("nombre_usuario"));
                 lista.add(ensamblaje);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
     }
 
@@ -347,14 +347,14 @@ public class EnsamblajeDB {
                         result.getString("nombre_mueble"),
                         result.getString("nombre_usuario"));
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return ensamblaje;
     }
 

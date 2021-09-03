@@ -40,10 +40,12 @@
                 <div class="card-body">
                     <form action="${pageContext.request.contextPath}/ControladorVenta?tarea=registrarCliente&cajero=${cajero}"
                           method="POST" class="was-validated">
+                        <input type="hidden" name="mueble" value="${mueble}"> 
+                        <input type="hidden" name="idEnsamblaje" value="${idEnsamblaje}"> 
                         <!--class="was-validated" (sirve para validar los campos)-->
                         <div class="form-group">
-                            <label for="nit">Su NIT:</label>
-                            <input type="text" class="form-control" name="nit" disabled value="${nit}">
+                            <label for="nit">Su NIT: ${nit}</label>
+                            <input type="hidden" name="nit" value="${nit}">
                         </div>
                         <div class="form-group">
                             <label for="nombre">Ingrese su nombre:</label>

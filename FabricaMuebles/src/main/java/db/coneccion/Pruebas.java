@@ -66,10 +66,13 @@ public class Pruebas {
 //        for (Ensamblaje a : ensamblajeDB.getEnsamblajesPorUsuario("C")) {
 //            System.out.println(a.toString());
 //        }
-//
-//        for (Producto a : productoDB.getProducts()) {
-//            System.out.println(a.toString());
-//        }
+
+        for (Producto a : productoDB.getProducts()) {
+            System.out.println(a.toString());
+        }
+        for (Usuario u : usuarioDB.getTodosUsuarios()) {
+            System.out.println(u.toString());
+        }
 //        
 //        for (Usuario u : usuarioDB.getUsurariosVentaYFabrica()) {
 //            System.out.println(u.toString());

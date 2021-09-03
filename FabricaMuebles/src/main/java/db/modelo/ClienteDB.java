@@ -44,14 +44,12 @@ public class ClienteDB {
             registros = statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(ClienteDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }  /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
     }
 
     /**
@@ -78,14 +76,14 @@ public class ClienteDB {
                         result.getString("nombre"),
                         result.getString("direccion"));
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
         return cliente;
     }
 }

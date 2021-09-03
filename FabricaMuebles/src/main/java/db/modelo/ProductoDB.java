@@ -21,13 +21,14 @@ import java.util.logging.Logger;
 public class ProductoDB {
 
     private static final String INSERT = "INSERT INTO producto(id_ensamblaje, estado) VALUES(?,?)";
-    private static final String PRODUCTOS = "SELECT ensamblaje.nombre_mueble, producto.id_ensamblaje, mueble.nombre, mueble.precio\n"
+    private static final String UPDATE_PRODUCTO = "UPDATE producto SET estado = ? WHERE id_ensamblaje = ?";
+    private static final String PRODUCTOS = "SELECT ensamblaje.nombre_mueble, producto.id_ensamblaje, mueble.precio\n"
             + "FROM ensamblaje\n"
             + "RIGHT JOIN producto\n"
             + "ON ensamblaje.id=producto.id_ensamblaje\n"
             + "RIGHT JOIN mueble\n"
             + "ON mueble.nombre=ensamblaje.nombre_mueble "
-            + "WHERE producto.estado = '0'"
+            + "WHERE producto.estado = 0 "
             + "ORDER BY id_ensamblaje";
 
     /**
@@ -53,13 +54,51 @@ public class ProductoDB {
 
         registros = statement.executeUpdate();
 
-        if (conn != null) {
+        /*if (conn != null) {
             Coneccion.close(statement, conn);
 
-        }
+        }*/
     }
 
     /**
+     * Actualiza un producto cambiando el estado a vendido
+     * <br><br>
+     * query: UPDATE producto SET estado = ? WHERE id_ensamblaje
+     *
+     * @param producto
+     * @throws SQLException
+     */
+    public void actualizarProducto(Producto producto) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        int registros = 0;
+
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(UPDATE_PRODUCTO);
+
+        statement.setBoolean(1, producto.isVendido());
+        statement.setInt(2, producto.getIdentificador());
+
+        registros = statement.executeUpdate();
+
+        /*if (conn != null) {
+            Coneccion.close(statement, conn);
+
+        }*/
+    }
+
+    /**
+     * Muestra los productos disponibles
+     * <br><br>
+     * query: SELECT ensamblaje.nombre_mueble, producto.id_ensamblaje,
+     * mueble.nombre, mueble.precio<br>
+     * FROM ensamblaje<br>
+     * RIGHT JOIN producto<br>
+     * ON ensamblaje.id=producto.id_ensamblaje<br>
+     * RIGHT JOIN mueble<br>
+     * ON mueble.nombre=ensamblaje.nombre_mueble <br>
+     * WHERE producto.estado = '0'<br>
+     * ORDER BY id_ensamblaje<br>
      *
      * @return
      */
@@ -82,14 +121,16 @@ public class ProductoDB {
                         result.getInt("id_ensamblaje"));
                 productos.add(producto);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+
+        } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }
+        /*finally {
             if (conn != null) {
-                Coneccion.close(result, statement, conn);
+                Coneccion.close(conn);
 
             }
-        }
+        }*/
         return productos;
     }
 }

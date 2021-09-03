@@ -52,10 +52,10 @@ public class DetalleEnsamblajeDB {
         statement.setString(3, detalle.getTipoPieza());
 
         registros = statement.executeUpdate();
-        if (conn != null) {
-            Coneccion.close(statement, conn);
-
-        }
+//        if (conn != null) {
+//            Coneccion.close(statement, conn);
+//
+//        }
     }
 
     /**
@@ -69,25 +69,19 @@ public class DetalleEnsamblajeDB {
     public void actualizarEnsablajePrecioYTipoPieza(double costoNuevo, String tipo, double costoOriginal, String tipoOriginal, int id) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
-        try {
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(ACTUALIZAR_DETALLE_ENSAMBLAJE);
+        statement.setDouble(1, costoNuevo);
+        statement.setString(2, tipo);
+        statement.setDouble(3, costoOriginal);
+        statement.setString(4, tipoOriginal);
+        statement.setInt(5, id);
+        statement.executeUpdate();
 
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(ACTUALIZAR_DETALLE_ENSAMBLAJE);
-            statement.setDouble(1, costoNuevo);
-            statement.setString(2, tipo);
-            statement.setDouble(3, costoOriginal);
-            statement.setString(4, tipoOriginal);
-            statement.setInt(5, id);
-
-            statement.executeUpdate();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (conn != null) {
-                Coneccion.close(statement, conn);
-
-            }
-        }
+//        if (conn != null) {
+//            Coneccion.close(statement, conn);
+//
+//        }
     }
 
     /**
@@ -108,14 +102,15 @@ public class DetalleEnsamblajeDB {
             result = statement.executeQuery();
 
             getDetalle(result, detalle, (ArrayList) lista);
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DetalleEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }
+        /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
 
     }
@@ -143,14 +138,15 @@ public class DetalleEnsamblajeDB {
             result = statement.executeQuery();
 
             getDetalle(result, detalle, (ArrayList) lista);
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DetalleEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }
+        /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return lista;
 
     }
@@ -180,14 +176,15 @@ public class DetalleEnsamblajeDB {
 
             }
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DetalleEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        }
+        /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
         return costoEnsamblaje;
     }
 

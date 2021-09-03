@@ -48,18 +48,10 @@
                                         <li>Identificador:</li>
                                         <li>${mueble.identificador}</li>
                                     </ul>
-                                    <div class="form-group">
-                                        <input class="form-check-input" type="checkbox" value="${mueble.identificador}" id="defaultCheck1">
-                                        <label class="form-check-label w-75" for="defaultCheck1">
-                                            Selecciona para agregar al carrito
-                                        </label>
-                                    </div>
-
-                                    <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&mueble=${mueble.nombre}&s1_t1"
+                                    <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&idEnsamblaje=${mueble.identificador}&mueble=${mueble.nombre}"
                                        class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
                                         <i class="fas fa-angle-double-right"></i> Comprar
                                     </a>
-
                                 </div>
                             </div>
                         </div>

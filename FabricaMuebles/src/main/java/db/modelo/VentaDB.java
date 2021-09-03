@@ -23,7 +23,7 @@ public class VentaDB {
 
     private static final String INSERT = "INSERT INTO venta(fecha, costo, nit_cliente, nombre_usuario) VALUES(?,?,?,?)";
     private static final String GET_VENTA_BY_ID = "SELECT * FROM venta WHERE id = ?";
-    private static final String SELECT_VENTAS = "SELECT * FROM venta WERE";
+    private static final String SELECT_VENTAS = "SELECT * FROM venta";
     private static final String UPDATE_USER_AND_STATUS = "UPDATE venta SET  nombre_usuario = ?, estado = ? WHERE id = ?";
 
     /**
@@ -44,11 +44,11 @@ public class VentaDB {
             statement.setString(4, venta.getUsuario());
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             Coneccion.close(statement, conn);
-        }
+        }*/
 
     }
 
@@ -71,15 +71,16 @@ public class VentaDB {
             statement.setInt(3, id);
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             Coneccion.close(statement, conn);
-        }
+        }*/
     }
 
     /**
-     * Todas las ventas
+     * Todas las ventas<br><br>
+     * query: SELECT * FROM venta
      *
      * @return
      */
@@ -103,11 +104,11 @@ public class VentaDB {
 
                 ventas.add(venta);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             Coneccion.close(result, statement, conn);
-        }
+        }*/
         return ventas;
     }
 
@@ -139,11 +140,11 @@ public class VentaDB {
                         result.getString("nit_cliente"));
 
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             Coneccion.close(result, statement, conn);
-        }
+        }*/
         if (venta == null) {
             throw new FabricaExcepcion("No se econtro la factura.");
         }

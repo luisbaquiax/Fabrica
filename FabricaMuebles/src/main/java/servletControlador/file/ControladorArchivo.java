@@ -6,11 +6,13 @@
 package servletControlador.file;
 
 import db.modelo.UsuarioDB;
+import entidad.Usuario;
 import entidad.file.CargaDatos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -66,7 +68,11 @@ public class ControladorArchivo extends HttpServlet {
             }
         } else {
             UsuarioDB usuarioDB = new UsuarioDB();
-            if (usuarioDB.getTodosUsuarios().isEmpty()) {
+            List<Usuario> usuarios = usuarioDB.getTodosUsuarios();
+            for (Usuario usuario : usuarios) {
+                System.out.println(usuario.toString());
+            }
+            if (usuarios.isEmpty()) {
                 response.sendRedirect("/FabricaMuebles/JSP/Administrador/cargaDatos.jsp");
             } else {
                 response.sendRedirect("/FabricaMuebles/Inicio.jsp");

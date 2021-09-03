@@ -5,7 +5,6 @@
  */
 package db.coneccion;
 
-import com.mysql.cj.xdevapi.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,12 +23,37 @@ public class Coneccion {
     private static final String USER = "root";
     private static final String PASSWORD = "luisbaquiax1234";//@luis.baquiax95 luisbaquiax1234
 
-    public static Connection getConnection() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        //Class.forName("com.mysql.jdbc.Driver").newInstance();
-        Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+    private static Connection connection;
+    private static Coneccion connectionDB;
+
+    private Coneccion() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");/*.newInstance();*/
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("conectado");
+        } catch (ClassNotFoundException ex) {
+            System.out.print("no conectado");
+            System.out.println("Error: " + ex.getMessage());
+        }
+
     }
 
+    public static Connection getConnection() throws SQLException {
+        if (connection == null) {
+            connectionDB = new Coneccion();
+        }
+        return connection;
+    }
+
+//    public static Connection getConnection() throws SQLException/*, ClassNotFoundException, InstantiationException, IllegalAccessException*/ {
+//        try {
+//            //Class.forName("com.mysql.jdbc.Driver").newInstance();
+//            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+//        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+//            Logger.getLogger(Coneccion.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return DriverManager.getConnection(URL, USER, PASSWORD);
+//    }
     /**
      *
      * Cerramos primero el objeto PreparedStatement después el objeto Connection

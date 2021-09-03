@@ -42,14 +42,14 @@ public class RequerimientoEnsamblajeDB {
             statement.setInt(3, requerimiento.getCantidadPiezas());
 
             registros = statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(RequerimientoEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(statement, conn);
 
             }
-        }
+        }*/
     }
 
     /**
@@ -80,14 +80,14 @@ public class RequerimientoEnsamblajeDB {
                         result.getInt("cantidad_piezas"));
                 requerimientoEnsamblajes.add(reque);
             }
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(RequerimientoEnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
             }
-        }
+        }*/
 
         return requerimientoEnsamblajes;
     }

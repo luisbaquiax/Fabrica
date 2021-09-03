@@ -51,25 +51,17 @@ public class PrecioPiezaDB {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
-        try {
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(INSERT);
+        statement.setString(1, pieza.getTipo());
+        statement.setDouble(2, pieza.getCosto());
+        statement.setInt(3, pieza.getCantidadExistente());
+        statement.setBoolean(4, pieza.getEstado());
+        registros = statement.executeUpdate();
+        /*if (conn != null) {
+            Coneccion.close(conn);
 
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(INSERT);
-
-            statement.setString(1, pieza.getTipo());
-            statement.setDouble(2, pieza.getCosto());
-            statement.setInt(3, pieza.getCantidadExistente());
-            statement.setBoolean(4, pieza.getEstado());
-
-            registros = statement.executeUpdate();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (conn != null) {
-                Coneccion.close(conn);
-
-            }
-        }
+        }*/
     }
 
     /**
@@ -86,26 +78,18 @@ public class PrecioPiezaDB {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
-        try {
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(UPDATE_PIEZA);
+        statement.setInt(1, pieza.getCantidadExistente());
+        statement.setDouble(2, pieza.getCosto());
+        statement.setBoolean(3, pieza.getEstado());
+        statement.setString(4, piezaBuscado);
+        statement.setDouble(5, precioBuscado);
+        registros = statement.executeUpdate();
+        /*if (conn != null) {
+            Coneccion.close(conn);
 
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(UPDATE_PIEZA);
-
-            statement.setInt(1, pieza.getCantidadExistente());
-            statement.setDouble(2, pieza.getCosto());
-            statement.setBoolean(3, pieza.getEstado());
-            statement.setString(4, piezaBuscado);
-            statement.setDouble(5, precioBuscado);
-
-            registros = statement.executeUpdate();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (conn != null) {
-                Coneccion.close(conn);
-
-            }
-        }
+        }*/
     }
 
     /**
@@ -121,24 +105,16 @@ public class PrecioPiezaDB {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
-        try {
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(UPDATE_CANTIDAD);
+        statement.setInt(1, pieza.getCantidadExistente());
+        statement.setString(2, pieza.getTipo());
+        statement.setDouble(3, pieza.getCosto());
+        registros = statement.executeUpdate();
+        /*if (conn != null) {
+            Coneccion.close(conn);
 
-            conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(UPDATE_CANTIDAD);
-
-            statement.setInt(1, pieza.getCantidadExistente());
-            statement.setString(2, pieza.getTipo());
-            statement.setDouble(3, pieza.getCosto());
-
-            registros = statement.executeUpdate();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (conn != null) {
-                Coneccion.close(conn);
-
-            }
-        }
+        }*/
     }
 
     /**
@@ -165,14 +141,14 @@ public class PrecioPiezaDB {
 
             obtenerPiezas(result, piezas, pieza);
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
         return piezas;
     }
 
@@ -195,13 +171,13 @@ public class PrecioPiezaDB {
 
             obtenerPiezas(result, piezas, pieza);
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
             }
-        }
+        }*/
         return piezas;
     }
 
@@ -225,14 +201,14 @@ public class PrecioPiezaDB {
 
             obtenerPiezas(result, piezas, pieza);
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
 
         return piezas;
     }
@@ -257,14 +233,14 @@ public class PrecioPiezaDB {
 
             obtenerPiezas(result, piezas, pieza);
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
         return piezas;
     }
 
@@ -303,10 +279,10 @@ public class PrecioPiezaDB {
 
         pieza = obtenerPieza(result, pieza);
 
-        if (conn != null) {
+        /*if (conn != null) {
             Coneccion.close(conn);
 
-        }
+        }*/
 
         if (pieza == null) {
             throw new FabricaExcepcion("Pieza no encontrada. Comuníquese con el administrador de base de datos.");
@@ -341,14 +317,14 @@ public class PrecioPiezaDB {
 
             obtenerPiezas(result, piezas, pieza);
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
         return piezas;
     }
 
@@ -377,14 +353,14 @@ public class PrecioPiezaDB {
 
             pieza = obtenerPieza(result, pieza);
 
-        } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
-        } finally {
+        } /*finally {
             if (conn != null) {
                 Coneccion.close(conn);
 
             }
-        }
+        }*/
         return pieza;
     }
 
@@ -416,8 +392,6 @@ public class PrecioPiezaDB {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new FabricaExcepcion(" Error en el servidor. Contántese con el desarrollador.");
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
         }
         /*finally {
             if (conn != null) {

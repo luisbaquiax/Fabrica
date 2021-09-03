@@ -39,10 +39,10 @@ public class DevolucionDB {
         statement.setInt(4, devolucion.getIdProducto());
         registro = statement.executeUpdate();
 
-        if (conn != null) {
+        /*if (conn != null) {
             Coneccion.close(statement, conn);
 
-        }
+        }*/
 
     }
 

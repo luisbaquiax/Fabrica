@@ -52,11 +52,12 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("/FabricaMuebles/JSP/Administrador/Financiero.jsp");
                 }
             } else {
-                request.getRequestDispatcher("/LoginRegister.jsp").forward(request, response);
+                response.sendRedirect("/FabricaMuebles/LoginRegister.jsp");
+                //request.getRequestDispatcher("/LoginRegister.jsp").forward(request, response);
             }
 
         } catch (SQLException ex) {
-            request.getRequestDispatcher("/LoginRegister.jsp").forward(request, response);
+            request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }
 

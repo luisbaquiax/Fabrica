@@ -32,9 +32,10 @@
                         <h1 class="h1">Cajero ${contador.count}</h1>
                     </div>
                     <div class="card-body">
-                        <form action="${pageContext.request.contextPath}/ControladorVenta?tarea=buscarCliente&mueble=${mueble.nombre}&cajero=${c.nombre}"
+                        <form action="${pageContext.request.contextPath}/ControladorVenta?tarea=buscarCliente&mueble=${mueble.nombre}"
                               method="POST">
-
+                            <input type="hidden" value="${idEnsamblaje}" name="idEnsamblaje">
+                            <input type="hidden" value="${c.nombre}" name="cajero">
                             <!--class="was-validated" (sirve para validar los campos)-->
                             <div class="form-group">
                                 <label for="nit">Ingrese su NIT:</label>

@@ -29,6 +29,17 @@ public class DetalleVenta {
     }
 
     /**
+     * Para agregar el detalle de una venta
+     *
+     * @param idVenta
+     * @param idProducto
+     */
+    public DetalleVenta(int idVenta, int idProducto) {
+        this.idVenta = idVenta;
+        this.idProducto = idProducto;
+    }
+
+    /**
      * @return the id
      */
     public int getId() {

@@ -52,6 +52,23 @@ public class Venta {
     }
 
     /**
+     * Recupear información de la base de datos
+     *
+     * @param id
+     * @param fecha
+     * @param costo
+     * @param nitCliente
+     * @param usuario
+     */
+    public Venta(int id, String fecha, double costo, String nitCliente, String usuario) {
+        this.id = id;
+        this.fecha = fecha;
+        this.costo = costo;
+        this.nitCliente = nitCliente;
+        this.usuario = usuario;
+    }
+
+    /**
      * @return the id
      */
     public int getId() {

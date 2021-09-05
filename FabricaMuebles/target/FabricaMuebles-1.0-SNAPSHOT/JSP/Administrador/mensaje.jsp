@@ -16,11 +16,11 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
         <!-- CSS -->
-        <link href="../../assets/css/margenes.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/general.css" rel="stylesheet" type="text/css"/>
         <title>Solicitando datos del cliente</title>
     </head>
     <body>
-        <header id="main-header" class="py-2 bg-info text-white">
+        <header id="main-header" class="py-2 bg-secondary text-white">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">

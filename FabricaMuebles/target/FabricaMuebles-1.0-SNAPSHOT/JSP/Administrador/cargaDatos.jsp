@@ -83,6 +83,36 @@
         </section>
 
         <c:if test="${carga!=null}">
+            <!--errores-->
+            <section id="clientes" class="section mt-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="text-center">Clientes</h4>
+                                </div>
+                                <table class="table table-striped thead-dark">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Descripcion del error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="e" items="${carga.errores}" varStatus="status" >
+                                            <tr>
+                                                <td>${e.count}</td>
+                                                <td>${e}</td> 
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <!--usuarios-->
             <section id="usuarios" class="section">
                 <div class="container">

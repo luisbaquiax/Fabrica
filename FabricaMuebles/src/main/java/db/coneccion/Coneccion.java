@@ -38,6 +38,11 @@ public class Coneccion {
 
     }
 
+    /**
+     * Retorna la conección en caso de que no existe
+     *
+     * @return @throws SQLException conexión a la base de datos
+     */
     public static Connection getConnection() throws SQLException {
         if (connection == null) {
             connectionDB = new Coneccion();

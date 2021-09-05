@@ -5,6 +5,7 @@
  */
 package db.coneccion;
 
+import db.consulatsTienda.ConsultaTiendaDB;
 import db.modelo.ClienteDB;
 import db.modelo.DetalleEnsamblajeDB;
 import db.modelo.EnsamblajeDB;
@@ -52,28 +53,59 @@ public class Pruebas {
         PrecioPiezaDB precioPiezaDB = new PrecioPiezaDB();
         ClienteDB clienteDB = new ClienteDB();
         DetalleEnsamblajeDB detalleEnsamblajeDB = new DetalleEnsamblajeDB();
+        ConsultaTiendaDB consultaTiendaDB = new ConsultaTiendaDB();
         try {
-            System.out.println(precioPiezaDB.getPiezaPorTipo("Pata cuadrada").toString());
+            for (Mueble m : consultaTiendaDB.getMueblesEnFactura(1)) {
+                System.out.println(m.toString());
+            }
+//            for (Venta v : consultaTiendaDB.getVentasPorNitCliente("31919444")) {
+//                System.out.println(v.toString());
+//            }
+        
+            
+//            for (Venta v : consultaTiendaDB.getVentasPorNitCliente("31919444", "2021-09-04", "2021-09-04")) {
+//                System.out.println(v.toString());
+//            }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
-//        for (Usuario a : usuarioDB.getTodosUsuarios()) {A
-//            System.out.println(a.toString());
-//        }
-//        System.out.println(detalleEnsamblajeDB.getCostoEnsamblaje(1));
 
-//        System.out.println(clienteDB.getClientPorNit("nit45").toString());
-//        for (Ensamblaje a : ensamblajeDB.getEnsamblajesPorUsuario("C")) {
-//            System.out.println(a.toString());
+//        for (Usuario u : usuarioDB.getTodosUsuarios()) {
+//            System.out.println(u.toString());
 //        }
-
-        for (Producto a : productoDB.getProducts()) {
-            System.out.println(a.toString());
-        }
-        for (Usuario u : usuarioDB.getTodosUsuarios()) {
-            System.out.println(u.toString());
-        }
-//        
+//            for (Cliente c : clienteDB.getTodosClientes()) {
+//                System.out.println(c.toString());
+//            }
+//            System.out.println("");
+//            ConsultaTiendaDB consultaTiendaDB = new ConsultaTiendaDB();
+//            for (Venta Venta : consultaTiendaDB.getVentasDelDia("D", String.valueOf(LocalDate.now()))) {
+//                System.out.println(Venta.toString());
+//            }
+//            ArrayList<String[]> lista = consultaTiendaDB.getClientesUsuario("D");
+//            for (String[] strings : lista) {
+//                System.out.println(strings[0]);
+//                System.out.println(strings[1]);rrrrr
+//                System.out.println(strings[2]);
+//                System.out.println(strings[3]);
+//            }
+//            
+//            try {
+//                System.out.println(precioPiezaDB.getPiezaPorTipo("Pata cuadrada").toString());
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+////        for (Usuario a : usuarioDB.getTodosUsuarios()) {A
+////            System.out.println(a.toString());
+////        }
+////        System.out.println(detalleEnsamblajeDB.getCostoEnsamblaje(1));
+//
+////        System.out.println(clienteDB.getClientPorNit("nit45").toString());
+////        for (Ensamblaje a : ensamblajeDB.getEnsamblajesPorUsuario("C")) {
+////            System.out.println(a.toString());
+////        }
+//for (Producto a : productoDB.getProducts()) {
+//    System.out.println(a.toString());
+//}
+////        
 //        for (Usuario u : usuarioDB.getUsurariosVentaYFabrica()) {
 //            System.out.println(u.toString());
 //        }
@@ -142,10 +174,10 @@ public class Pruebas {
 //        }
 //
 //        System.out.println(muebleDB.getMueblePorNombre("Mesa rustica").toString());
-        //muebleDB.insertarMueble(new Mueble("Mesa3", 200));
-        //muebleDB.actualizarCantidadMuebles(40, "Mesa3");
-        //ENSAMBLAR_MUEBLE(“Mesa rustica”,Luis,”21/04/2021”)
-        //ENSAMBLAR_MUEBLE(“Mesa rustica”,Luis,”2021/04/21”)
+//muebleDB.insertarMueble(new Mueble("Mesa3", 200));
+//muebleDB.actualizarCantidadMuebles(40, "Mesa3");
+//ENSAMBLAR_MUEBLE(“Mesa rustica”,Luis,”21/04/2021”)
+//ENSAMBLAR_MUEBLE(“Mesa rustica”,Luis,”2021/04/21”)
 //        EnsamblajeDB ensamblajeDB = new EnsamblajeDB();
 //        try {
 //            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");

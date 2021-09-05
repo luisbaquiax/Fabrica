@@ -27,6 +27,7 @@ entidad/Producto.class
 entidad/DetalleVenta.class
 entidad/Mueble.class
 db/modelo/DevolucionDB.class
+db/consulatsTienda/ConsultaTiendaDB.class
 entidad/Pieza.class
 db/modelo/PrecioPiezaDB.class
 db/coneccion/Pruebas.class

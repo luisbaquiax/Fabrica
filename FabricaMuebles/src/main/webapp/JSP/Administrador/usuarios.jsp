@@ -14,6 +14,8 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+        <!-- personalizados CSS -->
+        <link href="../../assets/css/general.css" rel="stylesheet" type="text/css"/>
         <!-- ICONS -->
         <script src="https://kit.fontawesome.com/6d0db64a1f.js" crossorigin="anonymous"></script>
 
@@ -21,7 +23,7 @@
     </head>
     <body>
         <jsp:include page="navegador.jsp"></jsp:include>
-            <div class="container mt-5">
+            <div class="container mt-5 opacity">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
@@ -40,6 +42,8 @@
                                             <th>#</th>
                                             <th>Identificador</th>
                                             <th>Tipo</th>
+                                            <th>Estado</th>
+                                            <th>Acción</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -47,7 +51,32 @@
                                         <tr class="text-center">
                                             <td>${contador.count}</td>
                                             <td>${usuario.nombre}</td>
-                                            <td>${usuario.tipo}</td>
+                                            <c:if test="${usuario.tipo==1}">
+                                                <td>Usuario de fábrica</td>
+                                            </c:if>
+                                            <c:if test="${usuario.tipo==2}">
+                                                <td>Usuario de venta</td>
+                                            </c:if>
+                                            <c:if test="${usuario.estado==true}">
+                                                <td>Suspendido</td>
+                                            </c:if>
+                                            <c:if test="${usuario.estado==false}">
+                                                <td>Activo</td>
+                                            </c:if>
+                                            <c:if test="${usuario.estado==false}">
+                                                <td><a href="${pageContext.request.contextPath}/controladorAdmin?tarea=cancelar&user=${usuario.nombre}"
+                                                       class="btn btn-danger">
+                                                        <i class="fas fa-user-lock"></i> Cancelar usuario
+                                                    </a>
+                                                </c:if>
+                                                <c:if test="${usuario.estado==true}">
+                                                <td>
+                                                    <a href="${pageContext.request.contextPath}/controladorAdmin?tarea=reactivar&user=${usuario.nombre}"
+                                                       class="btn btn-success">
+                                                        <i class="fas fa-user-cog"></i> Reactivar usuario
+                                                    </a></td>
+                                                </c:if>
+
                                         </tr>
 
                                     </c:forEach>

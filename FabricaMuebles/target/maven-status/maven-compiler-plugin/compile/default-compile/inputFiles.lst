@@ -13,6 +13,7 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Factura.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Producto.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/PrecioPiezaDB.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/consulatsTienda/ConsultaTiendaDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/DetalleVenta.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/ControladorAministrador.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/DetalleEnsamblajeDB.java

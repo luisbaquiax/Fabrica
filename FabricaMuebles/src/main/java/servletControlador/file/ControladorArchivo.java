@@ -69,10 +69,7 @@ public class ControladorArchivo extends HttpServlet {
         } else {
             UsuarioDB usuarioDB = new UsuarioDB();
             List<Usuario> usuarios = usuarioDB.getTodosUsuarios();
-            for (Usuario usuario : usuarios) {
-                System.out.println(usuario.toString());
-            }
-            if (usuarios.isEmpty()) {
+            if (usuarios.isEmpty() || (usuarioDB == null)) {
                 response.sendRedirect("/FabricaMuebles/JSP/Administrador/cargaDatos.jsp");
             } else {
                 response.sendRedirect("/FabricaMuebles/Inicio.jsp");

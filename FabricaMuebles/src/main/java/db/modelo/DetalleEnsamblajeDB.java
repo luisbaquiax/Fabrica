@@ -52,10 +52,6 @@ public class DetalleEnsamblajeDB {
         statement.setString(3, detalle.getTipoPieza());
 
         registros = statement.executeUpdate();
-//        if (conn != null) {
-//            Coneccion.close(statement, conn);
-//
-//        }
     }
 
     /**
@@ -78,10 +74,6 @@ public class DetalleEnsamblajeDB {
         statement.setInt(5, id);
         statement.executeUpdate();
 
-//        if (conn != null) {
-//            Coneccion.close(statement, conn);
-//
-//        }
     }
 
     /**

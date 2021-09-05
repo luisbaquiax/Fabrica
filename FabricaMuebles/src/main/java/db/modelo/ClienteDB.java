@@ -10,6 +10,8 @@ import entidad.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +23,7 @@ public class ClienteDB {
 
     private static final String INSERT = "INSERT INTO cliente(nit, nombre, direccion) VALUES(?, ?, ?)";
     private static final String SELECT_BY_NIT = "SELECT * FROM cliente WHERE nit = ?";
+    private static final String SELECT_CLIENTES = "SELECT * FROM cliente";
 
     /**
      * Insert a new Cliete in the DB, query: INSERT = "INSERT INTO cliente(nit,
@@ -44,12 +47,7 @@ public class ClienteDB {
             registros = statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
-        }  /*finally {
-            if (conn != null) {
-                Coneccion.close(conn);
-
-            }
-        }*/
+        }
     }
 
     /**
@@ -78,12 +76,39 @@ public class ClienteDB {
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(conn);
-
-            }
-        }*/
+        }
         return cliente;
+    }
+
+    /**
+     * Lista de clientes registrados al sistema
+     * <br><br>
+     * query: SELECT * FROM cliente
+     *
+     * @return
+     */
+    public List<Cliente> getTodosClientes() {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Cliente cliente = null;
+        ArrayList<Cliente> clientes = new ArrayList<>();
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(SELECT_CLIENTES);
+            result = statement.executeQuery();
+
+            while (result.next()) {
+                cliente = new Cliente(
+                        result.getString("nit"),
+                        result.getString("nombre"),
+                        result.getString("direccion"));
+                clientes.add(cliente);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return clientes;
     }
 }

@@ -30,27 +30,48 @@ public class ControladorAministrador extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String tarea = request.getParameter("tarea");
-        if (tarea != null) {
-            switch (tarea) {
-                case "agregar":
-                    agregarNuevoUsuario(request, response);
-                    break;
-                default:
+        Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+        if (user != null && (user.getTipo().equals(Usuario.FINANCIERO))) {
+            String tarea = request.getParameter("tarea");
+            if (tarea != null) {
+                switch (tarea) {
+                    case "agregar":
+                        agregarNuevoUsuario(request, response);
+                        break;
+                    default:
+                }
             }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         }
+
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tarea = request.getParameter("tarea");
-        if (tarea != null) {
-            switch (tarea) {
-                case "usuarios":
-                    listarUsuarios(request, response);
-                    break;
-                default:
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+        Usuario user = (Usuario) request.getSession().getAttribute("usuario");
+        if (user != null && (user.getTipo().equals(Usuario.FINANCIERO))) {
+            String tarea = request.getParameter("tarea");
+            if (tarea != null) {
+                switch (tarea) {
+                    case "usuarios":
+                        listarUsuarios(request, response);
+                        break;
+                    case "cancelar":
+                        cancelarUsuario(request, response);
+                        break;
+                    case "reactivar":
+                        reactivarUsuario(request, response);
+                        break;
+                    case "crearMueble":
+
+                        break;
+                    default:
+                }
             }
+        } else {
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         }
     }
 
@@ -67,15 +88,31 @@ public class ControladorAministrador extends HttpServlet {
         request.getSession().setAttribute("usuarios", usuarios);
         response.sendRedirect("/FabricaMuebles/JSP/Administrador/usuarios.jsp");
     }
-    
-    private void agregarNuevoUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+    private void agregarNuevoUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String nombre = request.getParameter("name");
         String tipo = request.getParameter("tipo");
         String pass = request.getParameter("pass");
         System.out.println(tipo);
         this.usuarioDB.insertarUsuario(new Usuario(nombre, pass, tipo, false));
-        String mensaje = "Usuario agregdo con exito";
+        String mensaje = "Usuario agregado con exito";
         request.getSession().setAttribute("mensaje", mensaje);
         response.sendRedirect("/FabricaMuebles/JSP/Administrador/mensaje.jsp");
+    }
+
+    private void cancelarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String user = request.getParameter("user");
+        this.usuarioDB.cambiarEstadoUsuario(user, true);
+        listarUsuarios(request, response);
+    }
+
+    private void reactivarUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String user = request.getParameter("user");
+        this.usuarioDB.cambiarEstadoUsuario(user, false);
+        listarUsuarios(request, response);
+    }
+
+    private void craerMuebleListarPiezas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
     }
 }

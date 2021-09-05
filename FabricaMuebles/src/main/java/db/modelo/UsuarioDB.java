@@ -25,9 +25,10 @@ public class UsuarioDB {
     private static final String DELETE = "DELET FROM usuario WHERE nombre = ?, AND pass = ?";
     private static final String SEARCH_USER = "SELECT * FROM usuario WHERE nombre = ? AND pass = ? LIMIT 1";
     private static final String SELECT_USERS_AREA_VENTAS = "SELECT * FROM usuario WHERE tipo = 2 AND estado = 0";
-    private static final String SELECT_USERS_AREA_VENTAS_FABRICA = "SELECT * FROM usuario WHERE tipo != 3 AND estado = 0";
+    private static final String SELECT_USERS_AREA_VENTAS_FABRICA = "SELECT * FROM usuario WHERE tipo != 3";
     private static final String SEARCH_USER_BY_NAME = "SELECT * FROM usuario WHERE nombre = ?";
     private static final String SELECT_USERS = "SELECT * FROM usuario";
+    private static final String UPDATE_USER_BY_NAME = "UPDATE usuario SET estado = ? WHERE nombre = ?";
 
     /**
      * Insertar usuario al sistema
@@ -52,20 +53,19 @@ public class UsuarioDB {
             registros = statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(statement, conn);
+        }
 
-            }
-        }*/
     }
 
     /**
-     * Eliminar al usuario del sistema
+     * Cambia el estado de un usuario ya sea suspendidoc o activo
+     * <br><br>
+     * query: SET usuario SET estado = ? WHERE nombre = ?
      *
-     * @param usuario
+     * @param user
+     * @param nuevoEstado
      */
-    public void eliminarUsuario(Usuario usuario) {
+    public void cambiarEstadoUsuario(String user, boolean nuevoEstado) {
         Connection conn = null;
         PreparedStatement statement = null;
         int registros = 0;
@@ -73,19 +73,14 @@ public class UsuarioDB {
         try {
 
             conn = Coneccion.getConnection();
-            statement = conn.prepareStatement(DELETE);
-            statement.setString(1, usuario.getNombre());
-            statement.setString(2, usuario.getPassword());
+            statement = conn.prepareStatement(UPDATE_USER_BY_NAME);
+            statement.setBoolean(1, nuevoEstado);
+            statement.setString(2, user);
 
             registros = statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(statement, conn);
-
-            }
-        }*/
+        }
 
     }
 
@@ -95,10 +90,7 @@ public class UsuarioDB {
      * @param nombre
      * @param pass
      * @return
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @thrlAccessException
      */
     public Usuario buscarUsuario(String nombre, String pass) throws SQLException {
         Connection conn = null;
@@ -118,11 +110,6 @@ public class UsuarioDB {
             String tipo = result.getString("tipo");
             usuario = new Usuario(name, contra, tipo);
         }
-
-        /*if (conn != null) {
-            Coneccion.close(result, statement, conn);
-
-        }*/
 
         return usuario;
     }
@@ -156,7 +143,6 @@ public class UsuarioDB {
         /*if (conn != null) {
             Coneccion.close(result, statement, conn);
         }*/
-
         return usuario;
     }
 
@@ -185,7 +171,8 @@ public class UsuarioDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
+        }
+        /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
@@ -224,7 +211,8 @@ public class UsuarioDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
+        }
+        /*finally {
             if (conn != null) {
                 Coneccion.close(result, statement, conn);
 
@@ -263,12 +251,7 @@ public class UsuarioDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
-
-            }
-        }*/
+        }
         return usuarios;
     }
 }

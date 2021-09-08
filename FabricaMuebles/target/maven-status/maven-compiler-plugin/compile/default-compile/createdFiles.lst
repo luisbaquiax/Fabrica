@@ -1,8 +1,11 @@
 db/modelo/UsuarioDB.class
 db/modelo/FacturaDB.class
 entidad/DetalleEnsamblaje.class
+entidad/utiles/Util.class
 db/modelo/VentaDB.class
+db/reportesAdministracion/ReportesAdminDB.class
 db/modelo/ClienteDB.class
+servletControlador/reportes/Descargar.class
 entidad/file/CargaDatos.class
 servletControlador/LoginServlet.class
 servletControlador/ServletProductos.class
@@ -15,6 +18,7 @@ servletControlador/SalirControlador.class
 entidad/Cliente.class
 db/modelo/MuebleDB.class
 entidad/Usuario.class
+entidad/file/escribirReportes/EscribirArchivoCSV.class
 db/modelo/DetalleEnsamblajeDB.class
 servletControlador/TiendaControlador.class
 entidad/file/NewMain.class
@@ -24,6 +28,7 @@ servletControlador/VentaControlador.class
 entidad/file/ManejoArchivo.class
 entidad/Devolucion.class
 entidad/Producto.class
+servletControlador/ControladorReportesAdministracion.class
 entidad/DetalleVenta.class
 entidad/Mueble.class
 db/modelo/DevolucionDB.class
@@ -31,6 +36,7 @@ db/consulatsTienda/ConsultaTiendaDB.class
 entidad/Pieza.class
 db/modelo/PrecioPiezaDB.class
 db/coneccion/Pruebas.class
+entidad/file/escribirReportes/Reporte.class
 db/modelo/DetalleVentaDB.class
 db/modelo/PiezaDB.class
 db/modelo/ProductoDB.class

@@ -24,7 +24,7 @@ public class Devolucion {
      * @param perdida
      * @param fecha
      * @param nombreCliente
-     * @param nombreMueble
+     * @param idProducto
      */
     public Devolucion(int id, double perdida, String fecha, String nombreCliente, int idProducto) {
         this.id = id;
@@ -40,7 +40,7 @@ public class Devolucion {
      * @param perdida
      * @param fecha
      * @param nombreCliente
-     * @param nombreMueble
+     * @param idProducto
      */
     public Devolucion(double perdida, String fecha, String nombreCliente, int idProducto) {
         this.perdida = perdida;

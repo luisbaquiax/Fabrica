@@ -7,12 +7,16 @@ package servletControlador;
 
 import db.modelo.ClienteDB;
 import db.modelo.DetalleVentaDB;
+import db.modelo.DevolucionDB;
+import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.ProductoDB;
 import db.modelo.UsuarioDB;
 import db.modelo.VentaDB;
 import entidad.Cliente;
 import entidad.DetalleVenta;
+import entidad.Devolucion;
+import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Producto;
 import entidad.Usuario;
@@ -45,6 +49,8 @@ public class VentaControlador extends HttpServlet {
     private UsuarioDB usuarioDB;
     private ProductoDB productoDB;
     private DetalleVentaDB detalleVentaDB;
+    private EnsamblajeDB ensamblajeDB;
+    private DevolucionDB devolucionDB;
 
     public VentaControlador() {
         this.muebleDB = new MuebleDB();
@@ -53,6 +59,8 @@ public class VentaControlador extends HttpServlet {
         this.usuarioDB = new UsuarioDB();
         this.productoDB = new ProductoDB();
         this.detalleVentaDB = new DetalleVentaDB();
+        this.ensamblajeDB = new EnsamblajeDB();
+        this.devolucionDB = new DevolucionDB();
     }
 
     @Override
@@ -66,10 +74,15 @@ public class VentaControlador extends HttpServlet {
                 case "registrarCliente":
                     registrarClienteYcompra(request, response);
                     break;
+                case "devolucion":
+                    verificarDevolucion(request, response);
+                    break;
                 default:
+                    response.sendRedirect("index.jsp");
 
             }
         } else {
+            response.sendRedirect("index.jsp");
         }
     }
 
@@ -81,11 +94,18 @@ public class VentaControlador extends HttpServlet {
                 case "solicitarCompra":
                     solicitarComra(request, response);
                     break;
+                case "devolver":
+                    devolverProducto(request, response);
+                    break;
+                case "regresar":
+                    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+                    response.sendRedirect("index.jsp");
+                    break;
                 default:
-
+                    response.sendRedirect("index.jsp");
             }
         } else {
-
+            response.sendRedirect("index.jsp");
         }
     }
 
@@ -103,11 +123,6 @@ public class VentaControlador extends HttpServlet {
             String mueble = request.getParameter("mueble");
             Mueble buscado = this.muebleDB.getMueblePorNombre(mueble);
             System.out.println(buscado.toString());
-
-//            request.setAttribute("idEnsamblaje", idEnsamblaje);
-//            request.setAttribute("cajeros", cajeros);
-//            request.setAttribute("mueble", buscado);
-//            request.getRequestDispatcher("/FabricaMuebles/JSP/Vendedor/compra.jsp").forward(request, response);
             request.getSession().setAttribute("idEnsamblaje", idEnsamblaje);
             request.getSession().setAttribute("cajeros", cajeros);
             request.getSession().setAttribute("mueble", buscado);
@@ -134,12 +149,6 @@ public class VentaControlador extends HttpServlet {
             Usuario vendedor = this.usuarioDB.buscarUsuarioPorNombre(cajero);
             //Validamos en caso de haya un cajero para realizar la compra
             if (cliente == null) {
-
-//                request.setAttribute("idEnsamblaje", idEnsamblaje);
-//                request.setAttribute("mueble", mueble);
-//                request.setAttribute("cajero", cajero);
-//                request.setAttribute("nit", nit);
-//                request.getRequestDispatcher("/FabricaMuebles/JSP/Vendedor/solicitarDatos.jsp").forward(request, response);
                 request.getSession().setAttribute("idEnsamblaje", idEnsamblaje);
                 request.getSession().setAttribute("mueble", mueble);
                 request.getSession().setAttribute("cajero", cajero);
@@ -252,6 +261,71 @@ public class VentaControlador extends HttpServlet {
         enviarMensajeFactura("Compra exitosa!!!", request, response);
     }
 
+    private void verificarDevolucion(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String mensaje = "";
+        try {
+            int id = Integer.parseInt(request.getParameter("factura"));
+            Venta buscado = this.ventaDB.getVentasByID(id);
+            Venta auxi = this.ventaDB.getVerficarDevolucion(buscado.getFecha(), fechaAcutal(), id);
+            if (auxi != null) {
+                //Mostrar los productos que se compraron se ace la devolucion,
+                List<DetalleVenta> detalles = this.detalleVentaDB.getDetallePorIDVenta(auxi.getId());
+                System.out.println("haciendo la devolucion");
+                request.getSession().setAttribute("productosAdevolver", detalles);
+                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mostrarProductosDevolver.jsp");
+
+            } else {
+                //no se hace la devolucion
+                mensaje = "NO SE PUEDE HACER LA DEVOLUCION DEBIDO A QUE YA HA PASADO MÁS DE UNA SEMANA";
+                System.out.println("no se hace la devolucion");
+                request.getSession().setAttribute("mensaje", mensaje);
+                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeDevolucion.jsp");
+            }
+        } catch (FabricaExcepcion ex) {
+            System.out.println("esa factura no existe");
+            ex.printStackTrace();
+        }
+
+    }
+
+    private void devolverProducto(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            //realizar devolucion
+            int idDetalle = Integer.parseInt(request.getParameter("idDetalle"));
+            DetalleVenta detalle = this.detalleVentaDB.getDetallePorID(idDetalle);
+            Venta buscado = this.ventaDB.getVentasByID(detalle.getIdVenta());
+            Ensamblaje producto = this.ensamblajeDB.getEnsamblajesPorID(detalle.getIdProducto());
+            Devolucion dev = new Devolucion(producto.getCosto() / 3, fechaAcutal(), buscado.getNitCliente(), detalle.getIdProducto());
+            if (detalle != null) {
+                this.devolucionDB.insertarDevolucion(dev);
+                this.detalleVentaDB.deleteDetall(idDetalle);
+                String mensaje = "Devolución exitosa.";
+                System.out.println("no se hace la devolucion");
+                request.getSession().setAttribute("mensaje", mensaje);
+                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeDevolucion.jsp");
+            } else {
+                response.sendRedirect("Inicio.jsp");
+            }
+
+        } catch (FabricaExcepcion ex) {
+            Logger.getLogger(VentaControlador.class.getName()).log(Level.SEVERE, null, ex);
+            String mensaje = "Factura no encontrada.";
+            System.out.println("no se hace la devolucion");
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeDevolucion.jsp");
+        } catch (SQLException ex) {
+            String mensaje = "Devolución exitosa.";
+            System.out.println("no se hace la devolucion");
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeDevolucion.jsp");
+        } catch (NullPointerException nulo) {
+            String mensaje = "No se puede hacer la devolucion.";
+            System.out.println("no se hace la devolucion");
+            request.getSession().setAttribute("mensaje", mensaje);
+            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/mensajeDevolucion.jsp");
+        }
+    }
+
     /**
      * Se le envía un mensaje al cliente
      *
@@ -268,4 +342,5 @@ public class VentaControlador extends HttpServlet {
     private String fechaAcutal() {
         return (String.valueOf(LocalDate.now()));
     }
+
 }

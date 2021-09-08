@@ -25,6 +25,7 @@ public class VentaDB {
     private static final String GET_VENTA_BY_ID = "SELECT * FROM venta WHERE id = ?";
     private static final String SELECT_VENTAS = "SELECT * FROM venta";
     private static final String UPDATE_USER_AND_STATUS = "UPDATE venta SET  nombre_usuario = ?, estado = ? WHERE id = ?";
+    private static final String VERIFICAR_DEVOLUCION = "SELECT * FROM venta WHERE TIMESTAMPDIFF(DAY, ?, ?)<=7 AND id = ?;";
 
     /**
      *
@@ -46,9 +47,7 @@ public class VentaDB {
             registros = statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(statement, conn);
-        }*/
+        }
 
     }
 
@@ -73,9 +72,8 @@ public class VentaDB {
             registros = statement.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(statement, conn);
-        }*/
+        }
+
     }
 
     /**
@@ -100,15 +98,15 @@ public class VentaDB {
                 venta = new Venta(result.getInt("id"),
                         result.getString("fecha"),
                         result.getDouble("costo"),
-                        result.getString("nit_cliente"));
+                        result.getString("nit_cliente"),
+                        result.getString("nombre_usuario"));
 
                 ventas.add(venta);
             }
         } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(result, statement, conn);
-        }*/
+        }
+
         return ventas;
     }
 
@@ -137,17 +135,54 @@ public class VentaDB {
                 venta = new Venta(result.getInt("id"),
                         result.getString("fecha"),
                         result.getDouble("costo"),
-                        result.getString("nit_cliente"));
+                        result.getString("nit_cliente"),
+                        result.getString("nombre_usuario"));
 
             }
         } catch (SQLException ex) {
             Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(result, statement, conn);
-        }*/
+        }
+
         if (venta == null) {
             throw new FabricaExcepcion("No se econtro la factura.");
         }
+        return venta;
+    }
+
+    /**
+     * Servirá para verificar la devolución
+     *
+     * @param fecha1
+     * @param fecha2
+     * @param id
+     * @return
+     */
+    public Venta getVerficarDevolucion(String fecha1, String fecha2, int id) {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Venta venta = null;
+
+        try {
+            conn = Coneccion.getConnection();
+            statement = conn.prepareStatement(VERIFICAR_DEVOLUCION);
+            statement.setDate(1, Date.valueOf(fecha1));
+            statement.setDate(2, Date.valueOf(fecha2));
+            statement.setInt(3, id);
+
+            result = statement.executeQuery();
+            while (result.next()) {
+                venta = new Venta(result.getInt("id"),
+                        result.getString("fecha"),
+                        result.getDouble("costo"),
+                        result.getString("nit_cliente"),
+                        result.getString("nombre_usuario"));
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(VentaDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         return venta;
     }
 }

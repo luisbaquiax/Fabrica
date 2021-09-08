@@ -7,19 +7,20 @@ package servletControlador;
 
 import db.consulatsTienda.ConsultaTiendaDB;
 import db.modelo.ClienteDB;
+import db.modelo.DevolucionDB;
 import db.modelo.ProductoDB;
 import db.modelo.VentaDB;
 import entidad.Cliente;
+import entidad.Devolucion;
 import entidad.Mueble;
 import entidad.Producto;
 import entidad.Usuario;
 import entidad.Venta;
 import entidad.manejoErrores.FabricaExcepcion;
+import entidad.utiles.Util;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -41,12 +42,16 @@ public class TiendaControlador extends HttpServlet {
     private ConsultaTiendaDB consultaTiendaDB;
     private ProductoDB productoDB;
     private ClienteDB clienteDB;
+    private Util util;
+    private DevolucionDB devolucionDB;
 
     public TiendaControlador() {
         this.ventaDB = new VentaDB();
         this.consultaTiendaDB = new ConsultaTiendaDB();
         this.productoDB = new ProductoDB();
         this.clienteDB = new ClienteDB();
+        this.util = new Util();
+        this.devolucionDB = new DevolucionDB();
     }
 
     @Override
@@ -56,12 +61,11 @@ public class TiendaControlador extends HttpServlet {
             String tarea = request.getParameter("tarea");
             if (tarea != null) {
                 switch (tarea) {
-                    case "devolucion":
-                        break;
-                    case "detalleCompra":
-                        break;
                     case "verComprasFecha":
                         verComprasDeUnClientePorFecha(request, response);
+                        break;
+                    case "devolucionFecha":
+                        verDevolucionesPorFechas(request, response);
                         break;
                     default:
                 }
@@ -75,36 +79,47 @@ public class TiendaControlador extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Usuario user = (Usuario) request.getSession().getAttribute("usuario");
-        if (user.getTipo().equals(Usuario.VENTA) && (user != null)) {
-            String tarea = request.getParameter("tarea");
-            if (tarea != null) {
-                switch (tarea) {
-                    case "listadoClientes":
-                        listarClientes(request, response);
-                        break;
-                    case "verCompras":
-                        verComprasDeUnCliente(request, response);
-                        break;
-                    case "verDetalle":
-                        verDetalleCompra(request, response);
-                        break;
-                    case "productosDisponibles":
-                        mostrarProductoDisponibles(request, response);
-                        break;
-                    case "ventasDelDia":
-                        verVentasDelDia(request, response);
-                        break;
-                    default:
-                }
-            }
-        } else {
+        if (request.getSession().getAttribute("usuario") == null) {
             response.sendRedirect(request.getContextPath() + "/Login");
+
+        } else {
+            if (user.getTipo().equals(Usuario.VENTA) && (user != null)) {
+                String tarea = request.getParameter("tarea");
+                if (tarea != null) {
+                    switch (tarea) {
+                        case "listadoClientes":
+                            listarClientes(request, response);
+                            break;
+                        case "verCompras":
+                            verComprasDeUnCliente(request, response);
+                            break;
+                        case "verDetalle":
+                            verDetalleCompra(request, response);
+                            break;
+                        case "productosDisponibles":
+                            mostrarProductoDisponibles(request, response);
+                            break;
+                        case "ventasDelDia":
+                            verVentasDelDia(request, response);
+                            break;
+                        case "verDevolucion":
+                            verDevoluciones(request, response);
+                            break;
+                        default:
+
+                    }
+                }
+            } else {
+                response.sendRedirect(request.getContextPath() + "/Login");
+            }
         }
+
     }
 
     private void verComprasDeUnCliente(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-
+//            request.getSession().removeAttribute("fecha1User");
+//            request.getSession().removeAttribute("fecha2User");
             String nit = request.getParameter("nit");
             ArrayList<Venta> compras = this.consultaTiendaDB.getVentasPorNitCliente(nit);
             request.getSession().setAttribute("nit", nit);
@@ -121,13 +136,12 @@ public class TiendaControlador extends HttpServlet {
             String fecha1 = request.getParameter("fecha1");
             String fecha2 = request.getParameter("fecha2");
             String nit = request.getParameter("nit");
-            System.out.println(nit);
-            System.out.println("fechas");
-            System.out.println(fecha1);
-            System.out.println(fecha2);
+
             if ((fecha1 != null) && (fecha2 != null)
-                    && ((formatoHecho(fecha1)) && formatoHecho(fecha2))) {
+                    && ((this.util.formatoHecho(fecha1)) && this.util.formatoHecho(fecha2))) {
                 ArrayList<Venta> compras = this.consultaTiendaDB.getVentasPorNitCliente(nit, fecha1, fecha2);
+//                request.getSession().setAttribute("fecha1User", fecha1);
+//                request.getSession().setAttribute("fecha2User", fecha2);
                 request.getSession().setAttribute("compras", compras);
                 response.sendRedirect("/FabricaMuebles/JSP/Vendedor/clientesCompras.jsp");
             } else {
@@ -183,13 +197,39 @@ public class TiendaControlador extends HttpServlet {
         response.sendRedirect("/FabricaMuebles/JSP/Vendedor/listadoClientes.jsp");
     }
 
-    public boolean formatoHecho(String fecha) {
+    private void verDevoluciones(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            Date.valueOf(fecha);
-            return true;
-        } catch (Exception e) {
-            return false;
+            request.getSession().removeAttribute("fecha1DEV");
+            request.getSession().removeAttribute("fecha2DEV");
+            String nit = request.getParameter("nit");
+            List<Devolucion> listaDevolucions = this.devolucionDB.getDevoluciones(nit);
+            request.getSession().setAttribute("nit", nit);
+            request.getSession().setAttribute("devoluciones", listaDevolucions);
+            response.sendRedirect("/FabricaMuebles/JSP/Vendedor/listaDevolucion.jsp");
+        } catch (SQLException ex) {
+            Logger.getLogger(TiendaControlador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    private void verDevolucionesPorFechas(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            String nit = request.getParameter("nit");
+            String fecha1 = request.getParameter("fecha1");
+            String fecha2 = request.getParameter("fecha2");
+            if ((fecha1 != null) && (fecha2 != null)
+                    && ((this.util.formatoHecho(fecha1)) && this.util.formatoHecho(fecha2))) {
+                List<Devolucion> listaDevolucions = this.devolucionDB.getDevolucionesEntreFechas(nit, fecha1, fecha2);
+                request.getSession().setAttribute("fecha1DEV", fecha1);
+                request.getSession().setAttribute("fecha2DEV", fecha2);
+                request.getSession().setAttribute("nit", nit);
+                request.getSession().setAttribute("devoluciones", listaDevolucions);
+                response.sendRedirect("/FabricaMuebles/JSP/Vendedor/listaDevolucion.jsp");
+            } else {
+                verDevoluciones(request, response);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TiendaControlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

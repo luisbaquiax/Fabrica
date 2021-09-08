@@ -46,6 +46,7 @@
                                             <th>NOMBRE</th>
                                             <th>Dirección</th>
                                             <th></th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -59,6 +60,12 @@
                                                 <a href="${pageContext.request.contextPath}/controladorTienda?tarea=verCompras&nit=${cliente.nit}"
                                                    class="btn btn-primary">
                                                     <i class="fas fa-arrow-alt-circle-down mr-3"></i>Ver compras
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/controladorTienda?tarea=verDevolucion&nit=${cliente.nit}"
+                                                   class="btn btn-warning">
+                                                    <i class="fas fa-arrow-alt-circle-down mr-3"></i>Ver devoluciones
                                                 </a>
                                             </td>
 
@@ -82,3 +89,10 @@
     </body>
 
 </html>
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
+    if (session.getAttribute("usuario") == null) {
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
+    }
+%>

@@ -40,8 +40,6 @@ public class PiezaDB {
         statement = conn.prepareStatement(INSERT);
         statement.setString(1, pieza.getTipo());
         registros = statement.executeUpdate();
-
-        //Coneccion.close(statement, conn);
     }
 
     /**
@@ -62,9 +60,7 @@ public class PiezaDB {
         } catch (SQLException ex) {
             System.err.println("error al eliminar");
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(statement, conn);
-        }*/
+        }
     }
 
     /**
@@ -88,9 +84,7 @@ public class PiezaDB {
         } catch (SQLException ex) {
             System.err.println("error al eliminar");
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(statement, conn);
-        }*/
+        }
     }
 
     /**
@@ -119,9 +113,8 @@ public class PiezaDB {
         } catch (SQLException ex) {
             System.out.println("Error al actualizar");
             Logger.getLogger(MuebleDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(statement, conn);
-        }*/
+        }
+
     }
 
     /**
@@ -149,17 +142,15 @@ public class PiezaDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(result, statement, conn);
-        }*/
-
+        }
         return pieza;
     }
 
     /**
-     * Listado de piezas
+     * Listado de piezas<br><br>
+     * query: SELECT * FROM pieza
      *
-     * @return
+     * @return Listado de piezas
      */
     public List<Pieza> getPiezas() {
         Connection conn = null;
@@ -177,9 +168,7 @@ public class PiezaDB {
 
         } catch (SQLException ex) {
             Logger.getLogger(PiezaDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            Coneccion.close(result, statement, conn);
-        }*/
+        }
         return piezas;
     }
 

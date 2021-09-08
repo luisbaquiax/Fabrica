@@ -142,12 +142,7 @@ public class EnsamblajeDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
-
-            }
-        }*/
+        }
         return lista;
     }
 
@@ -184,12 +179,7 @@ public class EnsamblajeDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
-
-            }
-        }*/
+        }
         return lista;
     }
 
@@ -228,12 +218,8 @@ public class EnsamblajeDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
+        }
 
-            }
-        }*/
         return lista;
     }
 
@@ -269,12 +255,8 @@ public class EnsamblajeDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
+        }
 
-            }
-        }*/
         return lista;
     }
 
@@ -310,12 +292,8 @@ public class EnsamblajeDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
+        }
 
-            }
-        }*/
         return lista;
     }
 
@@ -349,12 +327,7 @@ public class EnsamblajeDB {
             }
         } catch (SQLException ex) {
             Logger.getLogger(EnsamblajeDB.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            if (conn != null) {
-                Coneccion.close(result, statement, conn);
-
-            }
-        }*/
+        }
         return ensamblaje;
     }
 

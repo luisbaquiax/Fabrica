@@ -5,10 +5,18 @@
  */
 package servletControlador;
 
+import db.modelo.MuebleDB;
+import db.modelo.PiezaDB;
+import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
+import entidad.Mueble;
+import entidad.Pieza;
+import entidad.RequerimientoEnsamblaje;
 import entidad.Usuario;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,9 +31,16 @@ import javax.servlet.http.HttpServletResponse;
 public class ControladorAministrador extends HttpServlet {
 
     private UsuarioDB usuarioDB;
+    private PiezaDB piezaDB;
+    private MuebleDB muebleDB;
+    private RequerimientoEnsamblajeDB requerimientoEnsamblajeDB;
 
     public ControladorAministrador() {
         this.usuarioDB = new UsuarioDB();
+        this.piezaDB = new PiezaDB();
+        this.muebleDB = new MuebleDB();
+        this.requerimientoEnsamblajeDB = new RequerimientoEnsamblajeDB();
+
     }
 
     @Override
@@ -38,8 +53,17 @@ public class ControladorAministrador extends HttpServlet {
                     case "agregar":
                         agregarNuevoUsuario(request, response);
                         break;
+                    case "editarMueble":
+                        editarMuebleNuevo(request, response);
+                        break;
+                    case "agregarCantidad":
+                        agregarCantidad(request, response);
+                        break;
                     default:
+                        listarUsuarios(request, response);
                 }
+            } else {
+                listarUsuarios(request, response);
             }
         } else {
             response.sendRedirect(request.getContextPath() + "/index.jsp");
@@ -65,10 +89,19 @@ public class ControladorAministrador extends HttpServlet {
                         reactivarUsuario(request, response);
                         break;
                     case "crearMueble":
-
+                        crearMuebleListarPiezas(request, response);
+                        break;
+                    case "editarCantidad":
+                        editarCantidades(request, response);
+                        break;
+                    case "guardar":
+                        guardarNuevoMueble(request, response);
                         break;
                     default:
+                        listarUsuarios(request, response);
                 }
+            } else {
+                listarUsuarios(request, response);
             }
         } else {
             response.sendRedirect(request.getContextPath() + "/index.jsp");
@@ -112,7 +145,74 @@ public class ControladorAministrador extends HttpServlet {
         listarUsuarios(request, response);
     }
 
-    private void craerMuebleListarPiezas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        
+    private void crearMuebleListarPiezas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Pieza> piezasDisponibles = this.piezaDB.getPiezas();
+        request.getSession().setAttribute("piezas", piezasDisponibles);
+        response.sendRedirect("/FabricaMuebles/JSP/Administrador/crearMueble.jsp");
+    }
+
+    private void editarMuebleNuevo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            String nomre = request.getParameter("nombre");
+            double precio = Double.parseDouble(request.getParameter("precio"));
+            Mueble muebleNuevo = new Mueble(nomre, precio);
+            String[] piezas = request.getParameterValues("piezas");
+            List<Pieza> piezasNecesarias = new ArrayList<>();
+            for (String cadena : piezas) {
+                Pieza p = new Pieza(cadena);
+                p.setCantidadExistente(1);
+                piezasNecesarias.add(p);
+            }
+            request.getSession().setAttribute("muebleNuevo", muebleNuevo);
+            request.getSession().setAttribute("piezasNecesarias", piezasNecesarias);
+            response.sendRedirect("/FabricaMuebles/JSP/Administrador/editarMuebleNuevo.jsp");
+        } catch (IOException | NumberFormatException e) {
+            crearMuebleListarPiezas(request, response);
+        } catch (NullPointerException ex) {
+            System.out.println("debes seleccionar los las peizas requeridas");
+            crearMuebleListarPiezas(request, response);
+        }
+
+    }
+
+    private void editarCantidades(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String pieza = request.getParameter("pieza");
+        request.getSession().setAttribute("requerido", pieza);
+        response.sendRedirect("/FabricaMuebles/JSP/Administrador/agregarCantidadPieza.jsp");
+
+    }
+
+    private void agregarCantidad(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int unidades = Integer.parseInt(request.getParameter("unidades"));
+        String pieza = request.getParameter("pieza");
+        List<Pieza> piezasNecesarias = (List<Pieza>) request.getSession().getAttribute("piezasNecesarias");
+
+        for (Pieza pieza1 : piezasNecesarias) {
+            if (pieza1.getTipo().equals(pieza)) {
+                pieza1.setCantidadExistente(unidades);
+                break;
+            }
+        }
+
+        request.getSession().setAttribute("piezasNecesarias", piezasNecesarias);
+        response.sendRedirect("/FabricaMuebles/JSP/Administrador/editarMuebleNuevo.jsp");
+    }
+
+    private void guardarNuevoMueble(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Mueble nuevo = (Mueble) request.getSession().getAttribute("muebleNuevo");
+        List<Pieza> necesarias = (List<Pieza>) request.getSession().getAttribute("piezasNecesarias");
+        if ((nuevo != null) && (necesarias != null)) {
+            this.muebleDB.insertarMueble(nuevo);
+            for (Pieza necesaria : necesarias) {
+                this.requerimientoEnsamblajeDB.insertarRequierimientoEnsamblaje(
+                        new RequerimientoEnsamblaje(
+                                necesaria.getTipo(),
+                                nuevo.getNombre(),
+                                necesaria.getCantidadExistente()));
+            }
+            crearMuebleListarPiezas(request, response);
+        } else {
+            crearMuebleListarPiezas(request, response);
+        }
     }
 }

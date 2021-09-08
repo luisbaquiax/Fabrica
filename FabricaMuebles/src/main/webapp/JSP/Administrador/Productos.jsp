@@ -21,6 +21,7 @@
         <link href="../../assets/css/Productos.css" rel="stylesheet" type="text/css"/>
         <link href="../../assets/css/CardProductos.css" rel="stylesheet" type="text/css"/>
         <link href="../../assets/css/margenes.css" rel="stylesheet" type="text/css"/>
+
         <title>Productos</title>
     </head>
     <body>
@@ -49,8 +50,7 @@
                                         <li>${mueble.identificador}</li>
                                     </ul>
                                     <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&idEnsamblaje=${mueble.identificador}&mueble=${mueble.nombre}"
-                                       class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
-                                        <i class="fas fa-angle-double-right"></i> Comprar
+                                       class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">Comprar
                                     </a>
                                 </div>
                             </div>
@@ -65,12 +65,11 @@
                         </div> 
                         <div class="card-body">
                             <a href="${pageContext.request.contextPath}/ControladorVenta?tarea=solicitarCompra&mueble=${mueble.nombre}&s1_t1"
-                               class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary">
-                                <i class="fas fa-angle-double-right"></i> Comprar
+                               class="btn btn-secondarybtn btn-lg btn-block btn-outline-primary"> Comprar
                             </a>
                         </div> 
                     </div> 
-                    <form action="${pageContext.request.contextPath}/controladorTienda?tarea=devolucion"
+                    <form action="${pageContext.request.contextPath}/ControladorVenta?tarea=devolucion"
                           method="POST">
                         <div class="card border-info mb-3">
                             <div class="card-header"><h5 class="card-title text-center">Devolución</h5></div>

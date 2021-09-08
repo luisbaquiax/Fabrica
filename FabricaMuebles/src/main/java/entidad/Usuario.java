@@ -31,6 +31,10 @@ public class Usuario {
      * true: eliminado del sistema, false: no eliminado del sistema
      */
     private boolean estado;
+    /**
+     * cantidad de ventas registradas
+     */
+    private int ventas;
 
     /**
      * For insert a new USER to DB
@@ -58,6 +62,18 @@ public class Usuario {
         this.password = password;
         this.tipo = tipo;
         this.estado = estado;
+    }
+
+    /**
+     * Para obtener desde la base de datos un usuario de tipo venta que ha
+     * registrado más ventas
+     *
+     * @param nombre
+     * @param ventas
+     */
+    public Usuario(String nombre, int ventas) {
+        this.nombre = nombre;
+        this.ventas = ventas;
     }
 
     /**
@@ -118,9 +134,16 @@ public class Usuario {
         this.estado = estado;
     }
 
+    /**
+     * @return the ventas
+     */
+    public int getVentas() {
+        return ventas;
+    }
+
     @Override
     public String toString() {
-        return "Usuario{" + "nombre=" + nombre + ", password=" + password + ", tipo=" + tipo + ", estado=" + estado + '}';
+        return "Usuario{" + "nombre=" + nombre + ", password=" + password + ", tipo=" + tipo + ", estado=" + estado + ", ventas=" + ventas + '}';
     }
 
 }

@@ -5,6 +5,8 @@
  */
 package entidad.file;
 
+import entidad.file.escribirReportes.EscribirArchivoCSV;
+import entidad.file.escribirReportes.Reporte;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,15 +21,9 @@ public class NewMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        try {
-            CargaDatos c = new CargaDatos(null);
-            c.leerInformacion(c.getManejadoArchivo().informacionEntrada());
-            c.imprimirDatosParaVerificar();
-            
-        } catch (IOException e) {
-        }
+        EscribirArchivoCSV es = new EscribirArchivoCSV();
 
+        es.escribirArchivodeTexto("Reportes/hola luis.CSV", "hola, soy,adfafa yo");
     }
 
 }

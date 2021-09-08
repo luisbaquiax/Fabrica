@@ -8,6 +8,8 @@ package db.coneccion;
 import db.consulatsTienda.ConsultaTiendaDB;
 import db.modelo.ClienteDB;
 import db.modelo.DetalleEnsamblajeDB;
+import db.modelo.DetalleVentaDB;
+import db.modelo.DevolucionDB;
 import db.modelo.EnsamblajeDB;
 import db.modelo.MuebleDB;
 import db.modelo.PiezaDB;
@@ -16,7 +18,10 @@ import db.modelo.ProductoDB;
 import db.modelo.RequerimientoEnsamblajeDB;
 import db.modelo.UsuarioDB;
 import db.modelo.VentaDB;
+import db.reportesAdministracion.ReportesAdminDB;
 import entidad.Cliente;
+import entidad.DetalleVenta;
+import entidad.Devolucion;
 import entidad.Ensamblaje;
 import entidad.Mueble;
 import entidad.Pieza;
@@ -54,19 +59,14 @@ public class Pruebas {
         ClienteDB clienteDB = new ClienteDB();
         DetalleEnsamblajeDB detalleEnsamblajeDB = new DetalleEnsamblajeDB();
         ConsultaTiendaDB consultaTiendaDB = new ConsultaTiendaDB();
+        ReportesAdminDB admin = new ReportesAdminDB();
+        DetalleVentaDB detalleVentaDB = new DetalleVentaDB();
+        DevolucionDB devolucionDB = new DevolucionDB();
         try {
-            for (Mueble m : consultaTiendaDB.getMueblesEnFactura(1)) {
-                System.out.println(m.toString());
-            }
-//            for (Venta v : consultaTiendaDB.getVentasPorNitCliente("31919444")) {
-//                System.out.println(v.toString());
-//            }
-        
-            
-//            for (Venta v : consultaTiendaDB.getVentasPorNitCliente("31919444", "2021-09-04", "2021-09-04")) {
-//                System.out.println(v.toString());
-//            }
+          
         } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("valio");
         }
 
 //        for (Usuario u : usuarioDB.getTodosUsuarios()) {

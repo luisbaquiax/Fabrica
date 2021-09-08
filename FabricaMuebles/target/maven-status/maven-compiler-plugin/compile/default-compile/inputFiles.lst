@@ -2,13 +2,16 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/SalirControlador.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/RequerimientoEnsamblaje.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Cliente.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/ControladorReportesAdministracion.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/ClienteDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/DetalleEnsamblaje.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Ensamblaje.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/TiendaControlador.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/utiles/Util.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/ManejoArchivo.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/ServletProductos.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/coneccion/Pruebas.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/reportesAdministracion/ReportesAdminDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/coneccion/Coneccion.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Factura.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Producto.java
@@ -21,8 +24,10 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/RequerimientoEnsamblajeDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Venta.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/PiezaDB.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/escribirReportes/EscribirArchivoCSV.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/ProductoDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/EnsamblajeDB.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/escribirReportes/Reporte.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Devolucion.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/VentaControlador.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/Mueble.java
@@ -35,6 +40,7 @@
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/UsuarioDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/file/ControladorArchivo.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/file/NewMain.java
+/home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/servletControlador/reportes/Descargar.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/entidad/manejoErrores/FabricaExcepcion.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/DetalleVentaDB.java
 /home/luis/Documentos/Fabrica/FabricaMuebles/src/main/java/db/modelo/DevolucionDB.java

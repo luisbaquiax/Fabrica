@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
         <!-- PERSONALIZADOS CSS -->
         <link href="../../assets/css/general.css" rel="stylesheet" type="text/css"/>
+        <!-- icons -->
+        <script src="https://kit.fontawesome.com/6d0db64a1f.js" crossorigin="anonymous"></script>
         <title>Area Financiera!!!</title>
     </head>
     <body>

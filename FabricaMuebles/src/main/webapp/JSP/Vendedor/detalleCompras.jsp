@@ -48,6 +48,7 @@
                                 </div>
                                 <div class="card pt-1">
                                     <div class="card-header">
+                                        <h5>Cajero: ${venta.usuario}</h5>
                                         <h5>Factura: ${venta.id}</h5>
                                     <h5>NIT:  ${cliente.nit} </h5>
                                     <h5>Nombre: ${cliente.nombre}</h5>

@@ -8,6 +8,8 @@ package db.modelo;
 import db.coneccion.Coneccion;
 import entidad.Devolucion;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,16 +18,15 @@ import java.sql.*;
 public class DevolucionDB {
 
     private static final String INSERT = "INSERT INTO devolucion(perdida, fecha, nombre_cliente, id_producto) VALUES(?,?,?,?)";
+    private static final String SELECT = "SELECT * FROM devolucion WHERE nombre_cliente = ?";
+    private static final String SELECT_DEVOLUCION_FECHAS = "SELECT * FROM devolucion WHERE nombre_cliente = ? AND fecha BETWEEN ? AND ?";
 
     /**
      *
      * @param devolucion
      * @throws SQLException
-     * @throws ClassNotFoundException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
      */
-    public void insertarDevolucion(Devolucion devolucion) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void insertarDevolucion(Devolucion devolucion) throws SQLException {
         Connection conn = null;
         PreparedStatement statement = null;
         //registros afectados
@@ -39,11 +40,69 @@ public class DevolucionDB {
         statement.setInt(4, devolucion.getIdProducto());
         registro = statement.executeUpdate();
 
-        /*if (conn != null) {
-            Coneccion.close(statement, conn);
+    }
 
-        }*/
+    /**
+     * query: SELECT * FROM devolucion WHERE nombre_cliente = ?
+     *
+     * @return listado de devoluciones
+     * @throws SQLException
+     */
+    public List<Devolucion> getDevoluciones(String nitCliente) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Devolucion dev = null;
+        List<Devolucion> lista = new ArrayList<>();
 
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(SELECT);
+        statement.setString(1, nitCliente);
+
+        result = statement.executeQuery();
+
+        resulsetDev(result, dev, lista);
+        return lista;
+    }
+
+    /**
+     *
+     * @param fecha1
+     * @param fecha2
+     * @return
+     * @throws SQLException
+     */
+    public List<Devolucion> getDevolucionesEntreFechas(String nitCliente, String fecha1, String fecha2) throws SQLException {
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet result = null;
+        Devolucion dev = null;
+        List<Devolucion> lista = new ArrayList<>();
+
+        conn = Coneccion.getConnection();
+        statement = conn.prepareStatement(SELECT_DEVOLUCION_FECHAS);
+        statement.setString(1, nitCliente);
+        statement.setString(2, fecha1);
+        statement.setString(3, fecha2);
+
+        result = statement.executeQuery();
+
+        resulsetDev(result, dev, lista);
+
+        return lista;
+    }
+
+    private void resulsetDev(ResultSet result, Devolucion dev, List lista) throws SQLException {
+
+        while (result.next()) {
+            dev = new Devolucion(
+                    result.getInt("id"),
+                    result.getDouble("perdida"),
+                    String.valueOf(result.getDate("fecha")),
+                    result.getString("nombre_cliente"),
+                    result.getInt("id_producto"));
+            lista.add(dev);
+        }
     }
 
 }

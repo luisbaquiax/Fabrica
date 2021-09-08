@@ -81,3 +81,10 @@
     </body>
 
 </html>
+<%
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
+    if (session.getAttribute("usuario") == null) {
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
+    }
+%>

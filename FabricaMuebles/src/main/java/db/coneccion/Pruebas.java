@@ -63,7 +63,9 @@ public class Pruebas {
         DetalleVentaDB detalleVentaDB = new DetalleVentaDB();
         DevolucionDB devolucionDB = new DevolucionDB();
         try {
-          
+            for (Venta v : admin.getVentasEntreFechas("2021-09-04", "2021-09-04")) {
+                System.out.println(v.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("valio");

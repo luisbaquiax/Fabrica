@@ -49,8 +49,10 @@ public class ReportesAdminDB {
         Connection conn = null;
         PreparedStatement statement = null;
         ResultSet result = null;
+        
         ArrayList<Venta> compras = new ArrayList<>();
         Venta venta = null;
+        
         conn = Coneccion.getConnection();
         statement = conn.prepareStatement(VENTAS_BY_FECHAS);
         statement.setDate(1, Date.valueOf(fecha1));

@@ -96,7 +96,6 @@ public class ControladorReportesAdministracion extends HttpServlet {
                     case "muebleMasVendido":
                         break;
                     case "exportar1":
-                        exportarVentasReporte1(request, response);
                         break;
                     default:
                 }
@@ -110,7 +109,7 @@ public class ControladorReportesAdministracion extends HttpServlet {
         List<Venta> ventas = this.ventaDB.getVentas();
 
         this.reporte.escribirVentas(ventas);
-        String ruta = "reporte1.CSV";
+        String ruta = "ventas.CSV";
 
         request.getSession().setAttribute("ventas", ventas);
         request.getSession().setAttribute("ruta", ruta);
@@ -118,16 +117,19 @@ public class ControladorReportesAdministracion extends HttpServlet {
     }
 
     private void reportarVentasPorFecha(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String fecha1 = request.getParameter("fecha1");
-        String fecha2 = request.getParameter("fecha2");
+
         try {
+            String fecha1 = request.getParameter("fecha1");
+            String fecha2 = request.getParameter("fecha2");
             if ((fecha1 != null) && (fecha2 != null)
                     && ((this.util.formatoHecho(fecha1)) && this.util.formatoHecho(fecha2))) {
                 List<Venta> ventas = this.reportesAdminDB.getVentasEntreFechas(fecha1, fecha2);
 
                 this.reporte.escribirVentas(ventas);
-                String ruta = "reporte1.CSV";
+                String ruta = "ventas.CSV";
+
                 request.getSession().setAttribute("ruta", ruta);
+                request.getSession().setAttribute("ventas", ventas);
                 response.sendRedirect("/FabricaMuebles/JSP/Administrador/listadoVentas.jsp");
             } else {
                 reportarVentas(request, response);
@@ -157,6 +159,7 @@ public class ControladorReportesAdministracion extends HttpServlet {
             request.getSession().removeAttribute("fechaUser1");
             request.getSession().removeAttribute("fechaUser2");
             Usuario masVentas = this.reportesAdminDB.getUsuarioMasVentas();
+
             request.getSession().setAttribute("usuarioVentas", masVentas);
             response.sendRedirect("/FabricaMuebles/JSP/Administrador/usuarioVentas.jsp");
         } catch (SQLException ex) {
@@ -200,10 +203,19 @@ public class ControladorReportesAdministracion extends HttpServlet {
             String fecha2 = (String) request.getSession().getAttribute("fechaUser2");
             if (fecha1 != null && fecha2 != null) {
                 List<Venta> ventasUser = this.reportesAdminDB.getUserVentasPorNombreYFechas(user, fecha1, fecha2);
+
+                String ruta = "ventasUser.CSV";
+                this.reporte.escribirVentasUser(ventasUser);
+
+                request.getSession().setAttribute("ruta", ruta);
                 request.getSession().setAttribute("ventasUser", ventasUser);
                 response.sendRedirect("/FabricaMuebles/JSP/Administrador/listaVentasUserMas.jsp");
             } else {
                 List<Venta> ventasUser = this.reportesAdminDB.getUserVentasByName(user);
+               
+                this.reporte.escribirVentasUser(ventasUser);
+                String ruta = "ventasUser.CSV";
+                request.getSession().setAttribute("ruta", ruta);
                 request.getSession().setAttribute("ventasUser", ventasUser);
                 response.sendRedirect("/FabricaMuebles/JSP/Administrador/listaVentasUserMas.jsp");
             }

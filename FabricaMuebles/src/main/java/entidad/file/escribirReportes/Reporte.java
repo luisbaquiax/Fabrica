@@ -52,7 +52,28 @@ public class Reporte {
             } catch (SQLException ex) {
             }
         }
-        this.escribe.escribirArchivodeTexto("reporte1.CSV", contenido);
+        this.escribe.escribirArchivodeTexto("ventas.CSV", contenido);
+
+    }
+     public void escribirVentasUser(List<Venta> ventas) {
+        contenido = "";
+        contenido += "Identificador de venta, Fecha de venta, NIT-Cliente, Usuario, Mueble vendido, Precio Unitario\n";
+        for (Venta venta : ventas) {
+
+            try {
+                List<Mueble> mueblesDeVenta = this.consultaTiendaDB.getMueblesEnFactura(venta.getId());
+                for (Mueble mueble : mueblesDeVenta) {
+                    contenido += venta.getId() + ","
+                            + venta.getFecha() + ","
+                            + venta.getNitCliente() + ","
+                            + venta.getUsuario() + ","
+                            + mueble.getNombre() + ","
+                            + mueble.getPrecio() + "\n";
+                }
+            } catch (SQLException ex) {
+            }
+        }
+        this.escribe.escribirArchivodeTexto("ventasUser.CSV", contenido);
 
     }
 

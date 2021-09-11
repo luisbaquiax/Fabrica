@@ -118,8 +118,6 @@ public class TiendaControlador extends HttpServlet {
 
     private void verComprasDeUnCliente(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-//            request.getSession().removeAttribute("fecha1User");
-//            request.getSession().removeAttribute("fecha2User");
             String nit = request.getParameter("nit");
             ArrayList<Venta> compras = this.consultaTiendaDB.getVentasPorNitCliente(nit);
             request.getSession().setAttribute("nit", nit);
@@ -140,8 +138,6 @@ public class TiendaControlador extends HttpServlet {
             if ((fecha1 != null) && (fecha2 != null)
                     && ((this.util.formatoHecho(fecha1)) && this.util.formatoHecho(fecha2))) {
                 ArrayList<Venta> compras = this.consultaTiendaDB.getVentasPorNitCliente(nit, fecha1, fecha2);
-//                request.getSession().setAttribute("fecha1User", fecha1);
-//                request.getSession().setAttribute("fecha2User", fecha2);
                 request.getSession().setAttribute("compras", compras);
                 response.sendRedirect("/FabricaMuebles/JSP/Vendedor/clientesCompras.jsp");
             } else {

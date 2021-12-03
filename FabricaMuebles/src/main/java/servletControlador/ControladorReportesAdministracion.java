@@ -8,8 +8,10 @@ package servletControlador;
 import db.consulatsTienda.ConsultaTiendaDB;
 import db.modelo.ClienteDB;
 import db.modelo.VentaDB;
+import db.modelo.DevolucionDB;
 import db.reportesAdministracion.ReportesAdminDB;
 import entidad.Cliente;
+import entidad.Devolucion;
 import entidad.Mueble;
 import entidad.Usuario;
 import entidad.Venta;
@@ -41,6 +43,7 @@ public class ControladorReportesAdministracion extends HttpServlet {
     private ConsultaTiendaDB consultaTiendaDB;
     private ClienteDB clienteDB;
     private Reporte reporte;
+    private DevolucionDB devolucionDB;
 
     public ControladorReportesAdministracion() {
         this.ventaDB = new VentaDB();
@@ -49,6 +52,7 @@ public class ControladorReportesAdministracion extends HttpServlet {
         this.consultaTiendaDB = new ConsultaTiendaDB();
         this.clienteDB = new ClienteDB();
         this.reporte = new Reporte();
+        this.devolucionDB = new DevolucionDB();
     }
 
     @Override
@@ -63,6 +67,9 @@ public class ControladorReportesAdministracion extends HttpServlet {
                         break;
                     case "usuarioMasVentasFechas":
                         obtenerUsuarioMasVentasFechas(request, response);
+                        break;
+                    case "reporteDevolucionesFechas":
+                        devolucionesConFecha(request, response);
                         break;
                     default:
                 }
@@ -95,7 +102,11 @@ public class ControladorReportesAdministracion extends HttpServlet {
                         break;
                     case "muebleMasVendido":
                         break;
-                    case "exportar1":
+                    case "reporteDevoluciones":
+                        devolucionesSinFecha(request, response);
+                        break;
+                    case "verDetalleDevolucion":
+                        verDetalleDevolucion(request, response);
                         break;
                     default:
                 }
@@ -212,7 +223,7 @@ public class ControladorReportesAdministracion extends HttpServlet {
                 response.sendRedirect("/FabricaMuebles/JSP/Administrador/listaVentasUserMas.jsp");
             } else {
                 List<Venta> ventasUser = this.reportesAdminDB.getUserVentasByName(user);
-               
+
                 this.reporte.escribirVentasUser(ventasUser);
                 String ruta = "ventasUser.CSV";
                 request.getSession().setAttribute("ruta", ruta);
@@ -225,13 +236,70 @@ public class ControladorReportesAdministracion extends HttpServlet {
         }
     }
 
-    private void getMuebleMasVendidoHttpServletRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void devolucionesSinFecha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        try {
+            List<Devolucion> devoluciones = this.devolucionDB.getDevoluciones();
+            String ruta = "devoluciones.CSV";
+            this.reporte.escribirDevoluciones(devoluciones);
+
+            request.getSession().setAttribute("ruta", ruta);
+            request.getSession().setAttribute("perdidaTotal", perdidaTotal(devoluciones));
+            request.getSession().setAttribute("devoluciones", devoluciones);
+            response.sendRedirect("/FabricaMuebles/JSP/Administrador/devoluciones.jsp");
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void devolucionesConFecha(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            String fecha1Dev = request.getParameter("fecha1Dev");
+            String fecha2Dev = request.getParameter("fecha2Dev");
+            if ((fecha1Dev != null) && (fecha2Dev != null)
+                    && ((this.util.formatoHecho(fecha1Dev)) && this.util.formatoHecho(fecha2Dev))) {
+                List<Devolucion> devoluciones = this.devolucionDB.getDevolucionesPorFecha(fecha1Dev, fecha2Dev);
+
+                String ruta = "devoluciones.CSV";
+                this.reporte.escribirDevoluciones(devoluciones);
+
+                request.getSession().setAttribute("ruta", ruta);
+                request.getSession().setAttribute("perdidaTotal", perdidaTotal(devoluciones));
+                request.getSession().setAttribute("devoluciones", devoluciones);
+                response.sendRedirect("/FabricaMuebles/JSP/Administrador/devoluciones.jsp");
+            } else {
+                devolucionesSinFecha(request, response);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private double perdidaTotal(List<Devolucion> devs) {
+        double perdidaTotal = 0;
+        for (Devolucion dev : devs) {
+            perdidaTotal += dev.getPerdida();
+        }
+        return perdidaTotal;
+    }
+
+    private void verDetalleDevolucion(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Venta detalle = this.devolucionDB.getDetalleDevolucion(id);
+            request.getSession().setAttribute("detallDev", detalle);
+            response.sendRedirect("/FabricaMuebles/JSP/Administrador/detalleDevolucion.jsp");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (NullPointerException ex) {
+            System.out.println("nulo");
+        }
 
     }
 
-    public void exportarVentasReporte1(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<Venta> ventas = (List<Venta>) request.getSession().getAttribute("ventas");
+    private void getMuebleMasVendidoHttpServletRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.sendRedirect("/FabricaMuebles/JSP/Administrador/listadoVentas.jsp");
     }
 }

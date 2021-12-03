@@ -214,7 +214,7 @@ public class TiendaControlador extends HttpServlet {
             String fecha2 = request.getParameter("fecha2");
             if ((fecha1 != null) && (fecha2 != null)
                     && ((this.util.formatoHecho(fecha1)) && this.util.formatoHecho(fecha2))) {
-                List<Devolucion> listaDevolucions = this.devolucionDB.getDevolucionesEntreFechas(nit, fecha1, fecha2);
+                List<Devolucion> listaDevolucions = this.devolucionDB.getDevolucionesEntreFechasMedianteNITcliente(nit, fecha1, fecha2);
                 request.getSession().setAttribute("fecha1DEV", fecha1);
                 request.getSession().setAttribute("fecha2DEV", fecha2);
                 request.getSession().setAttribute("nit", nit);

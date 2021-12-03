@@ -6,6 +6,7 @@
 package entidad.file.escribirReportes;
 
 import db.consulatsTienda.ConsultaTiendaDB;
+import entidad.Devolucion;
 import entidad.Mueble;
 import entidad.Venta;
 import java.io.BufferedWriter;
@@ -38,7 +39,6 @@ public class Reporte {
         contenido = "";
         contenido += "Identificador de venta, Fecha de venta, NIT-Cliente, Usuario, Mueble vendido, Precio Unitario\n";
         for (Venta venta : ventas) {
-
             try {
                 List<Mueble> mueblesDeVenta = this.consultaTiendaDB.getMueblesEnFactura(venta.getId());
                 for (Mueble mueble : mueblesDeVenta) {
@@ -55,11 +55,11 @@ public class Reporte {
         this.escribe.escribirArchivodeTexto("ventas.CSV", contenido);
 
     }
-     public void escribirVentasUser(List<Venta> ventas) {
+
+    public void escribirVentasUser(List<Venta> ventas) {
         contenido = "";
         contenido += "Identificador de venta, Fecha de venta, NIT-Cliente, Usuario, Mueble vendido, Precio Unitario\n";
         for (Venta venta : ventas) {
-
             try {
                 List<Mueble> mueblesDeVenta = this.consultaTiendaDB.getMueblesEnFactura(venta.getId());
                 for (Mueble mueble : mueblesDeVenta) {
@@ -75,6 +75,20 @@ public class Reporte {
         }
         this.escribe.escribirArchivodeTexto("ventasUser.CSV", contenido);
 
+    }
+
+    public void escribirDevoluciones(List<Devolucion> devoluciones) {
+        contenido = "";
+        contenido += "ID, Fecha de devolución, NIT-Cliente, Perdida, Usuario, ID-producto\n";
+        for (Devolucion dev : devoluciones) {
+
+            contenido += dev.getId() + ","
+                    + dev.getFecha() + ","
+                    + dev.getNombreCliente() + ","
+                    + dev.getPerdida() + ","
+                    + dev.getIdProducto() + "\n";
+        }
+        this.escribe.escribirArchivodeTexto("devoluciones.CSV", contenido);
     }
 
 }
